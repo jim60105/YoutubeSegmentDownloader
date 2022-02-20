@@ -1,11 +1,11 @@
 ﻿using System.Globalization;
+using System.Text.RegularExpressions;
 using static YoutubeSegmentDownloader.ExternalProgram;
 
 namespace YoutubeSegmentDownloader;
 
 public partial class Form1 : Form
 {
-
     public Form1()
     {
         InitializeComponent();
@@ -14,13 +14,13 @@ public partial class Form1 : Form
 
     private void Form1_Shown(object? sender, EventArgs e)
     {
-        PrepareYtdlpAndFFmpeg();
         Application.CurrentInputLanguage = InputLanguage.FromCulture(new CultureInfo("en-us"));
+        _ = PrepareYtdlpAndFFmpegAsync().ConfigureAwait(false);
     }
 
-    private void PrepareYtdlpAndFFmpeg()
+    private async Task PrepareYtdlpAndFFmpegAsync()
     {
-        (string? ytdlpPath, string? ffmpegPath) = WhereIs();
+        _ = WhereIs();
 
 #if false
             // Force download again
@@ -29,19 +29,19 @@ public partial class Form1 : Form
 #endif
 
         // Start Download
-        if (string.IsNullOrEmpty(ffmpegPath)) 
-            DownloadFFmpeg().ConfigureAwait(false);
+        if (string.IsNullOrEmpty(FFmpegPath))
+            _ = DownloadFFmpeg().ConfigureAwait(false);
 
-        if (string.IsNullOrEmpty(ytdlpPath))
-            DownloadYtdlp().ConfigureAwait(false);
+        if (string.IsNullOrEmpty(YtdlpPath))
+            _ = DownloadYtdlp().ConfigureAwait(false);
 
         // Update UI
-         while (FFmpeg_Status != DependencyStatus.Exist
-                 || Ytdlp_Status != DependencyStatus.Exist)
+        while (FFmpeg_Status != DependencyStatus.Exist
+                || Ytdlp_Status != DependencyStatus.Exist)
         {
             panel_download.Visible = true;
 
-            Task.Delay(TimeSpan.FromSeconds(1)).Wait();
+            await Task.Delay(TimeSpan.FromSeconds(1));
             label_checking_ytdlp.Text =
                 Ytdlp_Status switch
                 {
@@ -68,5 +68,122 @@ public partial class Form1 : Form
     private void checkBox_segment_CheckedChanged(object sender, EventArgs e)
     {
         tableLayoutPanel_segment.Enabled = checkBox_segment.Checked;
+    }
+
+    private async Task button_start_ClickAsync(object sender, EventArgs e)
+    {
+        this.Enabled = false;
+        richTextBox_log.Enabled = true;
+
+        try
+        {
+            string id = textBox_youtube.Text.Contains('/')
+                // Regex for strip youtube video id from url c# and returl default thumbnail
+                // https://gist.github.com/Flatlineato/f4cc3f3937272646d4b0
+                ? Regex.Match(textBox_youtube.Text,
+                              "https?:\\/\\/(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube(?:-nocookie)?\\.com\\S*[^\\w\\s-])([\\w-]{11})(?=[^\\w-]|$)(?![?=&+%\\w.-]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w.-]*",
+                              RegexOptions.IgnoreCase).Groups[1].Value
+                : textBox_youtube.Text;
+
+            if (string.IsNullOrEmpty(id))
+            {
+                MessageBox.Show("Youtube Link invalid!");
+                return;
+            }
+
+            float start = ConvertTimeStringToSecond(textBox_start.Text);
+            float end = ConvertTimeStringToSecond(textBox_end.Text);
+
+            if (start >= end
+                || end <= 0
+                || start < 0)
+            {
+                MessageBox.Show("Segment time invalid!");
+                return;
+            }
+
+            DirectoryInfo directory;
+            try
+            {
+                directory = new(textBox_outputDirectory.Text);
+                directory.Create();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Output Directory invalid!");
+                return;
+            }
+
+            var download = new Download(id: id,
+                         start: start,
+                         end: end,
+                         outputDirectory: directory);
+            _ = download.Start().ConfigureAwait(false);
+
+            string lastLog = "";
+            // Update UI
+            while (!download.finished)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1));
+
+                if (null != download.error)
+                {
+                    MessageBox.Show(download.error);
+                    return;
+                }
+                if (download.log != lastLog)
+                {
+                    richTextBox_log.Text += download.log + '\n';
+                    lastLog = download.log;
+                    Application.DoEvents();
+                }
+            }
+
+            MessageBox.Show($"Finish!\n{download.outputFilePath}");
+        }
+        finally
+        {
+            this.Enabled = true;
+        }
+    }
+
+    private static float ConvertTimeStringToSecond(string text)
+    {
+        if (float.TryParse(text, out float result))
+        {
+            return result;
+        }
+
+        if (text.Contains(':'))
+        {
+            List<string> timeList = text.Split(':').ToList();
+            timeList.Reverse();
+
+            result = 0;
+            for (int i = 0; i < timeList.Count && i < 3; i++)
+            {
+                string time = timeList[i].Trim();
+                if (float.TryParse(time, out var t))
+                {
+                    result += t * (i * 60);
+                }
+                else
+                {
+                    // Parse failed
+                    result = 0;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private void richTextBox_log_TextChanged(object sender, EventArgs e)
+    {
+        // set the current caret position to the end
+        richTextBox_log.SelectionStart = richTextBox_log.Text.Length;
+        // scroll it automatically
+        richTextBox_log.ScrollToCaret();
     }
 }
