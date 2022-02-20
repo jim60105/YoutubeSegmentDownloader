@@ -15,18 +15,12 @@ public partial class Form1 : Form
     private void Form1_Shown(object? sender, EventArgs e)
     {
         Application.CurrentInputLanguage = InputLanguage.FromCulture(new CultureInfo("en-us"));
-        _ = PrepareYtdlpAndFFmpegAsync().ConfigureAwait(false);
+        _ = PrepareYtdlpAndFFmpegAsync().ConfigureAwait(true);  // Use same thread
     }
 
     private async Task PrepareYtdlpAndFFmpegAsync()
     {
         _ = WhereIs();
-
-#if false
-            // Force download again
-            ytdlpPath = ffmpegPath = null;
-            Ytdlp_Status = FFmpeg_Status = DependencyStatus.NotExist;
-#endif
 
         // Start Download
         if (string.IsNullOrEmpty(FFmpegPath))
@@ -70,10 +64,9 @@ public partial class Form1 : Form
         tableLayoutPanel_segment.Enabled = checkBox_segment.Checked;
     }
 
-    private async Task button_start_ClickAsync(object sender, EventArgs e)
+    private void button_start_Click(object sender, EventArgs e)
     {
-        this.Enabled = false;
-        richTextBox_log.Enabled = true;
+        tableLayoutPanel1.Enabled = tableLayoutPanel_segment.Enabled = button_start.Enabled = false;
 
         try
         {
@@ -114,37 +107,43 @@ public partial class Form1 : Form
                 return;
             }
 
-            var download = new Download(id: id,
-                         start: start,
-                         end: end,
-                         outputDirectory: directory);
-            _ = download.Start().ConfigureAwait(false);
-
-            string lastLog = "";
-            // Update UI
-            while (!download.finished)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(1));
-
-                if (null != download.error)
-                {
-                    MessageBox.Show(download.error);
-                    return;
-                }
-                if (download.log != lastLog)
-                {
-                    richTextBox_log.Text += download.log + '\n';
-                    lastLog = download.log;
-                    Application.DoEvents();
-                }
-            }
-
-            MessageBox.Show($"Finish!\n{download.outputFilePath}");
+            _ = DownloadAsync(id, start, end, directory).ConfigureAwait(true);
         }
         finally
         {
-            this.Enabled = true;
+            panel1.Enabled = tableLayoutPanel_segment.Enabled = button_start.Enabled = true;
         }
+    }
+
+    private async Task DownloadAsync(string id, float start, float end, DirectoryInfo directory)
+    {
+        Download download = new(id: id,
+                                start: start,
+                                end: end,
+                                outputDirectory: directory);
+        _ = download.Start().ConfigureAwait(false);
+
+        string lastLog = "";
+
+        // Update UI
+        while (!download.finished)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            if (null != download.error)
+            {
+                MessageBox.Show(download.error);
+                return;
+            }
+            if (download.log != lastLog)
+            {
+                richTextBox_log.Text += download.log + '\n';
+                lastLog = download.log;
+                Application.DoEvents();
+            }
+        }
+
+        MessageBox.Show($"Finish!\n{download.outputFilePath}");
     }
 
     private static float ConvertTimeStringToSecond(string text)

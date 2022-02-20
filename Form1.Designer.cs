@@ -266,7 +266,7 @@
             this.button_start.TabIndex = 7;
             this.button_start.Text = "Start";
             this.button_start.UseVisualStyleBackColor = true;
-            this.button_start.Click += new System.EventHandler(this.button_start_ClickAsync);
+            this.button_start.Click += new System.EventHandler(this.button_start_Click);
             // 
             // panel_download
             // 
@@ -297,11 +297,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 520);
+            this.Controls.Add(this.panel_download);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.tableLayoutPanel_segment);
             this.Controls.Add(this.button_start);
             this.Controls.Add(this.richTextBox_log);
-            this.Controls.Add(this.panel_download);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Youtube Segment Downloader";

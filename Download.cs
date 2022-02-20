@@ -51,18 +51,15 @@ internal class Download
         try
         {
             VideoData? videoData = await FetchVideoInfoAsync(ytdl);
-            if (null == videoData)
-            {
-                error = $"Faild to fetch video information!\nVideoId: {id}";
-                return;
-            }
+            if (null == videoData) return;
+
             outputFilePath = CalculatePath(videoData?.Title, videoData?.UploadDate);
 
-            await DownloadVideo(ytdl, optionSet);
+            if(!await DownloadVideoAsync(ytdl, optionSet)) return;
 
-            await CutWithFFmpeg(tempFilePath1, tempFilePath2).Unwrap();
-
+            await CutWithFFmpegAsync(tempFilePath1, tempFilePath2);
             File.Move(tempFilePath2, outputFilePath, true);
+            finished = true;
         }
         finally
         {
@@ -71,7 +68,31 @@ internal class Download
         }
     }
 
-    private async Task<bool> DownloadVideo(YoutubeDL ytdl, OptionSet optionSet)
+    /// <summary>
+    /// 取得影片資訊
+    /// </summary>
+    /// <param name="ytdl"></param>
+    /// <returns></returns>
+    private async Task<VideoData?> FetchVideoInfoAsync(YoutubeDL ytdl)
+    {
+        RunResult<VideoData> result_VideoData = await ytdl.RunVideoDataFetch(@$"https://youtu.be/{id}");
+
+        if (!result_VideoData.Success)
+        {
+            error = $"Faild to fetch video information!\nVideoId: {id}";
+            return null;
+        }
+
+        return result_VideoData.Data;
+    }
+
+    /// <summary>
+    /// 下載影片
+    /// </summary>
+    /// <param name="ytdl"></param>
+    /// <param name="optionSet"></param>
+    /// <returns></returns>
+    private async Task<bool> DownloadVideoAsync(YoutubeDL ytdl, OptionSet optionSet)
     {
         var result_string = await ytdl.RunVideoDownload(
             url: @$"https://youtu.be/{id}",
@@ -87,29 +108,28 @@ internal class Download
         return true;
     }
 
-    private async Task<VideoData?> FetchVideoInfoAsync(YoutubeDL ytdl)
-    {
-        RunResult<VideoData> result_VideoData = await ytdl.RunVideoDataFetch(@$"https://youtu.be/{id}");
-
-        return result_VideoData.Success ? result_VideoData.Data : null;
-    }
-
-    private async Task<Task<IConversionResult>> CutWithFFmpeg(string tempFilePath1, string tempFilePath2)
+    /// <summary>
+    /// 剪切影片
+    /// </summary>
+    /// <param name="inputPath"></param>
+    /// <param name="outputPath"></param>
+    /// <returns></returns>
+    private async Task<IConversionResult> CutWithFFmpegAsync(string inputPath, string outputPath)
     {
         float duration = end - start;
 
-        IConversion conversion = await FFmpeg.Conversions.FromSnippet.Split(
-            inputPath: tempFilePath1,
-            outputPath: tempFilePath2,
-            startTime: TimeSpan.FromSeconds((await FFmpeg.GetMediaInfo(tempFilePath1)).Duration.TotalSeconds - duration),
-            duration: TimeSpan.FromSeconds(duration));
-        return conversion.Start();
+        FFmpeg.SetExecutablesPath(ExternalProgram.FFmpegPath);
+        IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(inputPath);
+        IConversion conversion = FFmpeg.Conversions.New()
+                                   .AddStream(mediaInfo.Streams)
+                                   .AddParameter($"-ss {mediaInfo.Duration - TimeSpan.FromSeconds(duration)}")
+                                   .SetOutput(outputPath);
+        return await conversion.Start();
     }
 
     /// <summary>
     /// 路徑做檢查和轉換
     /// </summary>
-    /// <param name="oldPath"></param>
     /// <param name="title">影片標題，用做檔名</param>
     /// <param name="date">影片日期，用做檔名</param>
     /// <returns></returns>

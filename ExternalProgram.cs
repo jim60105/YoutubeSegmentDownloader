@@ -52,9 +52,9 @@ public static class ExternalProgram
 
         FFmpegPath = TempDirectory.FullName;
         HttpClient client = new();
-        var response = await client.GetAsync(@"https://github.com/GyanD/codexffmpeg/releases/download/5.0/ffmpeg-5.0-full_build.7z", HttpCompletionOption.ResponseHeadersRead);
+        var response = await client.GetAsync(@"https://github.com/GyanD/codexffmpeg/releases/download/5.0/ffmpeg-5.0-essentials_build.7z", HttpCompletionOption.ResponseHeadersRead);
 
-        string archivePath = Path.Combine(FFmpegPath, "ffmpeg-5.0-full_build.7z");
+        string archivePath = Path.Combine(FFmpegPath, "ffmpeg-5.0-essentials_build.7z");
         using (FileStream fs = new(archivePath, FileMode.Create))
         {
             //response.EnsureSuccessStatusCode();
@@ -65,7 +65,8 @@ public static class ExternalProgram
         {
             using SevenZipArchive archive = SevenZipArchive.Open(archivePath);
             foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory
-                                                                 && entry.Key.EndsWith("exe")))
+                                                                 && (entry.Key.EndsWith("exe")
+                                                                     || entry.Key.Contains("LICENSE"))))
             {
                 entry.WriteToDirectory(FFmpegPath, new ExtractionOptions()
                 {
@@ -126,6 +127,17 @@ public static class ExternalProgram
         //logger.LogDebug("Found yt-dlp at {path}", YtdlPath);
         YtdlpPath = _YtdlpPath;
         FFmpegPath = _FFmpegPath;
+
+#if false
+        // Force download again
+        YtdlpPath = FFmpegPath = null;
+        Ytdlp_Status = FFmpeg_Status = DependencyStatus.NotExist;
+        foreach (var file in TempDirectory.GetFiles())
+        {
+            file.Delete();
+        }
+#endif
+
         return (_YtdlpPath, _FFmpegPath);
     }
 }
