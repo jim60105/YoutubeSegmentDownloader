@@ -1,4 +1,5 @@
-﻿using Xabe.FFmpeg;
+﻿using Serilog;
+using Xabe.FFmpeg;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Metadata;
 using YoutubeDLSharp.Options;
@@ -12,9 +13,7 @@ internal class Download
     private readonly float end;
     private readonly DirectoryInfo outputDirectory;
     public bool finished = false;
-    public string log = "";
     public string? outputFilePath = null;
-    public string? error = null;
 
     public Download(string id,
                     float start,
@@ -29,8 +28,14 @@ internal class Download
 
     public async Task Start()
     {
+        Log.Information("Start the download process...");
+
         string tempFilePath1 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
         string tempFilePath2 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+        Log.Information("Create temporary files:");
+        Log.Information("{TempFilePath}", tempFilePath1);
+        Log.Information("{TempFilePath}", tempFilePath2);
+
         OptionSet optionSet = new()
         {
             NoCheckCertificate = true,
@@ -55,16 +60,21 @@ internal class Download
 
             outputFilePath = CalculatePath(videoData?.Title, videoData?.UploadDate);
 
-            if(!await DownloadVideoAsync(ytdl, optionSet)) return;
+            if (!await DownloadVideoAsync(ytdl, optionSet)) return;
 
             await CutWithFFmpegAsync(tempFilePath1, tempFilePath2);
+
+            Log.Information("Move file to {filePath}", outputFilePath);
             File.Move(tempFilePath2, outputFilePath, true);
+            Log.Information("Download completed:");
+            Log.Information(outputFilePath);
             finished = true;
         }
         finally
         {
             File.Delete(tempFilePath1);
             File.Delete(tempFilePath2);
+            Log.Information("Clean up temporary files.");
         }
     }
 
@@ -75,13 +85,16 @@ internal class Download
     /// <returns></returns>
     private async Task<VideoData?> FetchVideoInfoAsync(YoutubeDL ytdl)
     {
+        Log.Information("Start getting video informatino");
         RunResult<VideoData> result_VideoData = await ytdl.RunVideoDataFetch(@$"https://youtu.be/{id}");
 
         if (!result_VideoData.Success)
         {
-            error = $"Faild to fetch video information!\nVideoId: {id}";
+            Log.Error("Failed to get video information! VideoId: {id}", id);
             return null;
         }
+
+        Log.Information("{title}", result_VideoData.Data.Title);
 
         return result_VideoData.Data;
     }
@@ -94,17 +107,23 @@ internal class Download
     /// <returns></returns>
     private async Task<bool> DownloadVideoAsync(YoutubeDL ytdl, OptionSet optionSet)
     {
+        Log.Information("Start downloading video...");
         var result_string = await ytdl.RunVideoDownload(
             url: @$"https://youtu.be/{id}",
             mergeFormat: DownloadMergeFormat.Mp4,
-            output: new Progress<string>(s => log = s),
+            output: new Progress<string>(s => Log.Verbose(s)),
             overrideOptions: optionSet);
 
         if (!result_string.Success)
         {
-            error = "Failded to download video!\n" + string.Join('\n', result_string.ErrorOutput);
+            Log.Error("Failed to download video!");
+            foreach (var str in result_string.ErrorOutput)
+            {
+                Log.Information(str);
+            }
             return false;
         }
+        Log.Information("Video downloaded.");
         return true;
     }
 
@@ -116,6 +135,8 @@ internal class Download
     /// <returns></returns>
     private async Task<IConversionResult> CutWithFFmpegAsync(string inputPath, string outputPath)
     {
+        Log.Information("Start cutting video with FFmpeg...");
+
         float duration = end - start;
 
         FFmpeg.SetExecutablesPath(ExternalProgram.FFmpegPath);
@@ -124,6 +145,7 @@ internal class Download
                                    .AddStream(mediaInfo.Streams)
                                    .AddParameter($"-ss {mediaInfo.Duration - TimeSpan.FromSeconds(duration)}")
                                    .SetOutput(outputPath);
+        Log.Debug("FFmpeg arguments: {arguments}", conversion.Build());
         return await conversion.Start();
     }
 
@@ -142,6 +164,7 @@ internal class Download
         // 截短
         if (title.Length > 80)
         {
+            Log.Warning("The title is too long! Limit it to 80 characters.");
             title = title[..80];
         }
 
@@ -149,7 +172,7 @@ internal class Download
 
         string newPath = Path.Combine(outputDirectory.FullName, $"{date:yyyyMMdd} {title} ({id}).mp4");
 
-        //logger.Debug("Rename file: {oldPath} => {newPath}", oldPath, newPath);
+        Log.Debug("Calculate output file path as {newPath}", newPath);
         return newPath;
     }
 }

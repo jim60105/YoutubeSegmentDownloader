@@ -1,4 +1,5 @@
-﻿using SharpCompress.Archives;
+﻿using Serilog;
+using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
 
@@ -23,11 +24,14 @@ public static class ExternalProgram
 
     internal static async Task DownloadYtdlp()
     {
+        Log.Information("Start downloading yt-dlp...");
         Ytdlp_Status = DependencyStatus.Downloading;
 
         YtdlpPath = TempDirectory.FullName;
         HttpClient client = new();
-        HttpResponseMessage response = await client.GetAsync(@"https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe", HttpCompletionOption.ResponseHeadersRead);
+        string ytdlpUrl = @"https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
+        HttpResponseMessage response = await client.GetAsync(ytdlpUrl, HttpCompletionOption.ResponseHeadersRead);
+        Log.Debug("Get response from {YtdlpUrl}", ytdlpUrl);
 
         string filePath = Path.Combine(YtdlpPath, "yt-dlp.exe");
         using FileStream fs = new(filePath, FileMode.Create);
@@ -36,23 +40,27 @@ public static class ExternalProgram
 
         if (File.Exists(filePath))
         {
+            Log.Information("Finish downloading yt-dlp at {filePath}", filePath);
             Ytdlp_Status = DependencyStatus.Exist;
             return;
         }
         else
         {
-            // log error
+            Log.Fatal("Finished downloading yt-dlp but file not found in {filePath}!", filePath);
+            Ytdlp_Status = DependencyStatus.NotExist;
         }
-        Ytdlp_Status = DependencyStatus.NotExist;
     }
 
     internal static async Task DownloadFFmpeg()
     {
+        Log.Information("Start downloading FFmpeg...");
         FFmpeg_Status = DependencyStatus.Downloading;
 
         FFmpegPath = TempDirectory.FullName;
         HttpClient client = new();
-        var response = await client.GetAsync(@"https://github.com/GyanD/codexffmpeg/releases/download/5.0/ffmpeg-5.0-essentials_build.7z", HttpCompletionOption.ResponseHeadersRead);
+        string ffmpegUrl = @"https://github.com/GyanD/codexffmpeg/releases/download/5.0/ffmpeg-5.0-essentials_build.7z";
+        var response = await client.GetAsync(ffmpegUrl, HttpCompletionOption.ResponseHeadersRead);
+        Log.Debug("Get response from {FFmpegUrl}", ffmpegUrl);
 
         string archivePath = Path.Combine(FFmpegPath, "ffmpeg-5.0-essentials_build.7z");
         using (FileStream fs = new(archivePath, FileMode.Create))
@@ -60,14 +68,18 @@ public static class ExternalProgram
             //response.EnsureSuccessStatusCode();
             await response.Content.CopyToAsync(fs);
         }
+        Log.Information("Finish downloading FFmpeg at {filePath}", archivePath);
 
         try
         {
             using SevenZipArchive archive = SevenZipArchive.Open(archivePath);
+            Log.Information("Start unpacking ffmpeg-5.0-essentials_build.7z");
+
             foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory
                                                                  && (entry.Key.EndsWith("exe")
                                                                      || entry.Key.Contains("LICENSE"))))
             {
+                Log.Information("{FilePath}", Path.Combine(FFmpegPath, Path.GetFileName(entry.Key)));
                 entry.WriteToDirectory(FFmpegPath, new ExtractionOptions()
                 {
                     ExtractFullPath = false,
@@ -77,30 +89,25 @@ public static class ExternalProgram
 
             if (File.Exists(Path.Combine(FFmpegPath, "ffmpeg.exe")))
             {
+                Log.Information("Complete FFmpeg unpacking to {filePath}", FFmpegPath);
                 FFmpeg_Status = DependencyStatus.Exist;
-                return;
             }
             else
             {
-                // log error
+                Log.Fatal("Finished unpacking FFmpeg under {filePath} but couldn't find ffmpeg.exe!", FFmpegPath);
+                FFmpeg_Status = DependencyStatus.NotExist;
             }
-        }
-        catch (Exception)
-        {
-            throw;
         }
         finally
         {
             File.Delete(archivePath);
         }
-
-        FFmpeg_Status = DependencyStatus.NotExist;
     }
 
     /// <summary>
     /// 尋找程式路徑
     /// </summary>
-    /// <returns>Full path of yt-dlp</returns>
+    /// <returns>Full path of yt-dlp and FFmpeg</returns>
     public static (string?, string?) WhereIs()
     {
         // https://stackoverflow.com/a/63021455
@@ -124,12 +131,13 @@ public static class ExternalProgram
                         ? DependencyStatus.NotExist
                         : DependencyStatus.Exist;
 
-        //logger.LogDebug("Found yt-dlp at {path}", YtdlPath);
         YtdlpPath = _YtdlpPath;
         FFmpegPath = _FFmpegPath;
+        Log.Information("Found yt-dlp.exe at {YtdlpPath}", YtdlpPath);
+        Log.Information("Found ffmpeg.exe at {FFmpegPath}", FFmpegPath);
 
-#if false
-        // Force download again
+#if DEBUG
+        Log.Debug("Force download again!");
         YtdlpPath = FFmpegPath = null;
         Ytdlp_Status = FFmpeg_Status = DependencyStatus.NotExist;
         foreach (var file in TempDirectory.GetFiles())

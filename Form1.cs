@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using Serilog;
+using System.Diagnostics;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using static YoutubeSegmentDownloader.ExternalProgram;
 
@@ -56,6 +58,7 @@ public partial class Form1 : Form
             Application.DoEvents();
         }
 
+        Log.Information("Finish downloading all dependencies.");
         panel_download.Visible = false;
     }
 
@@ -80,9 +83,11 @@ public partial class Form1 : Form
 
             if (string.IsNullOrEmpty(id))
             {
+                Log.Error("Youtube Link invalid!");
                 MessageBox.Show("Youtube Link invalid!");
                 return;
             }
+            Log.Information("Get VideoID: {VideoId}", id);
 
             float start = ConvertTimeStringToSecond(textBox_start.Text);
             float end = ConvertTimeStringToSecond(textBox_end.Text);
@@ -91,9 +96,11 @@ public partial class Form1 : Form
                 || end <= 0
                 || start < 0)
             {
+                Log.Error("Segment time invalid!");
                 MessageBox.Show("Segment time invalid!");
                 return;
             }
+            Log.Information("Input segment: {start} ~ {end}", start, end);
 
             DirectoryInfo directory;
             try
@@ -103,9 +110,11 @@ public partial class Form1 : Form
             }
             catch (Exception)
             {
+                Log.Error("Output Directory invalid!");
                 MessageBox.Show("Output Directory invalid!");
                 return;
             }
+            Log.Information("Output directory: {Output Directory}", directory.FullName);
 
             _ = DownloadAsync(id, start, end, directory).ConfigureAwait(true);
         }
@@ -115,7 +124,7 @@ public partial class Form1 : Form
         }
     }
 
-    private async Task DownloadAsync(string id, float start, float end, DirectoryInfo directory)
+    private static async Task DownloadAsync(string id, float start, float end, DirectoryInfo directory)
     {
         Download download = new(id: id,
                                 start: start,
@@ -123,24 +132,11 @@ public partial class Form1 : Form
                                 outputDirectory: directory);
         _ = download.Start().ConfigureAwait(false);
 
-        string lastLog = "";
-
         // Update UI
         while (!download.finished)
         {
             await Task.Delay(TimeSpan.FromSeconds(1));
-
-            if (null != download.error)
-            {
-                MessageBox.Show(download.error);
-                return;
-            }
-            if (download.log != lastLog)
-            {
-                richTextBox_log.Text += download.log + '\n';
-                lastLog = download.log;
-                Application.DoEvents();
-            }
+            Application.DoEvents();
         }
 
         MessageBox.Show($"Finish!\n{download.outputFilePath}");
@@ -148,8 +144,10 @@ public partial class Form1 : Form
 
     private static float ConvertTimeStringToSecond(string text)
     {
+        Log.Debug("Convert time string from {OriginalTimeString}", text);
         if (float.TryParse(text, out float result))
         {
+            Log.Debug("Time string is pure float!");
             return result;
         }
 
@@ -175,14 +173,79 @@ public partial class Form1 : Form
             }
         }
 
+        Log.Debug("Convert time string to {Seconds}", result);
         return result;
     }
 
-    private void richTextBox_log_TextChanged(object sender, EventArgs e)
+    private void richTextBoxLogControl1_TextChanged(object sender, EventArgs e)
     {
         // set the current caret position to the end
-        richTextBox_log.SelectionStart = richTextBox_log.Text.Length;
+        richTextBoxLogControl1.SelectionStart = richTextBoxLogControl1.Text.Length;
         // scroll it automatically
-        richTextBox_log.ScrollToCaret();
+        richTextBoxLogControl1.ScrollToCaret();
     }
+
+    #region Link
+    private static void VisitLink(LinkLabel linkLabel, string url)
+    {
+        // Change the color of the link text by setting LinkVisited
+        // to true.
+        linkLabel.LinkVisited = true;
+        //Call the Process.Start method to open the default browser
+        //with a URL:
+        //System.Diagnostics.Process.Start(url);
+        Process myProcess = new();
+        myProcess.StartInfo.UseShellExecute = true;
+        myProcess.StartInfo.FileName = url;
+        myProcess.Start();
+    }
+
+    private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+        try
+        {
+            VisitLink(linkLabel1,"https://github.com/GyanD/codexffmpeg/releases/tag/5.0");
+        }
+        catch (Exception )
+        {
+            MessageBox.Show("Unable to open link that was clicked.");
+        }
+    }
+
+    private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+        try
+        {
+            VisitLink(linkLabel2, "https://github.com/FFmpeg/FFmpeg/commit/390d6853d0");
+        }
+        catch (Exception )
+        {
+            MessageBox.Show("Unable to open link that was clicked.");
+        }
+    }
+
+    private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+        try
+        {
+            VisitLink(linkLabel3, "https://github.com/yt-dlp/yt-dlp/releases/latest");
+        }
+        catch (Exception )
+        {
+            MessageBox.Show("Unable to open link that was clicked.");
+        }
+    }
+
+    private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+        try
+        {
+            VisitLink(linkLabel5, "https://github.com/jim60105/YoutubeSegmentDownloader");
+        }
+        catch (Exception )
+        {
+            MessageBox.Show("Unable to open link that was clicked.");
+        }
+    }
+    #endregion
 }
