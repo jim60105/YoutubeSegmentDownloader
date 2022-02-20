@@ -139,6 +139,12 @@ public partial class Form1 : Form
             Application.DoEvents();
         }
 
+        // Open save directory
+        Process myProcess = new();
+        myProcess.StartInfo.UseShellExecute = true;
+        myProcess.StartInfo.FileName = directory.FullName;
+        myProcess.Start();
+
         MessageBox.Show($"Finish!\n{download.outputFilePath}");
     }
 

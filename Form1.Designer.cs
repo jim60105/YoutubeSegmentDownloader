@@ -391,13 +391,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 520);
+            this.Controls.Add(this.panel_download);
             this.Controls.Add(this.linkLabel5);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.tableLayoutPanel_segment);
             this.Controls.Add(this.button_start);
             this.Controls.Add(this.richTextBoxLogControl1);
-            this.Controls.Add(this.panel_download);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Youtube Segment Downloader";
