@@ -38,10 +38,14 @@ internal class Download
 
         OptionSet optionSet = new()
         {
-            NoCheckCertificate = true,
-            ExternalDownloader = "ffmpeg",
-            ExternalDownloaderArgs = $"ffmpeg_i:-ss {start} -to {end}"
+            NoCheckCertificate = true
         };
+
+        if (end != 0)
+        {
+            optionSet.ExternalDownloader = "ffmpeg";
+            optionSet.ExternalDownloaderArgs = $"ffmpeg_i:-ss {start} -to {end}";
+        }
 
         YoutubeDL? ytdl = new()
         {
@@ -62,10 +66,17 @@ internal class Download
 
             if (!await DownloadVideoAsync(ytdl, optionSet)) return;
 
-            await CutWithFFmpegAsync(tempFilePath1, tempFilePath2);
-
-            Log.Information("Move file to {filePath}", outputFilePath);
-            File.Move(tempFilePath2, outputFilePath, true);
+            if (end != 0)
+            {
+                await CutWithFFmpegAsync(tempFilePath1, tempFilePath2);
+                Log.Information("Move file to {filePath}", outputFilePath);
+                File.Move(tempFilePath2, outputFilePath, true);
+            }
+            else
+            {
+                Log.Information("Move file to {filePath}", outputFilePath);
+                File.Move(tempFilePath1, outputFilePath, true);
+            }
             Log.Information("Download completed:");
             Log.Information(outputFilePath);
             finished = true;

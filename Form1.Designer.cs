@@ -34,7 +34,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label_checking_ffmpeg = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel_main = new System.Windows.Forms.TableLayoutPanel();
             this.textBox_outputDirectory = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -56,7 +56,7 @@
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.linkLabel5 = new System.Windows.Forms.LinkLabel();
             this.panel1.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel_main.SuspendLayout();
             this.tableLayoutPanel_segment.SuspendLayout();
             this.panel_download.SuspendLayout();
             this.SuspendLayout();
@@ -116,29 +116,29 @@
             this.label_checking_ffmpeg.TabIndex = 6;
             this.label_checking_ffmpeg.Text = "❌";
             // 
-            // tableLayoutPanel1
+            // tableLayoutPanel_main
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tableLayoutPanel_main.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.64433F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 74.35567F));
-            this.tableLayoutPanel1.Controls.Add(this.textBox_outputDirectory, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label4, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.label8, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.checkBox_segment, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.textBox_youtube, 1, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
-            this.tableLayoutPanel1.MinimumSize = new System.Drawing.Size(190, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(776, 114);
-            this.tableLayoutPanel1.TabIndex = 1;
+            this.tableLayoutPanel_main.ColumnCount = 2;
+            this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.64433F));
+            this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 74.35567F));
+            this.tableLayoutPanel_main.Controls.Add(this.textBox_outputDirectory, 1, 0);
+            this.tableLayoutPanel_main.Controls.Add(this.label4, 0, 2);
+            this.tableLayoutPanel_main.Controls.Add(this.label8, 0, 0);
+            this.tableLayoutPanel_main.Controls.Add(this.checkBox_segment, 1, 2);
+            this.tableLayoutPanel_main.Controls.Add(this.label3, 0, 1);
+            this.tableLayoutPanel_main.Controls.Add(this.textBox_youtube, 1, 1);
+            this.tableLayoutPanel_main.Location = new System.Drawing.Point(12, 12);
+            this.tableLayoutPanel_main.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            this.tableLayoutPanel_main.MinimumSize = new System.Drawing.Size(190, 0);
+            this.tableLayoutPanel_main.Name = "tableLayoutPanel_main";
+            this.tableLayoutPanel_main.RowCount = 3;
+            this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel_main.Size = new System.Drawing.Size(776, 114);
+            this.tableLayoutPanel_main.TabIndex = 1;
             // 
             // textBox_outputDirectory
             // 
@@ -394,7 +394,7 @@
             this.Controls.Add(this.panel_download);
             this.Controls.Add(this.linkLabel5);
             this.Controls.Add(this.richTextBox1);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tableLayoutPanel_main);
             this.Controls.Add(this.tableLayoutPanel_segment);
             this.Controls.Add(this.button_start);
             this.Controls.Add(this.richTextBoxLogControl1);
@@ -403,8 +403,8 @@
             this.Text = "Youtube Segment Downloader";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tableLayoutPanel_main.ResumeLayout(false);
+            this.tableLayoutPanel_main.PerformLayout();
             this.tableLayoutPanel_segment.ResumeLayout(false);
             this.tableLayoutPanel_segment.PerformLayout();
             this.panel_download.ResumeLayout(false);
@@ -421,7 +421,7 @@
         private Label label2;
         private Label label1;
         private Label label_checking_ffmpeg;
-        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tableLayoutPanel_main;
         private Label label3;
         private TextBox textBox_youtube;
         private Label label4;

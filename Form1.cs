@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using YoutubeSegmentDownloader.Properties;
 using static YoutubeSegmentDownloader.ExternalProgram;
 
 namespace YoutubeSegmentDownloader;
@@ -17,6 +18,7 @@ public partial class Form1 : Form
     private void Form1_Shown(object? sender, EventArgs e)
     {
         Application.CurrentInputLanguage = InputLanguage.FromCulture(new CultureInfo("en-us"));
+        textBox_outputDirectory.Text = Settings.Default.Directory;
         _ = PrepareYtdlpAndFFmpegAsync().ConfigureAwait(true);  // Use same thread
     }
 
@@ -69,7 +71,10 @@ public partial class Form1 : Form
 
     private void button_start_Click(object sender, EventArgs e)
     {
-        tableLayoutPanel1.Enabled = tableLayoutPanel_segment.Enabled = button_start.Enabled = false;
+        tableLayoutPanel_main.Enabled = tableLayoutPanel_segment.Enabled = button_start.Enabled = false;
+
+        Settings.Default.Directory = textBox_outputDirectory.Text;
+        Settings.Default.Save();
 
         try
         {
@@ -92,15 +97,23 @@ public partial class Form1 : Form
             float start = ConvertTimeStringToSecond(textBox_start.Text);
             float end = ConvertTimeStringToSecond(textBox_end.Text);
 
-            if (start >= end
-                || end <= 0
-                || start < 0)
+            if (checkBox_segment.Checked)
             {
-                Log.Error("Segment time invalid!");
-                MessageBox.Show("Segment time invalid!");
-                return;
+                if (start >= end
+                    || end <= 0
+                    || start < 0)
+                {
+                    Log.Error("Segment time invalid!");
+                    MessageBox.Show("Segment time invalid!");
+                    return;
+                }
+                Log.Information("Input segment: {start} ~ {end}", start, end);
             }
-            Log.Information("Input segment: {start} ~ {end}", start, end);
+            else
+            {
+                start = end = 0;
+                Log.Information("Segment input is disabled.");
+            }
 
             DirectoryInfo directory;
             try
@@ -114,13 +127,15 @@ public partial class Form1 : Form
                 MessageBox.Show("Output Directory invalid!");
                 return;
             }
-            Log.Information("Output directory: {Output Directory}", directory.FullName);
+            Log.Information("Output directory:");
+            Log.Information(directory.FullName);
 
             _ = DownloadAsync(id, start, end, directory).ConfigureAwait(true);
         }
         finally
         {
-            panel1.Enabled = tableLayoutPanel_segment.Enabled = button_start.Enabled = true;
+            tableLayoutPanel_main.Enabled = button_start.Enabled = true;
+            tableLayoutPanel_segment.Enabled = checkBox_segment.Checked;
         }
     }
 
@@ -210,9 +225,9 @@ public partial class Form1 : Form
     {
         try
         {
-            VisitLink(linkLabel1,"https://github.com/GyanD/codexffmpeg/releases/tag/5.0");
+            VisitLink(linkLabel1, "https://github.com/GyanD/codexffmpeg/releases/tag/5.0");
         }
-        catch (Exception )
+        catch (Exception)
         {
             MessageBox.Show("Unable to open link that was clicked.");
         }
@@ -224,7 +239,7 @@ public partial class Form1 : Form
         {
             VisitLink(linkLabel2, "https://github.com/FFmpeg/FFmpeg/commit/390d6853d0");
         }
-        catch (Exception )
+        catch (Exception)
         {
             MessageBox.Show("Unable to open link that was clicked.");
         }
@@ -236,7 +251,7 @@ public partial class Form1 : Form
         {
             VisitLink(linkLabel3, "https://github.com/yt-dlp/yt-dlp/releases/latest");
         }
-        catch (Exception )
+        catch (Exception)
         {
             MessageBox.Show("Unable to open link that was clicked.");
         }
@@ -248,7 +263,7 @@ public partial class Form1 : Form
         {
             VisitLink(linkLabel5, "https://github.com/jim60105/YoutubeSegmentDownloader");
         }
-        catch (Exception )
+        catch (Exception)
         {
             MessageBox.Show("Unable to open link that was clicked.");
         }
