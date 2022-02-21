@@ -3,19 +3,28 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>assets\256.ico</ApplicationIcon>
+    <ApplicationIcon>YoutubeSegmentDownloader.ico</ApplicationIcon>
     <PackageIcon>256.png</PackageIcon>
+    <NoWin32Manifest>true</NoWin32Manifest>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/jim60105/YoutubeSegmentDownloader</PackageProjectUrl>
+    <Copyright>GPL-3.0 License</Copyright>
+    <Product>Youtube Segment Downloader</Product>
+    <Company>Youtube Segment Downloader</Company>
+    <Authors>jim60105</Authors>
+    <RepositoryUrl>https://github.com/jim60105/YoutubeSegmentDownloader.git</RepositoryUrl>
+    <PackageLicenseFile>E:\repos\YoutubeSegmentDownload\LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <StartupObject>YoutubeSegmentDownloader.Program</StartupObject>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="assets\256.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="assets\256.ico">
+    <Content Include="YoutubeSegmentDownloader.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -28,14 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="assets\256.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
@@ -44,10 +45,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="assets\256.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="LICENSE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Update="README.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
-
 </Project>
