@@ -136,7 +136,7 @@ public static class ExternalProgram
         Log.Information("Found yt-dlp.exe at {YtdlpPath}", YtdlpPath);
         Log.Information("Found ffmpeg.exe at {FFmpegPath}", FFmpegPath);
 
-#if DEBUG
+#if false
         Log.Debug("Force download again!");
         YtdlpPath = FFmpegPath = null;
         Ytdlp_Status = FFmpeg_Status = DependencyStatus.NotExist;

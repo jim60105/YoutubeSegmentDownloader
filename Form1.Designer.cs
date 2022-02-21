@@ -55,6 +55,7 @@
             this.richTextBoxLogControl1 = new Serilog.Sinks.WinForms.RichTextBoxLogControl();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.linkLabel5 = new System.Windows.Forms.LinkLabel();
+            this.checkBox_logVerbose = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel_main.SuspendLayout();
             this.tableLayoutPanel_segment.SuspendLayout();
@@ -352,10 +353,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBoxLogControl1.Font = new System.Drawing.Font("Consolas", 10.01739F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.richTextBoxLogControl1.ForContext = "";
-            this.richTextBoxLogControl1.Location = new System.Drawing.Point(15, 205);
+            this.richTextBoxLogControl1.Location = new System.Drawing.Point(12, 205);
             this.richTextBoxLogControl1.Name = "richTextBoxLogControl1";
             this.richTextBoxLogControl1.ReadOnly = true;
-            this.richTextBoxLogControl1.Size = new System.Drawing.Size(585, 301);
+            this.richTextBoxLogControl1.Size = new System.Drawing.Size(588, 275);
             this.richTextBoxLogControl1.TabIndex = 1;
             this.richTextBoxLogControl1.TabStop = false;
             this.richTextBoxLogControl1.Text = "";
@@ -383,8 +384,21 @@
             this.linkLabel5.Name = "linkLabel5";
             this.linkLabel5.Size = new System.Drawing.Size(56, 19);
             this.linkLabel5.TabIndex = 7;
+            this.linkLabel5.TabStop = true;
             this.linkLabel5.Text = "Github";
             this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
+            // 
+            // checkBox_logVerbose
+            // 
+            this.checkBox_logVerbose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkBox_logVerbose.AutoSize = true;
+            this.checkBox_logVerbose.Location = new System.Drawing.Point(12, 485);
+            this.checkBox_logVerbose.Name = "checkBox_logVerbose";
+            this.checkBox_logVerbose.Size = new System.Drawing.Size(116, 23);
+            this.checkBox_logVerbose.TabIndex = 5;
+            this.checkBox_logVerbose.Text = "Log Verbose";
+            this.checkBox_logVerbose.UseVisualStyleBackColor = true;
+            this.checkBox_logVerbose.CheckedChanged += new System.EventHandler(this.checkBox_logVerbose_CheckedChanged);
             // 
             // Form1
             // 
@@ -398,6 +412,7 @@
             this.Controls.Add(this.tableLayoutPanel_segment);
             this.Controls.Add(this.button_start);
             this.Controls.Add(this.richTextBoxLogControl1);
+            this.Controls.Add(this.checkBox_logVerbose);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Youtube Segment Downloader";
@@ -442,5 +457,6 @@
         private LinkLabel linkLabel2;
         private RichTextBox richTextBox1;
         private LinkLabel linkLabel5;
+        private CheckBox checkBox_logVerbose;
     }
 }

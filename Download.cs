@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using System.Diagnostics;
 using Xabe.FFmpeg;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Metadata;
@@ -32,13 +33,20 @@ internal class Download
 
         string tempFilePath1 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
         string tempFilePath2 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
-        Log.Information("Create temporary files:");
-        Log.Information("{TempFilePath}", tempFilePath1);
-        Log.Information("{TempFilePath}", tempFilePath2);
+        Log.Debug("Create temporary files:");
+        Log.Debug("{TempFilePath}", tempFilePath1);
+        Log.Debug("{TempFilePath}", tempFilePath2);
 
         OptionSet optionSet = new()
         {
-            NoCheckCertificate = true
+            NoCheckCertificate = true,
+            // Workaround for FFmpeg sometimes uses 251 as bestvideo
+            CustomOptions = new IOption[] {
+                new Option<string>(true, "-S")
+                {
+                    Value = "+codec:h264"
+                }
+            }
         };
 
         if (end != 0)
@@ -96,7 +104,7 @@ internal class Download
     /// <returns></returns>
     private async Task<VideoData?> FetchVideoInfoAsync(YoutubeDL ytdl)
     {
-        Log.Information("Start getting video informatino");
+        Log.Information("Start getting video information...");
         RunResult<VideoData> result_VideoData = await ytdl.RunVideoDataFetch(@$"https://youtu.be/{id}");
 
         if (!result_VideoData.Success)
@@ -105,7 +113,17 @@ internal class Download
             return null;
         }
 
+        float duration = result_VideoData.Data.Duration ?? 0;
+
         Log.Information("{title}", result_VideoData.Data.Title);
+        Log.Information("{duration}", duration);
+
+        if (result_VideoData.Data.Duration < start)
+        {
+            Log.Error("Segment input invalid!");
+            Log.Error("Start, End time should be smaller then video duration.");
+            return null;
+        }
 
         return result_VideoData.Data;
     }
@@ -155,7 +173,9 @@ internal class Download
         IConversion conversion = FFmpeg.Conversions.New()
                                    .AddStream(mediaInfo.Streams)
                                    .AddParameter($"-ss {mediaInfo.Duration - TimeSpan.FromSeconds(duration)}")
-                                   .SetOutput(outputPath);
+                                   .SetOutput(outputPath)
+                                   .SetOverwriteOutput(true);
+        conversion.OnDataReceived += (_, e) => Log.Verbose(e.Data);
         Log.Debug("FFmpeg arguments: {arguments}", conversion.Build());
         return await conversion.Start();
     }

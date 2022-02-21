@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using Serilog.Events;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -19,6 +20,8 @@ public partial class Form1 : Form
     {
         Application.CurrentInputLanguage = InputLanguage.FromCulture(new CultureInfo("en-us"));
         textBox_outputDirectory.Text = Settings.Default.Directory;
+        checkBox_logVerbose.Checked = Settings.Default.LogVerbose;
+        checkBox_logVerbose_CheckedChanged(new(),new());
         _ = PrepareYtdlpAndFFmpegAsync().ConfigureAwait(true);  // Use same thread
     }
 
@@ -72,6 +75,7 @@ public partial class Form1 : Form
     private void button_start_Click(object sender, EventArgs e)
     {
         tableLayoutPanel_main.Enabled = tableLayoutPanel_segment.Enabled = button_start.Enabled = false;
+        Application.DoEvents();
 
         Settings.Default.Directory = textBox_outputDirectory.Text;
         Settings.Default.Save();
@@ -136,6 +140,7 @@ public partial class Form1 : Form
         {
             tableLayoutPanel_main.Enabled = button_start.Enabled = true;
             tableLayoutPanel_segment.Enabled = checkBox_segment.Checked;
+            Application.DoEvents();
         }
     }
 
@@ -200,10 +205,20 @@ public partial class Form1 : Form
 
     private void richTextBoxLogControl1_TextChanged(object sender, EventArgs e)
     {
-        // set the current caret position to the end
-        richTextBoxLogControl1.SelectionStart = richTextBoxLogControl1.Text.Length;
-        // scroll it automatically
-        richTextBoxLogControl1.ScrollToCaret();
+        //// set the current caret position to the end
+        //richTextBoxLogControl1.SelectionStart = richTextBoxLogControl1.Text.Length;
+        //// scroll it automatically
+        //richTextBoxLogControl1.ScrollToCaret();
+    }
+
+    private void checkBox_logVerbose_CheckedChanged(object sender, EventArgs e)
+    {
+        Program.levelSwitch.MinimumLevel = checkBox_logVerbose.Checked
+            ? LogEventLevel.Verbose
+            : LogEventLevel.Information;
+
+        Settings.Default.LogVerbose = checkBox_logVerbose.Checked;
+        Settings.Default.Save();
     }
 
     #region Link

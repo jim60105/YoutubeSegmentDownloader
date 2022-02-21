@@ -5,5 +5,8 @@
     <Setting Name="Directory" Type="System.String" Scope="User">
       <Value Profile="(Default)">.\</Value>
     </Setting>
+    <Setting Name="LogVerbose" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
