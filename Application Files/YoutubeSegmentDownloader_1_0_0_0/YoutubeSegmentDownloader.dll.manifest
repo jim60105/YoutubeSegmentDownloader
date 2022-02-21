@@ -72,6 +72,24 @@
       <dsig:DigestValue>3JFNSVygfjcGuSIiotS+G7qyp1tXgt96GqbZS4BFoC4=</dsig:DigestValue>
     </hash>
   </file>
+  <file name="LICENSE" size="35823">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>IwGE9guuL+ryRPEKi6wFPI/zOhg7zDZbTYuHbSt/SAk=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="README.md" size="28">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>Bn5ShP0CJXV79gsvgt7E6HL1T8wxXWbo5mXPrM5oyo8=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="YoutubeSegmentDownloader.exe" size="2610626">
     <hash>
       <dsig:Transforms>

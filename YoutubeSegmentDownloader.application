@@ -14,14 +14,14 @@
     <framework targetVersion="4.5" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="Application Files\YoutubeSegmentDownloader_1_0_0_0\YoutubeSegmentDownloader.dll.manifest" size="4390">
+    <dependentAssembly dependencyType="install" codebase="Application Files\YoutubeSegmentDownloader_1_0_0_0\YoutubeSegmentDownloader.dll.manifest" size="5161">
       <assemblyIdentity name="YoutubeSegmentDownloader.exe" version="1.0.0.0" publicKeyToken="0000000000000000" language="en" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>YGAlzHoVxA5Cj/Deh7VUGS4wMeU67l+pGqzd/cn7bJM=</dsig:DigestValue>
+        <dsig:DigestValue>3xoHOy7IPNzDirX+dnsLOoohfG7rQ0FUYzj8z45CZAs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
