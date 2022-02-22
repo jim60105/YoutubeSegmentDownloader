@@ -61,6 +61,7 @@ jobs:
         uses: fnkr/github-action-ghr@v1
         if: startsWith(github.ref, 'refs/tags/')
         env:
+          GHR_BODY_FILE: NOTICE
           GHR_DELETE: false
           GHR_REPLACE: true
           GHR_PATH: YoutubeSegmentDownloader.exe
@@ -74,4 +75,3 @@ jobs:
           GHR_REPLACE: true
           GHR_PATH: setup.exe
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
