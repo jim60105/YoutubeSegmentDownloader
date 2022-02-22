@@ -22,13 +22,13 @@ This software is built on yt-dlp and FFmpeg. If you don't have them installed, t
 
 Get the latest release: [Github Release](https://github.com/jim60105/YoutubeSegmentDownloader/releases/latest)
 
-Install with the setup.exe
+Please download and install with the **setup.exe**
 
 - Checking upgrade automatically when this software is started
 - Setup will install .NET 6.0 Runtime for you
 - Setting shortcuts on the Desktop and Start Up Menu
 
-Or you can run YoutubeSegmentDownloader.exe directly with .NET 6.0 runtime.
+Or you can just download **YoutubeSegmentDownloader.exe**, if you don't care about the above.
 
 ## LICENSE
 
