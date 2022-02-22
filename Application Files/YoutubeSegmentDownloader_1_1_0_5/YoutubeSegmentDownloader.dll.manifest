@@ -81,13 +81,13 @@
       <dsig:DigestValue>22c5lgLPXXtXY3l1CsCAQNjePbTEviZRhiHMoJA1Gmk=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="YoutubeSegmentDownloader.exe" size="2612674">
+  <file name="YoutubeSegmentDownloader.exe" size="2613186">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>OfhgAoL4/1pnzqC4IiBVdWrrKm7n+ytoG8Kd8mGyFKM=</dsig:DigestValue>
+      <dsig:DigestValue>GjnhFEU5PI3uLxTb3K4iDLExEYVViJv5xJLufOB257U=</dsig:DigestValue>
     </hash>
   </file>
   <file name="YoutubeSegmentDownloader.ico" size="270622">
