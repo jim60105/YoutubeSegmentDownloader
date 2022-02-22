@@ -137,6 +137,7 @@ public static class ExternalProgram
         Log.Information("Found ffmpeg.exe at {FFmpegPath}", FFmpegPath);
 
 #if false
+#warning Disable this "Force download again" debug section!
         Log.Debug("Force download again!");
         YtdlpPath = FFmpegPath = null;
         Ytdlp_Status = FFmpeg_Status = DependencyStatus.NotExist;

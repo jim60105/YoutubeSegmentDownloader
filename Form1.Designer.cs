@@ -50,15 +50,12 @@
             this.label6 = new System.Windows.Forms.Label();
             this.button_start = new System.Windows.Forms.Button();
             this.panel_download = new System.Windows.Forms.Panel();
-            this.linkLabel3 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.label7 = new System.Windows.Forms.Label();
+            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.richTextBox_license = new System.Windows.Forms.RichTextBox();
             this.richTextBoxLogControl1 = new Serilog.Sinks.WinForms.RichTextBoxLogControl();
-            this.linkLabel5 = new System.Windows.Forms.LinkLabel();
             this.checkBox_logVerbose = new System.Windows.Forms.CheckBox();
             this.panel_main = new System.Windows.Forms.Panel();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel_main.SuspendLayout();
@@ -339,10 +336,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel_download.BackColor = System.Drawing.SystemColors.Control;
-            this.panel_download.Controls.Add(this.linkLabel3);
-            this.panel_download.Controls.Add(this.linkLabel2);
-            this.panel_download.Controls.Add(this.linkLabel1);
-            this.panel_download.Controls.Add(this.label7);
+            this.panel_download.Controls.Add(this.richTextBox2);
             this.panel_download.Controls.Add(this.panel1);
             this.panel_download.Location = new System.Drawing.Point(0, 0);
             this.panel_download.Name = "panel_download";
@@ -350,66 +344,38 @@
             this.panel_download.TabIndex = 6;
             this.panel_download.Visible = false;
             // 
-            // linkLabel3
+            // richTextBox2
             // 
-            this.linkLabel3.AutoSize = true;
-            this.linkLabel3.Font = new System.Drawing.Font("Microsoft JhengHei UI", 13.77391F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.linkLabel3.Location = new System.Drawing.Point(675, 480);
-            this.linkLabel3.Name = "linkLabel3";
-            this.linkLabel3.Size = new System.Drawing.Size(57, 28);
-            this.linkLabel3.TabIndex = 4;
-            this.linkLabel3.TabStop = true;
-            this.linkLabel3.Text = "here";
-            this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
-            // 
-            // linkLabel2
-            // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Font = new System.Drawing.Font("Microsoft JhengHei UI", 13.77391F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.linkLabel2.Location = new System.Drawing.Point(375, 396);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(57, 28);
-            this.linkLabel2.TabIndex = 3;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "here";
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
-            // 
-            // linkLabel1
-            // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Font = new System.Drawing.Font("Microsoft JhengHei UI", 13.77391F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.linkLabel1.Location = new System.Drawing.Point(526, 368);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(57, 28);
-            this.linkLabel1.TabIndex = 2;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "here";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // label7
-            // 
-            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft JhengHei UI", 13.77391F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label7.Location = new System.Drawing.Point(12, 340);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(732, 168);
-            this.label7.TabIndex = 1;
-            this.label7.Text = resources.GetString("label7.Text");
+            this.richTextBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox2.BackColor = System.Drawing.SystemColors.Control;
+            this.richTextBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox2.Location = new System.Drawing.Point(19, 290);
+            this.richTextBox2.Margin = new System.Windows.Forms.Padding(10, 10, 10, 6);
+            this.richTextBox2.Name = "richTextBox2";
+            this.richTextBox2.ReadOnly = true;
+            this.richTextBox2.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.richTextBox2.Size = new System.Drawing.Size(762, 215);
+            this.richTextBox2.TabIndex = 1;
+            this.richTextBox2.TabStop = false;
+            this.richTextBox2.Text = resources.GetString("richTextBox2.Text");
+            this.richTextBox2.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.richTextBox_LinkClicked);
             // 
             // richTextBox_license
             // 
             this.richTextBox_license.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBox_license.BackColor = System.Drawing.SystemColors.Control;
             this.richTextBox_license.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox_license.Location = new System.Drawing.Point(606, 417);
+            this.richTextBox_license.Enabled = false;
+            this.richTextBox_license.Location = new System.Drawing.Point(609, 442);
+            this.richTextBox_license.Margin = new System.Windows.Forms.Padding(6);
             this.richTextBox_license.Name = "richTextBox_license";
             this.richTextBox_license.ReadOnly = true;
             this.richTextBox_license.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox_license.Size = new System.Drawing.Size(182, 94);
+            this.richTextBox_license.Size = new System.Drawing.Size(179, 69);
             this.richTextBox_license.TabIndex = 5;
             this.richTextBox_license.TabStop = false;
-            this.richTextBox_license.Text = "This software is distributed under GPLv3.\nWebsite:\nAuthor: jim60105";
+            this.richTextBox_license.Text = "This software is distributed under GPLv3.\nAuthor: jim60105";
             // 
             // richTextBoxLogControl1
             // 
@@ -426,19 +392,6 @@
             this.richTextBoxLogControl1.TabStop = false;
             this.richTextBoxLogControl1.Text = "";
             // 
-            // linkLabel5
-            // 
-            this.linkLabel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.linkLabel5.AutoSize = true;
-            this.linkLabel5.Font = new System.Drawing.Font("Microsoft JhengHei UI", 8.765218F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.linkLabel5.Location = new System.Drawing.Point(664, 467);
-            this.linkLabel5.Name = "linkLabel5";
-            this.linkLabel5.Size = new System.Drawing.Size(56, 19);
-            this.linkLabel5.TabIndex = 7;
-            this.linkLabel5.TabStop = true;
-            this.linkLabel5.Text = "Github";
-            this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
-            // 
             // checkBox_logVerbose
             // 
             this.checkBox_logVerbose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -454,18 +407,36 @@
             // 
             // panel_main
             // 
-            this.panel_main.Controls.Add(this.linkLabel5);
+            this.panel_main.Controls.Add(this.richTextBox1);
+            this.panel_main.Controls.Add(this.checkBox_logVerbose);
             this.panel_main.Controls.Add(this.tableLayoutPanel_main);
             this.panel_main.Controls.Add(this.tableLayoutPanel_segment);
             this.panel_main.Controls.Add(this.button_start);
             this.panel_main.Controls.Add(this.richTextBoxLogControl1);
-            this.panel_main.Controls.Add(this.checkBox_logVerbose);
             this.panel_main.Controls.Add(this.richTextBox_license);
             this.panel_main.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel_main.Location = new System.Drawing.Point(0, 0);
             this.panel_main.Name = "panel_main";
             this.panel_main.Size = new System.Drawing.Size(800, 520);
             this.panel_main.TabIndex = 6;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox1.Location = new System.Drawing.Point(137, 489);
+            this.richTextBox1.Margin = new System.Windows.Forms.Padding(6);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ReadOnly = true;
+            this.richTextBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.richTextBox1.Size = new System.Drawing.Size(463, 25);
+            this.richTextBox1.TabIndex = 8;
+            this.richTextBox1.TabStop = false;
+            this.richTextBox1.Text = "https://github.com/jim60105/YoutubeSegmentDownloader";
+            this.richTextBox1.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.richTextBox_LinkClicked);
             // 
             // folderBrowserDialog1
             // 
@@ -478,8 +449,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 520);
-            this.Controls.Add(this.panel_main);
             this.Controls.Add(this.panel_download);
+            this.Controls.Add(this.panel_main);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Youtube Segment Downloader";
@@ -492,7 +463,6 @@
             this.tableLayoutPanel_segment.ResumeLayout(false);
             this.tableLayoutPanel_segment.PerformLayout();
             this.panel_download.ResumeLayout(false);
-            this.panel_download.PerformLayout();
             this.panel_main.ResumeLayout(false);
             this.panel_main.PerformLayout();
             this.ResumeLayout(false);
@@ -521,16 +491,13 @@
         private Button button_start;
         private Panel panel_download;
         private Serilog.Sinks.WinForms.RichTextBoxLogControl richTextBoxLogControl1;
-        private Label label7;
-        private LinkLabel linkLabel1;
-        private LinkLabel linkLabel3;
-        private LinkLabel linkLabel2;
         private RichTextBox richTextBox_license;
-        private LinkLabel linkLabel5;
         private CheckBox checkBox_logVerbose;
         private Panel panel_main;
         private FolderBrowserDialog folderBrowserDialog1;
         private TableLayoutPanel tableLayoutPanel1;
         private Button button_folder;
+        private RichTextBox richTextBox1;
+        private RichTextBox richTextBox2;
     }
 }

@@ -18,10 +18,6 @@ public partial class Form1 : Form
 
     private void Form1_Shown(object? sender, EventArgs e)
     {
-        // https://stackoverflow.com/a/31690719
-        // "However, be aware that adding new links to the Links collection will automatically set the TabStop property to true again."
-        linkLabel5.TabStop = false;
-
         textBox_outputDirectory.Text = Settings.Default.Directory;
         checkBox_logVerbose.Checked = Settings.Default.LogVerbose;
         checkBox_logVerbose_CheckedChanged(new(), new());
@@ -237,19 +233,15 @@ public partial class Form1 : Form
         Settings.Default.Save();
     }
 
-    #region Link
-    private static void VisitLink(LinkLabel linkLabel, string url)
+    private void richTextBox_LinkClicked(object sender, LinkClickedEventArgs e)
     {
         try
         {
-            // Change the color of the link text by setting LinkVisited
-            // to true.
-            linkLabel.LinkVisited = true;
             //Call the Process.Start method to open the default browser
             //with a URL:
             Process process = new();
             process.StartInfo.UseShellExecute = true;
-            process.StartInfo.FileName = url;
+            process.StartInfo.FileName = e.LinkText;
             process.Start();
         }
         catch (Exception)
@@ -257,19 +249,6 @@ public partial class Form1 : Form
             MessageBox.Show("Unable to open link that was clicked.", "Error!");
         }
     }
-
-    private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        => VisitLink(linkLabel1, "https://github.com/GyanD/codexffmpeg/releases/tag/5.0");
-
-    private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        => VisitLink(linkLabel2, "https://github.com/FFmpeg/FFmpeg/commit/390d6853d0");
-
-    private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        => VisitLink(linkLabel3, "https://github.com/yt-dlp/yt-dlp/releases/latest");
-
-    private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        => VisitLink(linkLabel5, "https://github.com/jim60105/YoutubeSegmentDownloader");
-    #endregion
 
     private void button_folder_Click(object sender, EventArgs e)
     {
