@@ -174,6 +174,7 @@ internal class Download
                                    .AddStream(mediaInfo.Streams)
                                    .AddParameter($"-ss {mediaInfo.Duration - TimeSpan.FromSeconds(duration)}")
                                    .SetOutput(outputPath)
+                                   .AddParameter($"-movflags +faststart")
                                    .SetOverwriteOutput(true);
         conversion.OnDataReceived += (_, e) => Log.Verbose(e.Data);
         Log.Debug("FFmpeg arguments: {arguments}", conversion.Build());
