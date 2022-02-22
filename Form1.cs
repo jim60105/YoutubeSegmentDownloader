@@ -18,6 +18,10 @@ public partial class Form1 : Form
 
     private void Form1_Shown(object? sender, EventArgs e)
     {
+        // https://stackoverflow.com/a/31690719
+        // "However, be aware that adding new links to the Links collection will automatically set the TabStop property to true again."
+        linkLabel5.TabStop = false;
+
         textBox_outputDirectory.Text = Settings.Default.Directory;
         checkBox_logVerbose.Checked = Settings.Default.LogVerbose;
         checkBox_logVerbose_CheckedChanged(new(), new());

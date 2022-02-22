@@ -149,6 +149,9 @@
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 88.90814F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.09185F));
@@ -171,6 +174,7 @@
             this.textBox_outputDirectory.Name = "textBox_outputDirectory";
             this.textBox_outputDirectory.Size = new System.Drawing.Size(507, 32);
             this.textBox_outputDirectory.TabIndex = 1;
+            this.textBox_outputDirectory.TabStop = false;
             this.textBox_outputDirectory.DoubleClick += new System.EventHandler(this.button_folder_Click);
             this.textBox_outputDirectory.KeyDown += new System.Windows.Forms.KeyEventHandler(this.enter_KeyDown);
             // 
@@ -183,7 +187,8 @@
             this.button_folder.Location = new System.Drawing.Point(516, 3);
             this.button_folder.Name = "button_folder";
             this.button_folder.Size = new System.Drawing.Size(58, 32);
-            this.button_folder.TabIndex = 2;
+            this.button_folder.TabIndex = 1;
+            this.button_folder.TabStop = false;
             this.button_folder.Text = "📂 Folder";
             this.button_folder.UseMnemonic = false;
             this.button_folder.UseVisualStyleBackColor = true;
