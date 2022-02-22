@@ -158,13 +158,13 @@ public partial class Form1 : Form
                 Application.DoEvents();
             }
 
+            MessageBox.Show($"Video segments are stored in:\n\n{download.outputFilePath}", "Finish");
+
             // Open save directory
             Process process = new();
             process.StartInfo.UseShellExecute = true;
             process.StartInfo.FileName = directory.FullName;
             process.Start();
-
-            MessageBox.Show($"Video segments are stored in:\n\n{download.outputFilePath}", "Finish");
         }
         catch (Exception e)
         {
@@ -200,13 +200,13 @@ public partial class Form1 : Form
                 string time = timeList[i].Trim();
                 if (float.TryParse(time, out var t))
                 {
-                    result += t * (i * 60);
+                    result += (float)(t * Math.Pow(60, i));
                 }
                 else
                 {
                     // Parse failed
-                    result = 0;
-                    break;
+                    Log.Logger.Error("Cannot parse {time} to float number!", time);
+                    return -1;
                 }
             }
         }

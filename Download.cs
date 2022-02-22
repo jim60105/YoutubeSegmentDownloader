@@ -201,7 +201,7 @@ internal class Download
 
         date ??= DateTime.Now;
 
-        string newPath = Path.Combine(outputDirectory.FullName, $"{date:yyyyMMdd} {title} ({id}).mp4");
+        string newPath = Path.Combine(outputDirectory.FullName, $"{date:yyyyMMdd} {title} ({id}) [{start}_{end}].mp4");
 
         Log.Debug("Calculate output file path as {newPath}", newPath);
         return newPath;
