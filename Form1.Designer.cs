@@ -51,10 +51,11 @@
             this.button_start = new System.Windows.Forms.Button();
             this.panel_download = new System.Windows.Forms.Panel();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
-            this.richTextBox_license = new System.Windows.Forms.RichTextBox();
             this.richTextBoxLogControl1 = new Serilog.Sinks.WinForms.RichTextBoxLogControl();
             this.checkBox_logVerbose = new System.Windows.Forms.CheckBox();
             this.panel_main = new System.Windows.Forms.Panel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.panel1.SuspendLayout();
@@ -72,9 +73,9 @@
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.label_checking_ffmpeg);
-            this.panel1.Location = new System.Drawing.Point(200, 120);
+            this.panel1.Location = new System.Drawing.Point(137, 86);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(400, 100);
+            this.panel1.Size = new System.Drawing.Size(515, 100);
             this.panel1.TabIndex = 0;
             // 
             // label_checking_ytdlp
@@ -82,11 +83,13 @@
             this.label_checking_ytdlp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_checking_ytdlp.AutoSize = true;
             this.label_checking_ytdlp.Font = new System.Drawing.Font("Microsoft JhengHei UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label_checking_ytdlp.Location = new System.Drawing.Point(341, 0);
+            this.label_checking_ytdlp.Location = new System.Drawing.Point(456, 0);
+            this.label_checking_ytdlp.Margin = new System.Windows.Forms.Padding(0);
             this.label_checking_ytdlp.Name = "label_checking_ytdlp";
             this.label_checking_ytdlp.Size = new System.Drawing.Size(59, 41);
             this.label_checking_ytdlp.TabIndex = 5;
             this.label_checking_ytdlp.Text = "❌";
+            this.label_checking_ytdlp.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label2
             // 
@@ -94,16 +97,19 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft JhengHei UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label2.Location = new System.Drawing.Point(0, 59);
+            this.label2.Margin = new System.Windows.Forms.Padding(0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(349, 41);
             this.label2.TabIndex = 3;
             this.label2.Text = "Downloading FFmpeg";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft JhengHei UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(0, 0);
+            this.label1.Location = new System.Drawing.Point(0, 2);
+            this.label1.Margin = new System.Windows.Forms.Padding(0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(318, 41);
             this.label1.TabIndex = 1;
@@ -114,11 +120,13 @@
             this.label_checking_ffmpeg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label_checking_ffmpeg.AutoSize = true;
             this.label_checking_ffmpeg.Font = new System.Drawing.Font("Microsoft JhengHei UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label_checking_ffmpeg.Location = new System.Drawing.Point(341, 59);
+            this.label_checking_ffmpeg.Location = new System.Drawing.Point(456, 59);
+            this.label_checking_ffmpeg.Margin = new System.Windows.Forms.Padding(0);
             this.label_checking_ffmpeg.Name = "label_checking_ffmpeg";
             this.label_checking_ffmpeg.Size = new System.Drawing.Size(59, 41);
             this.label_checking_ffmpeg.TabIndex = 6;
             this.label_checking_ffmpeg.Text = "❌";
+            this.label_checking_ffmpeg.TextAlign = System.Drawing.ContentAlignment.BottomRight;
             // 
             // tableLayoutPanel_main
             // 
@@ -321,9 +329,9 @@
             // 
             this.button_start.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button_start.Font = new System.Drawing.Font("Microsoft JhengHei UI", 20.03478F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.button_start.Location = new System.Drawing.Point(606, 205);
+            this.button_start.Location = new System.Drawing.Point(606, 91);
             this.button_start.Name = "button_start";
-            this.button_start.Size = new System.Drawing.Size(182, 108);
+            this.button_start.Size = new System.Drawing.Size(179, 111);
             this.button_start.TabIndex = 6;
             this.button_start.Text = "Start";
             this.button_start.UseMnemonic = false;
@@ -338,7 +346,7 @@
             this.panel_download.BackColor = System.Drawing.SystemColors.Control;
             this.panel_download.Controls.Add(this.richTextBox2);
             this.panel_download.Controls.Add(this.panel1);
-            this.panel_download.Location = new System.Drawing.Point(0, 0);
+            this.panel_download.Location = new System.Drawing.Point(-6, 0);
             this.panel_download.Name = "panel_download";
             this.panel_download.Size = new System.Drawing.Size(800, 520);
             this.panel_download.TabIndex = 6;
@@ -346,36 +354,19 @@
             // 
             // richTextBox2
             // 
-            this.richTextBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.richTextBox2.BackColor = System.Drawing.SystemColors.Control;
             this.richTextBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox2.Location = new System.Drawing.Point(19, 290);
-            this.richTextBox2.Margin = new System.Windows.Forms.Padding(10, 10, 10, 6);
+            this.richTextBox2.Location = new System.Drawing.Point(137, 214);
+            this.richTextBox2.Margin = new System.Windows.Forms.Padding(10, 30, 6, 6);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.ReadOnly = true;
             this.richTextBox2.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox2.Size = new System.Drawing.Size(762, 215);
+            this.richTextBox2.Size = new System.Drawing.Size(515, 216);
             this.richTextBox2.TabIndex = 1;
             this.richTextBox2.TabStop = false;
             this.richTextBox2.Text = resources.GetString("richTextBox2.Text");
             this.richTextBox2.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.richTextBox_LinkClicked);
-            // 
-            // richTextBox_license
-            // 
-            this.richTextBox_license.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox_license.BackColor = System.Drawing.SystemColors.Control;
-            this.richTextBox_license.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox_license.Enabled = false;
-            this.richTextBox_license.Location = new System.Drawing.Point(609, 442);
-            this.richTextBox_license.Margin = new System.Windows.Forms.Padding(6);
-            this.richTextBox_license.Name = "richTextBox_license";
-            this.richTextBox_license.ReadOnly = true;
-            this.richTextBox_license.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox_license.Size = new System.Drawing.Size(179, 69);
-            this.richTextBox_license.TabIndex = 5;
-            this.richTextBox_license.TabStop = false;
-            this.richTextBox_license.Text = "This software is distributed under GPLv3.\nAuthor: jim60105";
             // 
             // richTextBoxLogControl1
             // 
@@ -387,7 +378,7 @@
             this.richTextBoxLogControl1.Location = new System.Drawing.Point(12, 205);
             this.richTextBoxLogControl1.Name = "richTextBoxLogControl1";
             this.richTextBoxLogControl1.ReadOnly = true;
-            this.richTextBoxLogControl1.Size = new System.Drawing.Size(588, 275);
+            this.richTextBoxLogControl1.Size = new System.Drawing.Size(773, 284);
             this.richTextBoxLogControl1.TabIndex = 1;
             this.richTextBoxLogControl1.TabStop = false;
             this.richTextBoxLogControl1.Text = "";
@@ -396,7 +387,7 @@
             // 
             this.checkBox_logVerbose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBox_logVerbose.AutoSize = true;
-            this.checkBox_logVerbose.Location = new System.Drawing.Point(12, 488);
+            this.checkBox_logVerbose.Location = new System.Drawing.Point(12, 492);
             this.checkBox_logVerbose.Name = "checkBox_logVerbose";
             this.checkBox_logVerbose.Size = new System.Drawing.Size(116, 23);
             this.checkBox_logVerbose.TabIndex = 5;
@@ -407,32 +398,62 @@
             // 
             // panel_main
             // 
-            this.panel_main.Controls.Add(this.richTextBox1);
+            this.panel_main.Controls.Add(this.button_start);
+            this.panel_main.Controls.Add(this.label9);
+            this.panel_main.Controls.Add(this.label7);
             this.panel_main.Controls.Add(this.checkBox_logVerbose);
             this.panel_main.Controls.Add(this.tableLayoutPanel_main);
-            this.panel_main.Controls.Add(this.tableLayoutPanel_segment);
-            this.panel_main.Controls.Add(this.button_start);
             this.panel_main.Controls.Add(this.richTextBoxLogControl1);
-            this.panel_main.Controls.Add(this.richTextBox_license);
+            this.panel_main.Controls.Add(this.richTextBox1);
+            this.panel_main.Controls.Add(this.tableLayoutPanel_segment);
             this.panel_main.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel_main.Location = new System.Drawing.Point(0, 0);
             this.panel_main.Name = "panel_main";
             this.panel_main.Size = new System.Drawing.Size(800, 520);
             this.panel_main.TabIndex = 6;
             // 
+            // label9
+            // 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label9.AutoSize = true;
+            this.label9.Enabled = false;
+            this.label9.Font = new System.Drawing.Font("Segoe Print", 8.765218F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label9.Location = new System.Drawing.Point(629, 438);
+            this.label9.Name = "label9";
+            this.label9.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label9.Size = new System.Drawing.Size(154, 26);
+            this.label9.TabIndex = 10;
+            this.label9.Text = "Author: jim60105";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label7
+            // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.AutoSize = true;
+            this.label7.Enabled = false;
+            this.label7.Font = new System.Drawing.Font("Segoe Print", 8.765218F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label7.Location = new System.Drawing.Point(459, 461);
+            this.label7.Name = "label7";
+            this.label7.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label7.Size = new System.Drawing.Size(324, 26);
+            this.label7.TabIndex = 9;
+            this.label7.Text = "This software is distributed under GPLv3";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // richTextBox1
             // 
-            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBox1.BackColor = System.Drawing.SystemColors.Control;
             this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox1.Location = new System.Drawing.Point(137, 489);
+            this.richTextBox1.Font = new System.Drawing.Font("Microsoft JhengHei UI", 8.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.richTextBox1.Location = new System.Drawing.Point(137, 493);
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(6);
+            this.richTextBox1.Multiline = false;
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
             this.richTextBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox1.Size = new System.Drawing.Size(463, 25);
+            this.richTextBox1.Size = new System.Drawing.Size(648, 22);
             this.richTextBox1.TabIndex = 8;
             this.richTextBox1.TabStop = false;
             this.richTextBox1.Text = "https://github.com/jim60105/YoutubeSegmentDownloader";
@@ -491,7 +512,6 @@
         private Button button_start;
         private Panel panel_download;
         private Serilog.Sinks.WinForms.RichTextBoxLogControl richTextBoxLogControl1;
-        private RichTextBox richTextBox_license;
         private CheckBox checkBox_logVerbose;
         private Panel panel_main;
         private FolderBrowserDialog folderBrowserDialog1;
@@ -499,5 +519,7 @@
         private Button button_folder;
         private RichTextBox richTextBox1;
         private RichTextBox richTextBox2;
+        private Label label7;
+        private Label label9;
     }
 }
