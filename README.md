@@ -24,7 +24,7 @@ Get the latest release: [Github Release](https://github.com/jim60105/YoutubeSegm
 
 Please download and install with the **setup.exe**
 
-- Checking upgrade automatically when this software is started
+- Automatically check for upgrades when launching this software
 - Setup will install .NET 6.0 Runtime for you
 - Setting shortcuts on the Desktop and Start Up Menu
 
