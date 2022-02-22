@@ -1,7 +1,13 @@
 # Youtube Segment Downloader
 
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/jim60105/YoutubeSegmentDownloader?style=for-the-badge)
+![GitHub Release Date](https://img.shields.io/github/release-date/jim60105/YoutubeSegmentDownloader?style=for-the-badge)
+
 ![Preview](assets/preview.png)
 
+![Windows](https://img.shields.io/static/v1?style=for-the-badge&message=WinForm&color=0078D6&logo=Windows&logoColor=FFFFFF&label=)
+![.NET 6.0](https://img.shields.io/static/v1?style=for-the-badge&message=.NET+6.0&color=512BD4&logo=.NET&logoColor=FFFFFF&label=)
+![GitHub](https://img.shields.io/github/license/jim60105/YoutubeSegmentDownloader?style=for-the-badge)
 > The software can only be run on Windows x64 platforms.
 
 ## Feature
