@@ -18,11 +18,11 @@ public partial class Form1 : Form
 
     private void Form1_Shown(object? sender, EventArgs e)
     {
-        Application.CurrentInputLanguage = InputLanguage.FromCulture(new CultureInfo("en-us"));
         textBox_outputDirectory.Text = Settings.Default.Directory;
         checkBox_logVerbose.Checked = Settings.Default.LogVerbose;
-        checkBox_logVerbose_CheckedChanged(new(),new());
+        checkBox_logVerbose_CheckedChanged(new(), new());
         _ = PrepareYtdlpAndFFmpegAsync().ConfigureAwait(true);  // Use same thread
+        Application.CurrentInputLanguage = InputLanguage.FromCulture(new CultureInfo("en-us"));
     }
 
     private async Task PrepareYtdlpAndFFmpegAsync()
@@ -74,98 +74,110 @@ public partial class Form1 : Form
 
     private void button_start_Click(object sender, EventArgs e)
     {
-        tableLayoutPanel_main.Enabled = tableLayoutPanel_segment.Enabled = button_start.Enabled = false;
-        Application.DoEvents();
-
         Settings.Default.Directory = textBox_outputDirectory.Text;
         Settings.Default.Save();
 
+        string id = textBox_youtube.Text.Contains('/')
+            // Regex for strip youtube video id from url c# and returl default thumbnail
+            // https://gist.github.com/Flatlineato/f4cc3f3937272646d4b0
+            ? Regex.Match(textBox_youtube.Text,
+                          "https?:\\/\\/(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube(?:-nocookie)?\\.com\\S*[^\\w\\s-])([\\w-]{11})(?=[^\\w-]|$)(?![?=&+%\\w.-]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w.-]*",
+                          RegexOptions.IgnoreCase).Groups[1].Value
+            : textBox_youtube.Text;
+
+        if (string.IsNullOrEmpty(id))
+        {
+            Log.Error("Youtube Link invalid!");
+            MessageBox.Show("Youtube Link invalid!", "Error!");
+            return;
+        }
+        Log.Information("Get VideoID: {VideoId}", id);
+
+        float start = ConvertTimeStringToSecond(textBox_start.Text);
+        float end = ConvertTimeStringToSecond(textBox_end.Text);
+
+        if (checkBox_segment.Checked)
+        {
+            if (start >= end
+                || end <= 0
+                || start < 0)
+            {
+                Log.Error("Segment time invalid!");
+                MessageBox.Show("Segment time invalid!", "Error!");
+                return;
+            }
+            Log.Information("Input segment: {start} ~ {end}", start, end);
+        }
+        else
+        {
+            start = end = 0;
+            Log.Information("Segment input is disabled.");
+        }
+
+        DirectoryInfo directory;
         try
         {
-            string id = textBox_youtube.Text.Contains('/')
-                // Regex for strip youtube video id from url c# and returl default thumbnail
-                // https://gist.github.com/Flatlineato/f4cc3f3937272646d4b0
-                ? Regex.Match(textBox_youtube.Text,
-                              "https?:\\/\\/(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube(?:-nocookie)?\\.com\\S*[^\\w\\s-])([\\w-]{11})(?=[^\\w-]|$)(?![?=&+%\\w.-]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w.-]*",
-                              RegexOptions.IgnoreCase).Groups[1].Value
-                : textBox_youtube.Text;
+            string path = textBox_outputDirectory.Text.Contains('%')
+                ? Environment.ExpandEnvironmentVariables(textBox_outputDirectory.Text)
+                : textBox_outputDirectory.Text;
+            directory = new(path);
+            directory.Create();
+        }
+        catch (Exception)
+        {
+            Log.Error("Output Directory invalid!");
+            MessageBox.Show("Output Directory invalid!", "Error!");
+            return;
+        }
+        Log.Information("Output directory:");
+        Log.Information(directory.FullName);
 
-            if (string.IsNullOrEmpty(id))
-            {
-                Log.Error("Youtube Link invalid!");
-                MessageBox.Show("Youtube Link invalid!");
-                return;
-            }
-            Log.Information("Get VideoID: {VideoId}", id);
+        _ = DownloadAsync(id, start, end, directory).ConfigureAwait(true);
+    }
 
-            float start = ConvertTimeStringToSecond(textBox_start.Text);
-            float end = ConvertTimeStringToSecond(textBox_end.Text);
+    private async Task DownloadAsync(string id, float start, float end, DirectoryInfo directory)
+    {
+        try
+        {
+            tableLayoutPanel_main.Enabled
+                = tableLayoutPanel_segment.Enabled
+                = button_start.Enabled
+                = false;
+            Application.DoEvents();
 
-            if (checkBox_segment.Checked)
+            Download download = new(id: id,
+                                    start: start,
+                                    end: end,
+                                    outputDirectory: directory);
+            _ = download.Start().ConfigureAwait(false);
+
+            // Update UI
+            while (!download.finished)
             {
-                if (start >= end
-                    || end <= 0
-                    || start < 0)
-                {
-                    Log.Error("Segment time invalid!");
-                    MessageBox.Show("Segment time invalid!");
-                    return;
-                }
-                Log.Information("Input segment: {start} ~ {end}", start, end);
-            }
-            else
-            {
-                start = end = 0;
-                Log.Information("Segment input is disabled.");
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                Application.DoEvents();
             }
 
-            DirectoryInfo directory;
-            try
-            {
-                directory = new(textBox_outputDirectory.Text);
-                directory.Create();
-            }
-            catch (Exception)
-            {
-                Log.Error("Output Directory invalid!");
-                MessageBox.Show("Output Directory invalid!");
-                return;
-            }
-            Log.Information("Output directory:");
-            Log.Information(directory.FullName);
+            // Open save directory
+            Process process = new();
+            process.StartInfo.UseShellExecute = true;
+            process.StartInfo.FileName = directory.FullName;
+            process.Start();
 
-            _ = DownloadAsync(id, start, end, directory).ConfigureAwait(true);
+            MessageBox.Show($"Video segments are stored in:\n\n{download.outputFilePath}", "Finish");
+        }
+        catch (Exception e)
+        {
+            Log.Logger.Error(e.Message);
         }
         finally
         {
-            tableLayoutPanel_main.Enabled = button_start.Enabled = true;
+            tableLayoutPanel_main.Enabled
+                = button_start.Enabled
+                = true;
             tableLayoutPanel_segment.Enabled = checkBox_segment.Checked;
             Application.DoEvents();
         }
-    }
-
-    private static async Task DownloadAsync(string id, float start, float end, DirectoryInfo directory)
-    {
-        Download download = new(id: id,
-                                start: start,
-                                end: end,
-                                outputDirectory: directory);
-        _ = download.Start().ConfigureAwait(false);
-
-        // Update UI
-        while (!download.finished)
-        {
-            await Task.Delay(TimeSpan.FromSeconds(1));
-            Application.DoEvents();
-        }
-
-        // Open save directory
-        Process myProcess = new();
-        myProcess.StartInfo.UseShellExecute = true;
-        myProcess.StartInfo.FileName = directory.FullName;
-        myProcess.Start();
-
-        MessageBox.Show($"Finish!\n{download.outputFilePath}");
     }
 
     private static float ConvertTimeStringToSecond(string text)
@@ -203,12 +215,12 @@ public partial class Form1 : Form
         return result;
     }
 
-    private void richTextBoxLogControl1_TextChanged(object sender, EventArgs e)
+    private void enter_KeyDown(object sender, KeyEventArgs e)
     {
-        //// set the current caret position to the end
-        //richTextBoxLogControl1.SelectionStart = richTextBoxLogControl1.Text.Length;
-        //// scroll it automatically
-        //richTextBoxLogControl1.ScrollToCaret();
+        if (e.KeyCode == Keys.Enter)
+        {
+            button_start_Click(new(), new());
+        }
     }
 
     private void checkBox_logVerbose_CheckedChanged(object sender, EventArgs e)
@@ -224,64 +236,42 @@ public partial class Form1 : Form
     #region Link
     private static void VisitLink(LinkLabel linkLabel, string url)
     {
-        // Change the color of the link text by setting LinkVisited
-        // to true.
-        linkLabel.LinkVisited = true;
-        //Call the Process.Start method to open the default browser
-        //with a URL:
-        //System.Diagnostics.Process.Start(url);
-        Process myProcess = new();
-        myProcess.StartInfo.UseShellExecute = true;
-        myProcess.StartInfo.FileName = url;
-        myProcess.Start();
+        try
+        {
+            // Change the color of the link text by setting LinkVisited
+            // to true.
+            linkLabel.LinkVisited = true;
+            //Call the Process.Start method to open the default browser
+            //with a URL:
+            Process process = new();
+            process.StartInfo.UseShellExecute = true;
+            process.StartInfo.FileName = url;
+            process.Start();
+        }
+        catch (Exception)
+        {
+            MessageBox.Show("Unable to open link that was clicked.", "Error!");
+        }
     }
 
     private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-    {
-        try
-        {
-            VisitLink(linkLabel1, "https://github.com/GyanD/codexffmpeg/releases/tag/5.0");
-        }
-        catch (Exception)
-        {
-            MessageBox.Show("Unable to open link that was clicked.");
-        }
-    }
+        => VisitLink(linkLabel1, "https://github.com/GyanD/codexffmpeg/releases/tag/5.0");
 
     private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-    {
-        try
-        {
-            VisitLink(linkLabel2, "https://github.com/FFmpeg/FFmpeg/commit/390d6853d0");
-        }
-        catch (Exception)
-        {
-            MessageBox.Show("Unable to open link that was clicked.");
-        }
-    }
+        => VisitLink(linkLabel2, "https://github.com/FFmpeg/FFmpeg/commit/390d6853d0");
 
     private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-    {
-        try
-        {
-            VisitLink(linkLabel3, "https://github.com/yt-dlp/yt-dlp/releases/latest");
-        }
-        catch (Exception)
-        {
-            MessageBox.Show("Unable to open link that was clicked.");
-        }
-    }
+        => VisitLink(linkLabel3, "https://github.com/yt-dlp/yt-dlp/releases/latest");
 
     private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        => VisitLink(linkLabel5, "https://github.com/jim60105/YoutubeSegmentDownloader");
+    #endregion
+
+    private void button_folder_Click(object sender, EventArgs e)
     {
-        try
+        if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
         {
-            VisitLink(linkLabel5, "https://github.com/jim60105/YoutubeSegmentDownloader");
-        }
-        catch (Exception)
-        {
-            MessageBox.Show("Unable to open link that was clicked.");
+            textBox_outputDirectory.Text = folderBrowserDialog1.SelectedPath;
         }
     }
-    #endregion
 }

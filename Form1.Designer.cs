@@ -35,7 +35,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label_checking_ffmpeg = new System.Windows.Forms.Label();
             this.tableLayoutPanel_main = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.textBox_outputDirectory = new System.Windows.Forms.TextBox();
+            this.button_folder = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.checkBox_segment = new System.Windows.Forms.CheckBox();
@@ -52,14 +54,18 @@
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label7 = new System.Windows.Forms.Label();
+            this.richTextBox_license = new System.Windows.Forms.RichTextBox();
             this.richTextBoxLogControl1 = new Serilog.Sinks.WinForms.RichTextBoxLogControl();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.linkLabel5 = new System.Windows.Forms.LinkLabel();
             this.checkBox_logVerbose = new System.Windows.Forms.CheckBox();
+            this.panel_main = new System.Windows.Forms.Panel();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel_main.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel_segment.SuspendLayout();
             this.panel_download.SuspendLayout();
+            this.panel_main.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -124,7 +130,7 @@
             this.tableLayoutPanel_main.ColumnCount = 2;
             this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.64433F));
             this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 74.35567F));
-            this.tableLayoutPanel_main.Controls.Add(this.textBox_outputDirectory, 1, 0);
+            this.tableLayoutPanel_main.Controls.Add(this.tableLayoutPanel1, 1, 0);
             this.tableLayoutPanel_main.Controls.Add(this.label4, 0, 2);
             this.tableLayoutPanel_main.Controls.Add(this.label8, 0, 0);
             this.tableLayoutPanel_main.Controls.Add(this.checkBox_segment, 1, 2);
@@ -141,15 +147,47 @@
             this.tableLayoutPanel_main.Size = new System.Drawing.Size(776, 114);
             this.tableLayoutPanel_main.TabIndex = 1;
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 88.90814F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.09185F));
+            this.tableLayoutPanel1.Controls.Add(this.textBox_outputDirectory, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.button_folder, 1, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(199, 0);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(577, 38);
+            this.tableLayoutPanel1.TabIndex = 8;
+            // 
             // textBox_outputDirectory
             // 
             this.textBox_outputDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox_outputDirectory.Font = new System.Drawing.Font("Microsoft JhengHei UI", 11.89565F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox_outputDirectory.Location = new System.Drawing.Point(202, 3);
+            this.textBox_outputDirectory.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.textBox_outputDirectory.Location = new System.Drawing.Point(3, 3);
             this.textBox_outputDirectory.Name = "textBox_outputDirectory";
-            this.textBox_outputDirectory.Size = new System.Drawing.Size(571, 32);
+            this.textBox_outputDirectory.Size = new System.Drawing.Size(507, 32);
             this.textBox_outputDirectory.TabIndex = 1;
-            this.textBox_outputDirectory.Text = ".\\";
+            this.textBox_outputDirectory.DoubleClick += new System.EventHandler(this.button_folder_Click);
+            this.textBox_outputDirectory.KeyDown += new System.Windows.Forms.KeyEventHandler(this.enter_KeyDown);
+            // 
+            // button_folder
+            // 
+            this.button_folder.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.button_folder.Font = new System.Drawing.Font("Segoe UI Emoji", 10.01739F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.button_folder.Location = new System.Drawing.Point(516, 3);
+            this.button_folder.Name = "button_folder";
+            this.button_folder.Size = new System.Drawing.Size(58, 32);
+            this.button_folder.TabIndex = 2;
+            this.button_folder.Text = "📂 Folder";
+            this.button_folder.UseMnemonic = false;
+            this.button_folder.UseVisualStyleBackColor = true;
+            this.button_folder.Click += new System.EventHandler(this.button_folder_Click);
             // 
             // label4
             // 
@@ -187,6 +225,7 @@
             this.checkBox_segment.TabIndex = 3;
             this.checkBox_segment.UseVisualStyleBackColor = true;
             this.checkBox_segment.CheckedChanged += new System.EventHandler(this.checkBox_segment_CheckedChanged);
+            this.checkBox_segment.KeyDown += new System.Windows.Forms.KeyEventHandler(this.enter_KeyDown);
             // 
             // label3
             // 
@@ -205,8 +244,10 @@
             this.textBox_youtube.Font = new System.Drawing.Font("Microsoft JhengHei UI", 11.89565F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.textBox_youtube.Location = new System.Drawing.Point(202, 41);
             this.textBox_youtube.Name = "textBox_youtube";
+            this.textBox_youtube.PlaceholderText = "https://youtu.be/......";
             this.textBox_youtube.Size = new System.Drawing.Size(571, 32);
             this.textBox_youtube.TabIndex = 2;
+            this.textBox_youtube.KeyDown += new System.Windows.Forms.KeyEventHandler(this.enter_KeyDown);
             // 
             // tableLayoutPanel_segment
             // 
@@ -235,8 +276,10 @@
             this.textBox_end.Font = new System.Drawing.Font("Microsoft JhengHei UI", 11.89565F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.textBox_end.Location = new System.Drawing.Point(202, 41);
             this.textBox_end.Name = "textBox_end";
-            this.textBox_end.Size = new System.Drawing.Size(92, 32);
+            this.textBox_end.PlaceholderText = "00:00:00.000";
+            this.textBox_end.Size = new System.Drawing.Size(123, 32);
             this.textBox_end.TabIndex = 5;
+            this.textBox_end.KeyDown += new System.Windows.Forms.KeyEventHandler(this.enter_KeyDown);
             // 
             // label5
             // 
@@ -255,8 +298,10 @@
             this.textBox_start.Font = new System.Drawing.Font("Microsoft JhengHei UI", 11.89565F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.textBox_start.Location = new System.Drawing.Point(202, 3);
             this.textBox_start.Name = "textBox_start";
-            this.textBox_start.Size = new System.Drawing.Size(92, 32);
+            this.textBox_start.PlaceholderText = "00:00:00.000";
+            this.textBox_start.Size = new System.Drawing.Size(123, 32);
             this.textBox_start.TabIndex = 4;
+            this.textBox_start.KeyDown += new System.Windows.Forms.KeyEventHandler(this.enter_KeyDown);
             // 
             // label6
             // 
@@ -279,6 +324,7 @@
             this.button_start.Size = new System.Drawing.Size(182, 108);
             this.button_start.TabIndex = 6;
             this.button_start.Text = "Start";
+            this.button_start.UseMnemonic = false;
             this.button_start.UseVisualStyleBackColor = true;
             this.button_start.Click += new System.EventHandler(this.button_start_Click);
             // 
@@ -327,7 +373,7 @@
             // 
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.Font = new System.Drawing.Font("Microsoft JhengHei UI", 13.77391F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.linkLabel1.Location = new System.Drawing.Point(603, 368);
+            this.linkLabel1.Location = new System.Drawing.Point(526, 368);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(57, 28);
             this.linkLabel1.TabIndex = 2;
@@ -346,6 +392,20 @@
             this.label7.TabIndex = 1;
             this.label7.Text = resources.GetString("label7.Text");
             // 
+            // richTextBox_license
+            // 
+            this.richTextBox_license.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox_license.BackColor = System.Drawing.SystemColors.Control;
+            this.richTextBox_license.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox_license.Location = new System.Drawing.Point(606, 417);
+            this.richTextBox_license.Name = "richTextBox_license";
+            this.richTextBox_license.ReadOnly = true;
+            this.richTextBox_license.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.richTextBox_license.Size = new System.Drawing.Size(182, 94);
+            this.richTextBox_license.TabIndex = 5;
+            this.richTextBox_license.TabStop = false;
+            this.richTextBox_license.Text = "This software is distributed under GPLv3.\nWebsite:\nAuthor: jim60105";
+            // 
             // richTextBoxLogControl1
             // 
             this.richTextBoxLogControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -360,27 +420,13 @@
             this.richTextBoxLogControl1.TabIndex = 1;
             this.richTextBoxLogControl1.TabStop = false;
             this.richTextBoxLogControl1.Text = "";
-            this.richTextBoxLogControl1.TextChanged += new System.EventHandler(this.richTextBoxLogControl1_TextChanged);
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox1.BackColor = System.Drawing.SystemColors.Control;
-            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox1.Location = new System.Drawing.Point(606, 411);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox1.Size = new System.Drawing.Size(182, 97);
-            this.richTextBox1.TabIndex = 5;
-            this.richTextBox1.TabStop = false;
-            this.richTextBox1.Text = "This software is distributed under GPLv3.\nWebsite:\nAuthor: jim60105";
             // 
             // linkLabel5
             // 
             this.linkLabel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabel5.AutoSize = true;
             this.linkLabel5.Font = new System.Drawing.Font("Microsoft JhengHei UI", 8.765218F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.linkLabel5.Location = new System.Drawing.Point(664, 461);
+            this.linkLabel5.Location = new System.Drawing.Point(664, 467);
             this.linkLabel5.Name = "linkLabel5";
             this.linkLabel5.Size = new System.Drawing.Size(56, 19);
             this.linkLabel5.TabIndex = 7;
@@ -392,27 +438,43 @@
             // 
             this.checkBox_logVerbose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBox_logVerbose.AutoSize = true;
-            this.checkBox_logVerbose.Location = new System.Drawing.Point(12, 485);
+            this.checkBox_logVerbose.Location = new System.Drawing.Point(12, 488);
             this.checkBox_logVerbose.Name = "checkBox_logVerbose";
             this.checkBox_logVerbose.Size = new System.Drawing.Size(116, 23);
             this.checkBox_logVerbose.TabIndex = 5;
+            this.checkBox_logVerbose.TabStop = false;
             this.checkBox_logVerbose.Text = "Log Verbose";
             this.checkBox_logVerbose.UseVisualStyleBackColor = true;
             this.checkBox_logVerbose.CheckedChanged += new System.EventHandler(this.checkBox_logVerbose_CheckedChanged);
+            // 
+            // panel_main
+            // 
+            this.panel_main.Controls.Add(this.linkLabel5);
+            this.panel_main.Controls.Add(this.tableLayoutPanel_main);
+            this.panel_main.Controls.Add(this.tableLayoutPanel_segment);
+            this.panel_main.Controls.Add(this.button_start);
+            this.panel_main.Controls.Add(this.richTextBoxLogControl1);
+            this.panel_main.Controls.Add(this.checkBox_logVerbose);
+            this.panel_main.Controls.Add(this.richTextBox_license);
+            this.panel_main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_main.Location = new System.Drawing.Point(0, 0);
+            this.panel_main.Name = "panel_main";
+            this.panel_main.Size = new System.Drawing.Size(800, 520);
+            this.panel_main.TabIndex = 6;
+            // 
+            // folderBrowserDialog1
+            // 
+            this.folderBrowserDialog1.Description = "Output Directory";
+            this.folderBrowserDialog1.RootFolder = System.Environment.SpecialFolder.DesktopDirectory;
+            this.folderBrowserDialog1.UseDescriptionForTitle = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 520);
+            this.Controls.Add(this.panel_main);
             this.Controls.Add(this.panel_download);
-            this.Controls.Add(this.linkLabel5);
-            this.Controls.Add(this.richTextBox1);
-            this.Controls.Add(this.tableLayoutPanel_main);
-            this.Controls.Add(this.tableLayoutPanel_segment);
-            this.Controls.Add(this.button_start);
-            this.Controls.Add(this.richTextBoxLogControl1);
-            this.Controls.Add(this.checkBox_logVerbose);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Youtube Segment Downloader";
@@ -420,12 +482,15 @@
             this.panel1.PerformLayout();
             this.tableLayoutPanel_main.ResumeLayout(false);
             this.tableLayoutPanel_main.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.tableLayoutPanel_segment.ResumeLayout(false);
             this.tableLayoutPanel_segment.PerformLayout();
             this.panel_download.ResumeLayout(false);
             this.panel_download.PerformLayout();
+            this.panel_main.ResumeLayout(false);
+            this.panel_main.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -455,8 +520,12 @@
         private LinkLabel linkLabel1;
         private LinkLabel linkLabel3;
         private LinkLabel linkLabel2;
-        private RichTextBox richTextBox1;
+        private RichTextBox richTextBox_license;
         private LinkLabel linkLabel5;
         private CheckBox checkBox_logVerbose;
+        private Panel panel_main;
+        private FolderBrowserDialog folderBrowserDialog1;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Button button_folder;
     }
 }

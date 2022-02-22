@@ -48,7 +48,7 @@ internal static class Program
                 {
                     var myKey = uninstallKey.OpenSubKey(subkeyName, true);
                     var myValue = myKey.GetValue("DisplayName");
-                    if (myValue != null 
+                    if (myValue != null
                         && myValue.ToString() == "Youtube Segment Downloader")
                     {
                         myKey.SetValue("DisplayIcon", iconSourcePath);
