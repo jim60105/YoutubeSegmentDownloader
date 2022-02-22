@@ -72,13 +72,13 @@
       <dsig:DigestValue>XK/BHCo5mXiFMewXtWvpRo/BQGb/B3MnLP/If99/QOc=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="README.md" size="2267">
+  <file name="README.md" size="2309">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>u2M93bpzqnzcAzE7pO2+bbjgVr8WimYc7XGCEy6kqeE=</dsig:DigestValue>
+      <dsig:DigestValue>OjJFVAJnaToLTSJI98nc5OGHFCZpbPycf3ClDiZDJH8=</dsig:DigestValue>
     </hash>
   </file>
   <file name="YoutubeSegmentDownloader.exe" size="2613698">
