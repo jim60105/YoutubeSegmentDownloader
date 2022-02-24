@@ -76,6 +76,8 @@ FFmpeg source code can be found [here](https://github.com/FFmpeg/FFmpeg/commit/3
 This software uses **yt-dlp** licensed under the **Unlicense License**.\
 yt-dlp binary distribution will be downloaded from [here](https://github.com/yt-dlp/yt-dlp/releases/latest).
 
+This software uses **Xabe.FFmpeg** licensed under the [License Agreement](https://ffmpeg.xabe.net/license.html) with **Non-commercial use** - Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0).
+
 This software uses **Beautiful Flat Icons** licensed under the **GPLv2**.\
 Icon source can be found [here](https://www.elegantthemes.com/blog/freebie-of-the-week/beautiful-flat-icons-for-free).
 
