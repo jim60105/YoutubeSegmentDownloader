@@ -73,13 +73,56 @@ public partial class Form1 : Form
         Settings.Default.Directory = textBox_outputDirectory.Text;
         Settings.Default.Save();
 
-        string id = textBox_youtube.Text.Contains('/')
+        string id = "";
+        float start = 0, end = 0;
+
+        if (!textBox_youtube.Text.Contains('/'))
+        {
+            id = textBox_youtube.Text;
+        }
+
+        if (string.IsNullOrEmpty(id))
+        {
             // Regex for strip youtube video id from url c# and returl default thumbnail
             // https://gist.github.com/Flatlineato/f4cc3f3937272646d4b0
-            ? Regex.Match(textBox_youtube.Text,
-                          "https?:\\/\\/(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube(?:-nocookie)?\\.com\\S*[^\\w\\s-])([\\w-]{11})(?=[^\\w-]|$)(?![?=&+%\\w.-]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w.-]*",
-                          RegexOptions.IgnoreCase).Groups[1].Value
-            : textBox_youtube.Text;
+            Regex idRegex = new("https?:\\/\\/(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube(?:-nocookie)?\\.com\\S*[^\\w\\s-])([\\w-]{11})(?=[^\\w-]|$)(?![?=&+%\\w.-]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w.-]*");
+            Match idMatch = idRegex.Match(textBox_youtube.Text);
+            if (idMatch.Success)
+            {
+                id = idMatch.Groups[1].Value;
+            }
+        }
+
+        // 處理剪輯片段
+        bool isClip = false;
+        if (string.IsNullOrEmpty(id))
+        {
+            string clip = textBox_youtube.Text;
+            Regex clipReg = new(@"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/)clip\/[?=&+%\w.-]*");
+            if (!string.IsNullOrEmpty(clip) && clipReg.IsMatch(clip))
+            {
+                using HttpClient client = new();
+                var response =  client.GetAsync(clip).Result;
+                string body =  response.Content.ReadAsStringAsync().Result;
+
+                // "clipConfig":{"postId":"UgkxVQpxshiN76QUwblPu-ggj6fl594-ORiU","startTimeMs":"1891037","endTimeMs":"1906037"}
+                Regex reg1 = new(@"clipConfig"":{""postId"":""(?:[\w-]+)"",""startTimeMs"":""(\d+)"",""endTimeMs"":""(\d+)""}");
+                Match match1 = reg1.Match(body);
+                if (float.TryParse(match1.Groups[1].Value, out float _start)
+                    && float.TryParse(match1.Groups[2].Value, out float _end))
+                {
+                    start = _start / 1000;
+                    end = _end / 1000;
+                }
+
+                // {"videoId":"Gs7QYATahy4"}
+                Regex reg2 = new(@"{""videoId"":""([\w-]+)""");
+                Match match2 = reg2.Match(body);
+                id = match2.Groups[1].Value;
+                isClip = true;
+                Log.Information("Get info from clip: {videoId}, {start}, {end}", id, start, end);
+            }
+        }
 
         if (string.IsNullOrEmpty(id))
         {
@@ -89,25 +132,32 @@ public partial class Form1 : Form
         }
         Log.Information("Get VideoID: {VideoId}", id);
 
-        float start = ConvertTimeStringToSecond(textBox_start.Text);
-        float end = ConvertTimeStringToSecond(textBox_end.Text);
-
-        if (checkBox_segment.Checked)
+        if (isClip && end != 0)
         {
-            if (start >= end
-                || end <= 0
-                || start < 0)
-            {
-                Log.Error("Segment time invalid!");
-                MessageBox.Show("Segment time invalid!", "Error!");
-                return;
-            }
-            Log.Information("Input segment: {start} ~ {end}", start, end);
+            Log.Information("The Start and End input text boxes are skipped because the link is a Youtube clip.");
         }
         else
         {
-            start = end = 0;
-            Log.Information("Segment input is disabled.");
+            start = ConvertTimeStringToSecond(textBox_start.Text);
+            end = ConvertTimeStringToSecond(textBox_end.Text);
+
+            if (checkBox_segment.Checked)
+            {
+                if (start >= end
+                    || end <= 0
+                    || start < 0)
+                {
+                    Log.Error("Segment time invalid!");
+                    MessageBox.Show("Segment time invalid!", "Error!");
+                    return;
+                }
+                Log.Information("Input segment: {start} ~ {end}", start, end);
+            }
+            else
+            {
+                start = end = 0;
+                Log.Information("Segment input is disabled.");
+            }
         }
 
         DirectoryInfo directory;
