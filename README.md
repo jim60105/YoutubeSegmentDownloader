@@ -16,11 +16,15 @@ A lifesaver for anyone who is doing video clipping/translating or any need to do
 
 ## Feature
 
-Download Youtube video in **segment**.
-
+Download Youtube video in **segment**.\
 In detail, you can download only one segment in the middle of the video instead of downloading the whole video.
 
 This software is built on yt-dlp and FFmpeg. If you don't have them installed, this software will download them automatically at startup.
+
+### New Feature
+
+Now accepting Youtube clips too!\
+Try to put this in the Youtube Link textbox: [https://youtube.com/clip/UgkxdTb9o6I2pTr87wKgpO0kLEaZbYrkMDFv](https://youtube.com/clip/UgkxdTb9o6I2pTr87wKgpO0kLEaZbYrkMDFv)
 
 ## Install
 
