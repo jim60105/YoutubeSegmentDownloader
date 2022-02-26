@@ -21,14 +21,14 @@ public partial class Form1 : Form
         textBox_outputDirectory.Text = Settings.Default.Directory;
         checkBox_logVerbose.Checked = Settings.Default.LogVerbose;
         checkBox_logVerbose_CheckedChanged(new(), new());
-        _ = PrepareYtdlpAndFFmpegAsync().ConfigureAwait(true);  // Use same thread
+        _ = PrepareYtdlpAndFFmpegAsync(false).ConfigureAwait(true);  // Use same thread
         Application.CurrentInputLanguage = InputLanguage.FromCulture(new CultureInfo("en-us"));
     }
 
-    private async Task PrepareYtdlpAndFFmpegAsync()
+    private async Task PrepareYtdlpAndFFmpegAsync(bool forceUpdate = false)
     {
         (string? ytdlpPath, string? ffmpegPath) = WhereIs();
-        _ = CheckAndUpdateDependenciesAsync(ytdlpPath, ffmpegPath).ConfigureAwait(false);
+        _ = UpdateDependenciesAsync(ytdlpPath, ffmpegPath, forceUpdate).ConfigureAwait(false);
 
         // Update UI
         while (FFmpeg_Status != DependencyStatus.Exist
@@ -252,5 +252,10 @@ public partial class Form1 : Form
         {
             textBox_outputDirectory.Text = folderBrowserDialog1.SelectedPath;
         }
+    }
+
+    private void button_redownloadDependencies_Click(object sender, EventArgs e)
+    {
+        _ = PrepareYtdlpAndFFmpegAsync(true).ConfigureAwait(true);  // Use same thread
     }
 }

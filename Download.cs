@@ -93,6 +93,8 @@ internal class Download
         {
             File.Delete(tempFilePath1);
             File.Delete(tempFilePath2);
+            File.Delete(Path.ChangeExtension(tempFilePath1, "tmp"));
+            File.Delete(Path.ChangeExtension(tempFilePath2, "tmp"));
             Log.Information("Clean up temporary files.");
         }
     }

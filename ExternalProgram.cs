@@ -2,8 +2,6 @@
 using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
-using Xabe.FFmpeg;
-using Xabe.FFmpeg.Exceptions;
 
 namespace YoutubeSegmentDownloader;
 
@@ -147,8 +145,8 @@ public static class ExternalProgram
 
         YtdlpPath = _YtdlpPath;
         FFmpegPath = _FFmpegPath;
-        Log.Information("Found yt-dlp.exe at {YtdlpPath}", YtdlpPath);
-        Log.Information("Found ffmpeg.exe at {FFmpegPath}", FFmpegPath);
+        Log.Debug("Found yt-dlp.exe at {YtdlpPath}", YtdlpPath);
+        Log.Debug("Found ffmpeg.exe at {FFmpegPath}", FFmpegPath);
 
 #if false
 #warning Disable this "Force download again" debug section!
@@ -163,10 +161,19 @@ public static class ExternalProgram
         return (_YtdlpPath, _FFmpegPath);
     }
 
-    public static async Task CheckAndUpdateDependenciesAsync(string? _YtdlpPath = null, string? _FFmpegPath = null)
+    /// <summary>
+    /// 更新依賴
+    /// </summary>
+    /// <param name="_YtdlpPath"></param>
+    /// <param name="_FFmpegPath"></param>
+    /// <param name="force">強制更新所有依賴</param>
+    /// <returns></returns>
+    public static Task UpdateDependenciesAsync(string? _YtdlpPath = null, string? _FFmpegPath = null, bool force = false)
     {
         List<Task> tasks = new();
-        if (string.IsNullOrEmpty(_YtdlpPath))
+        if (string.IsNullOrEmpty(_YtdlpPath)
+            || !File.Exists(Path.Combine(_YtdlpPath, "yt-dlp.exe"))
+            || force)
         {
             Ytdlp_Status = DependencyStatus.NotExist;
             tasks.Add(DownloadYtdlp());
@@ -176,51 +183,55 @@ public static class ExternalProgram
             Ytdlp_Status = DependencyStatus.Exist;
         }
 
-        string version = await GetFFmpegVersionAsync(_FFmpegPath);
-        if (version.Contains("5.0"))
+        //string version = await GetFFmpegVersionAsync(_FFmpegPath);
+        //if (!version.Contains("5.0") || force)
+        if (string.IsNullOrEmpty(_FFmpegPath)
+            || !File.Exists(Path.Combine(_FFmpegPath, "ffmpeg.exe"))
+            || !File.Exists(Path.Combine(_FFmpegPath, "ffprobe.exe"))
+            || force)
         {
-            FFmpeg_Status = DependencyStatus.Exist;
-            Log.Information("Detected that your FFmpeg version matches.");
+            FFmpeg_Status = DependencyStatus.NotExist;
+            //Log.Information("No matching version of FFmpeg was detected.");
+            tasks.Add(DownloadFFmpeg());
         }
         else
         {
-            FFmpeg_Status = DependencyStatus.NotExist;
-            Log.Information("No matching version of FFmpeg was detected.");
-            tasks.Add(DownloadFFmpeg());
+            FFmpeg_Status = DependencyStatus.Exist;
+            //Log.Information("Detected that your FFmpeg version matches.");
         }
 
-        await Task.WhenAll(tasks);
+        return Task.WhenAll(tasks);
     }
 
-    public static async Task<string> GetFFmpegVersionAsync(string? _FFmpegPath)
-    {
-        string FFmpegVersion = "";
+    //public static async Task<string> GetFFmpegVersionAsync(string? _FFmpegPath)
+    //{
+    //    string FFmpegVersion = "";
 
-        if (string.IsNullOrEmpty(_FFmpegPath)) return "";
-        FFmpeg.SetExecutablesPath(_FFmpegPath);
+    //    if (string.IsNullOrEmpty(_FFmpegPath)) return "";
+    //    FFmpeg.SetExecutablesPath(_FFmpegPath);
 
-        Log.Information("Start to check FFmpeg version.");
-        IConversion conversion = FFmpeg.Conversions.New();
-        conversion.OnDataReceived += (_, e) =>
-        {
-            if (string.IsNullOrEmpty(FFmpegVersion))
-            {
-                // Take the first line
-                FFmpegVersion = e.Data ?? "";
-            }
-            Log.Verbose(e.Data);
-        };
-        //Log.Debug("FFmpeg arguments: {arguments}", conversion.Build());
+    //    Log.Information("Start to check FFmpeg version.");
+    //    IConversion conversion = FFmpeg.Conversions.New();
+    //    conversion.OnDataReceived += (_, e) =>
+    //    {
+    //        if (string.IsNullOrEmpty(FFmpegVersion))
+    //        {
+    //            // Take the first line
+    //            FFmpegVersion = e.Data ?? "";
+    //        }
+    //        Log.Verbose(e.Data);
+    //    };
+    //    //Log.Debug("FFmpeg arguments: {arguments}", conversion.Build());
 
-        try
-        {
-            await conversion.Start();
-        }
-        // Must Exception
-        catch (ConversionException) { }
+    //    try
+    //    {
+    //        await conversion.Start();
+    //    }
+    //    // Must Exception
+    //    catch (ConversionException) { }
 
-        Log.Information(FFmpegVersion);
-        return FFmpegVersion;
-    }
+    //    Log.Information(FFmpegVersion);
+    //    return FFmpegVersion;
+    //}
 
 }

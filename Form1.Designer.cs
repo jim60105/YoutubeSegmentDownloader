@@ -55,7 +55,7 @@
             this.richTextBoxLogControl1 = new Serilog.Sinks.WinForms.RichTextBoxLogControl();
             this.checkBox_logVerbose = new System.Windows.Forms.CheckBox();
             this.panel_main = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.button_redownloadDependencies = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
@@ -407,7 +407,7 @@
             // 
             // panel_main
             // 
-            this.panel_main.Controls.Add(this.button1);
+            this.panel_main.Controls.Add(this.button_redownloadDependencies);
             this.panel_main.Controls.Add(this.button_start);
             this.panel_main.Controls.Add(this.label9);
             this.panel_main.Controls.Add(this.label7);
@@ -422,16 +422,18 @@
             this.panel_main.Size = new System.Drawing.Size(800, 520);
             this.panel_main.TabIndex = 6;
             // 
-            // button1
+            // button_redownloadDependencies
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft JhengHei UI", 8.139131F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.button1.Location = new System.Drawing.Point(131, 489);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(206, 28);
-            this.button1.TabIndex = 11;
-            this.button1.Text = "Redownload Dependencies";
-            this.toolTip1.SetToolTip(this.button1, "Try this if things aren\'t going well.");
-            this.button1.UseVisualStyleBackColor = true;
+            this.button_redownloadDependencies.Font = new System.Drawing.Font("Microsoft JhengHei UI", 8.139131F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.button_redownloadDependencies.Location = new System.Drawing.Point(131, 489);
+            this.button_redownloadDependencies.Name = "button_redownloadDependencies";
+            this.button_redownloadDependencies.Size = new System.Drawing.Size(206, 28);
+            this.button_redownloadDependencies.TabIndex = 11;
+            this.button_redownloadDependencies.TabStop = false;
+            this.button_redownloadDependencies.Text = "Redownload Dependencies";
+            this.toolTip1.SetToolTip(this.button_redownloadDependencies, "Try this if things aren\'t going well.");
+            this.button_redownloadDependencies.UseVisualStyleBackColor = true;
+            this.button_redownloadDependencies.Click += new System.EventHandler(this.button_redownloadDependencies_Click);
             // 
             // label9
             // 
@@ -543,7 +545,7 @@
         private RichTextBox richTextBox2;
         private Label label7;
         private Label label9;
-        private Button button1;
+        private Button button_redownloadDependencies;
         private ToolTip toolTip1;
     }
 }
