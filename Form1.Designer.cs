@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.panel1 = new System.Windows.Forms.Panel();
             this.label_checking_ytdlp = new System.Windows.Forms.Label();
@@ -54,10 +55,12 @@
             this.richTextBoxLogControl1 = new Serilog.Sinks.WinForms.RichTextBoxLogControl();
             this.checkBox_logVerbose = new System.Windows.Forms.CheckBox();
             this.panel_main = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.tableLayoutPanel_main.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -180,6 +183,7 @@
             this.textBox_outputDirectory.Size = new System.Drawing.Size(507, 32);
             this.textBox_outputDirectory.TabIndex = 1;
             this.textBox_outputDirectory.TabStop = false;
+            this.toolTip1.SetToolTip(this.textBox_outputDirectory, "This is where your videos will be downloaded to.");
             this.textBox_outputDirectory.DoubleClick += new System.EventHandler(this.button_folder_Click);
             this.textBox_outputDirectory.KeyDown += new System.Windows.Forms.KeyEventHandler(this.enter_KeyDown);
             // 
@@ -233,6 +237,7 @@
             this.checkBox_segment.Name = "checkBox_segment";
             this.checkBox_segment.Size = new System.Drawing.Size(15, 14);
             this.checkBox_segment.TabIndex = 3;
+            this.toolTip1.SetToolTip(this.checkBox_segment, "If you want to download the entire video, uncheck it.");
             this.checkBox_segment.UseVisualStyleBackColor = true;
             this.checkBox_segment.CheckedChanged += new System.EventHandler(this.checkBox_segment_CheckedChanged);
             this.checkBox_segment.KeyDown += new System.Windows.Forms.KeyEventHandler(this.enter_KeyDown);
@@ -289,6 +294,7 @@
             this.textBox_end.PlaceholderText = "00:00:00.000";
             this.textBox_end.Size = new System.Drawing.Size(123, 32);
             this.textBox_end.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.textBox_end, "Enter 00:00:00.000, or the number of seconds in floating point numbers.");
             this.textBox_end.KeyDown += new System.Windows.Forms.KeyEventHandler(this.enter_KeyDown);
             // 
             // label5
@@ -311,6 +317,7 @@
             this.textBox_start.PlaceholderText = "00:00:00.000";
             this.textBox_start.Size = new System.Drawing.Size(123, 32);
             this.textBox_start.TabIndex = 4;
+            this.toolTip1.SetToolTip(this.textBox_start, "Enter 00:00:00.000, or the number of seconds in floating point numbers.");
             this.textBox_start.KeyDown += new System.Windows.Forms.KeyEventHandler(this.enter_KeyDown);
             // 
             // label6
@@ -334,6 +341,7 @@
             this.button_start.Size = new System.Drawing.Size(179, 111);
             this.button_start.TabIndex = 6;
             this.button_start.Text = "Start";
+            this.toolTip1.SetToolTip(this.button_start, "Start!");
             this.button_start.UseMnemonic = false;
             this.button_start.UseVisualStyleBackColor = true;
             this.button_start.Click += new System.EventHandler(this.button_start_Click);
@@ -393,11 +401,13 @@
             this.checkBox_logVerbose.TabIndex = 5;
             this.checkBox_logVerbose.TabStop = false;
             this.checkBox_logVerbose.Text = "Log Verbose";
+            this.toolTip1.SetToolTip(this.checkBox_logVerbose, "Displays detailed logs.");
             this.checkBox_logVerbose.UseVisualStyleBackColor = true;
             this.checkBox_logVerbose.CheckedChanged += new System.EventHandler(this.checkBox_logVerbose_CheckedChanged);
             // 
             // panel_main
             // 
+            this.panel_main.Controls.Add(this.button1);
             this.panel_main.Controls.Add(this.button_start);
             this.panel_main.Controls.Add(this.label9);
             this.panel_main.Controls.Add(this.label7);
@@ -411,6 +421,17 @@
             this.panel_main.Name = "panel_main";
             this.panel_main.Size = new System.Drawing.Size(800, 520);
             this.panel_main.TabIndex = 6;
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft JhengHei UI", 8.139131F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.button1.Location = new System.Drawing.Point(131, 489);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(206, 28);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Redownload Dependencies";
+            this.toolTip1.SetToolTip(this.button1, "Try this if things aren\'t going well.");
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // label9
             // 
@@ -446,17 +467,18 @@
             this.richTextBox1.BackColor = System.Drawing.SystemColors.Control;
             this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox1.Font = new System.Drawing.Font("Microsoft JhengHei UI", 8.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.richTextBox1.Location = new System.Drawing.Point(137, 493);
+            this.richTextBox1.Location = new System.Drawing.Point(346, 493);
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(6);
             this.richTextBox1.Multiline = false;
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
             this.richTextBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox1.Size = new System.Drawing.Size(648, 22);
+            this.richTextBox1.Size = new System.Drawing.Size(439, 22);
             this.richTextBox1.TabIndex = 8;
             this.richTextBox1.TabStop = false;
             this.richTextBox1.Text = "https://github.com/jim60105/YoutubeSegmentDownloader";
+            this.toolTip1.SetToolTip(this.richTextBox1, "In this link you can find everything about this software.");
             this.richTextBox1.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.richTextBox_LinkClicked);
             // 
             // folderBrowserDialog1
@@ -521,5 +543,7 @@
         private RichTextBox richTextBox2;
         private Label label7;
         private Label label9;
+        private Button button1;
+        private ToolTip toolTip1;
     }
 }
