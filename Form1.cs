@@ -27,14 +27,8 @@ public partial class Form1 : Form
 
     private async Task PrepareYtdlpAndFFmpegAsync()
     {
-        _ = WhereIs();
-
-        // Start Download
-        if (string.IsNullOrEmpty(FFmpegPath))
-            _ = DownloadFFmpeg().ConfigureAwait(false);
-
-        if (string.IsNullOrEmpty(YtdlpPath))
-            _ = DownloadYtdlp().ConfigureAwait(false);
+        (string? ytdlpPath, string? ffmpegPath) = WhereIs();
+        _ = CheckAndUpdateDependenciesAsync(ytdlpPath, ffmpegPath).ConfigureAwait(false);
 
         // Update UI
         while (FFmpeg_Status != DependencyStatus.Exist
@@ -46,6 +40,7 @@ public partial class Form1 : Form
             label_checking_ytdlp.Text =
                 Ytdlp_Status switch
                 {
+                    DependencyStatus.Unknown => "❓",
                     DependencyStatus.NotExist => "❌",
                     DependencyStatus.Downloading => "⌛",
                     DependencyStatus.Exist => "✔️",
@@ -54,6 +49,7 @@ public partial class Form1 : Form
             label_checking_ffmpeg.Text =
                 FFmpeg_Status switch
                 {
+                    DependencyStatus.Unknown => "❓",
                     DependencyStatus.NotExist => "❌",
                     DependencyStatus.Downloading => "⌛",
                     DependencyStatus.Exist => "✔️",

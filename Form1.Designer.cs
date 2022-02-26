@@ -83,12 +83,12 @@
             this.label_checking_ytdlp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_checking_ytdlp.AutoSize = true;
             this.label_checking_ytdlp.Font = new System.Drawing.Font("Microsoft JhengHei UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label_checking_ytdlp.Location = new System.Drawing.Point(456, 0);
+            this.label_checking_ytdlp.Location = new System.Drawing.Point(468, -1);
             this.label_checking_ytdlp.Margin = new System.Windows.Forms.Padding(0);
             this.label_checking_ytdlp.Name = "label_checking_ytdlp";
-            this.label_checking_ytdlp.Size = new System.Drawing.Size(59, 41);
+            this.label_checking_ytdlp.Size = new System.Drawing.Size(47, 41);
             this.label_checking_ytdlp.TabIndex = 5;
-            this.label_checking_ytdlp.Text = "❌";
+            this.label_checking_ytdlp.Text = "❓";
             this.label_checking_ytdlp.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label2
@@ -99,9 +99,9 @@
             this.label2.Location = new System.Drawing.Point(0, 59);
             this.label2.Margin = new System.Windows.Forms.Padding(0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(349, 41);
+            this.label2.Size = new System.Drawing.Size(289, 41);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Downloading FFmpeg";
+            this.label2.Text = "Updating FFmpeg";
             this.label2.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // label1
@@ -111,21 +111,21 @@
             this.label1.Location = new System.Drawing.Point(0, 2);
             this.label1.Margin = new System.Windows.Forms.Padding(0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(318, 41);
+            this.label1.Size = new System.Drawing.Size(258, 41);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Downloading yt-dlp";
+            this.label1.Text = "Updating yt-dlp";
             // 
             // label_checking_ffmpeg
             // 
             this.label_checking_ffmpeg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label_checking_ffmpeg.AutoSize = true;
             this.label_checking_ffmpeg.Font = new System.Drawing.Font("Microsoft JhengHei UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label_checking_ffmpeg.Location = new System.Drawing.Point(456, 59);
+            this.label_checking_ffmpeg.Location = new System.Drawing.Point(468, 59);
             this.label_checking_ffmpeg.Margin = new System.Windows.Forms.Padding(0);
             this.label_checking_ffmpeg.Name = "label_checking_ffmpeg";
-            this.label_checking_ffmpeg.Size = new System.Drawing.Size(59, 41);
+            this.label_checking_ffmpeg.Size = new System.Drawing.Size(47, 41);
             this.label_checking_ffmpeg.TabIndex = 6;
-            this.label_checking_ffmpeg.Text = "❌";
+            this.label_checking_ffmpeg.Text = "❓";
             this.label_checking_ffmpeg.TextAlign = System.Drawing.ContentAlignment.BottomRight;
             // 
             // tableLayoutPanel_main

@@ -2,6 +2,8 @@
 using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
+using Xabe.FFmpeg;
+using Xabe.FFmpeg.Exceptions;
 
 namespace YoutubeSegmentDownloader;
 
@@ -9,13 +11,14 @@ public static class ExternalProgram
 {
     public enum DependencyStatus
     {
+        Unknown,
         NotExist,
         Downloading,
         Exist
     }
 
-    public static DependencyStatus Ytdlp_Status { get; private set; } = DependencyStatus.NotExist;
-    public static DependencyStatus FFmpeg_Status { get; private set; } = DependencyStatus.NotExist;
+    public static DependencyStatus Ytdlp_Status { get; private set; } = DependencyStatus.Unknown;
+    public static DependencyStatus FFmpeg_Status { get; private set; } = DependencyStatus.Unknown;
 
     private static readonly DirectoryInfo TempDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), nameof(YoutubeSegmentDownloader)));
 
@@ -34,6 +37,8 @@ public static class ExternalProgram
         Log.Debug("Get response from {YtdlpUrl}", ytdlpUrl);
 
         string filePath = Path.Combine(YtdlpPath, "yt-dlp.exe");
+        File.Delete(filePath);
+
         using FileStream fs = new(filePath, FileMode.Create);
         //response.EnsureSuccessStatusCode();
         await response.Content.CopyToAsync(fs);
@@ -63,6 +68,8 @@ public static class ExternalProgram
         Log.Debug("Get response from {FFmpegUrl}", ffmpegUrl);
 
         string archivePath = Path.Combine(FFmpegPath, "ffmpeg-5.0-essentials_build.7z");
+        File.Delete(archivePath);
+
         using (FileStream fs = new(archivePath, FileMode.Create))
         {
             //response.EnsureSuccessStatusCode();
@@ -113,23 +120,30 @@ public static class ExternalProgram
         // https://stackoverflow.com/a/63021455
         string[] paths = Environment.GetEnvironmentVariable("PATH")?.Split(';') ?? Array.Empty<string>();
         string[] extensions = Environment.GetEnvironmentVariable("PATHEXT")?.Split(';') ?? Array.Empty<string>();
-        string? _YtdlpPath = (from p in new[] { Environment.CurrentDirectory, TempDirectory.FullName }.Concat(paths)
+
+        // ffmpeg not selected as downloader when not in PATH
+        // In short: --ffmpeg-location doesn't work. Force download everything to my tmp folder.
+        // https://github.com/yt-dlp/yt-dlp/issues/2191
+
+        //string? _YtdlpPath = (from p in new[] { Environment.CurrentDirectory, TempDirectory.FullName }.Concat(paths)
+        string? _YtdlpPath = (from p in new[] { TempDirectory.FullName }
                               from e in extensions
                               let path = Path.Combine(p.Trim(), "yt-dlp" + e.ToLower())
                               where File.Exists(path)
                               select Path.GetDirectoryName(path))?.FirstOrDefault();
-        string? _FFmpegPath = (from p in new[] { Environment.CurrentDirectory, TempDirectory.FullName }.Concat(paths)
+        //string? _FFmpegPath = (from p in new[] { Environment.CurrentDirectory, TempDirectory.FullName }.Concat(paths)
+        string? _FFmpegPath = (from p in new[] { TempDirectory.FullName }
                                from e in extensions
                                let path = Path.Combine(p.Trim(), "ffmpeg" + e.ToLower())
                                where File.Exists(path)
                                select Path.GetDirectoryName(path))?.FirstOrDefault();
 
-        Ytdlp_Status = string.IsNullOrEmpty(_YtdlpPath)
-                        ? DependencyStatus.NotExist
-                        : DependencyStatus.Exist;
-        FFmpeg_Status = string.IsNullOrEmpty(_FFmpegPath)
-                        ? DependencyStatus.NotExist
-                        : DependencyStatus.Exist;
+        //Ytdlp_Status = string.IsNullOrEmpty(_YtdlpPath)
+        //                ? DependencyStatus.NotExist
+        //                : DependencyStatus.Exist;
+        //FFmpeg_Status = string.IsNullOrEmpty(_FFmpegPath)
+        //                ? DependencyStatus.NotExist
+        //                : DependencyStatus.Exist;
 
         YtdlpPath = _YtdlpPath;
         FFmpegPath = _FFmpegPath;
@@ -140,7 +154,6 @@ public static class ExternalProgram
 #warning Disable this "Force download again" debug section!
         Log.Debug("Force download again!");
         YtdlpPath = FFmpegPath = null;
-        Ytdlp_Status = FFmpeg_Status = DependencyStatus.NotExist;
         foreach (var file in TempDirectory.GetFiles())
         {
             file.Delete();
@@ -149,4 +162,65 @@ public static class ExternalProgram
 
         return (_YtdlpPath, _FFmpegPath);
     }
+
+    public static async Task CheckAndUpdateDependenciesAsync(string? _YtdlpPath = null, string? _FFmpegPath = null)
+    {
+        List<Task> tasks = new();
+        if (string.IsNullOrEmpty(_YtdlpPath))
+        {
+            Ytdlp_Status = DependencyStatus.NotExist;
+            tasks.Add(DownloadYtdlp());
+        }
+        else
+        {
+            Ytdlp_Status = DependencyStatus.Exist;
+        }
+
+        string version = await GetFFmpegVersionAsync(_FFmpegPath);
+        if (version.Contains("5.0"))
+        {
+            FFmpeg_Status = DependencyStatus.Exist;
+            Log.Information("Detected that your FFmpeg version matches.");
+        }
+        else
+        {
+            FFmpeg_Status = DependencyStatus.NotExist;
+            Log.Information("No matching version of FFmpeg was detected.");
+            tasks.Add(DownloadFFmpeg());
+        }
+
+        await Task.WhenAll(tasks);
+    }
+
+    public static async Task<string> GetFFmpegVersionAsync(string? _FFmpegPath)
+    {
+        string FFmpegVersion = "";
+
+        if (string.IsNullOrEmpty(_FFmpegPath)) return "";
+        FFmpeg.SetExecutablesPath(_FFmpegPath);
+
+        Log.Information("Start to check FFmpeg version.");
+        IConversion conversion = FFmpeg.Conversions.New();
+        conversion.OnDataReceived += (_, e) =>
+        {
+            if (string.IsNullOrEmpty(FFmpegVersion))
+            {
+                // Take the first line
+                FFmpegVersion = e.Data ?? "";
+            }
+            Log.Verbose(e.Data);
+        };
+        //Log.Debug("FFmpeg arguments: {arguments}", conversion.Build());
+
+        try
+        {
+            await conversion.Start();
+        }
+        // Must Exception
+        catch (ConversionException) { }
+
+        Log.Information(FFmpegVersion);
+        return FFmpegVersion;
+    }
+
 }
