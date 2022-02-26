@@ -262,6 +262,7 @@
             this.textBox_youtube.PlaceholderText = "https://youtu.be/......";
             this.textBox_youtube.Size = new System.Drawing.Size(571, 32);
             this.textBox_youtube.TabIndex = 2;
+            this.toolTip1.SetToolTip(this.textBox_youtube, "Also accepts Youtube clips!");
             this.textBox_youtube.KeyDown += new System.Windows.Forms.KeyEventHandler(this.enter_KeyDown);
             // 
             // tableLayoutPanel_segment
