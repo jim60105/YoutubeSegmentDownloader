@@ -63,31 +63,31 @@
       <dsig:DigestValue>IwGE9guuL+ryRPEKi6wFPI/zOhg7zDZbTYuHbSt/SAk=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="NOTICE" size="1129">
+  <file name="NOTICE" size="1345">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>oGKXEOOS/QvYhc33Y0CGKuGAXdBRgR5IeRov2pzJ2yc=</dsig:DigestValue>
+      <dsig:DigestValue>TE0ovmv6tBP/NGxzbVB0lbR4LLbl5Pv2vHjwUB33Ukk=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="README.md" size="2310">
+  <file name="README.md" size="4415">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>22c5lgLPXXtXY3l1CsCAQNjePbTEviZRhiHMoJA1Gmk=</dsig:DigestValue>
+      <dsig:DigestValue>yWniuzc9AQa9ckeZgwh8FLRENCtW1+07MaB4MTURAww=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="YoutubeSegmentDownloader.exe" size="2613186">
+  <file name="YoutubeSegmentDownloader.exe" size="2614722">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>ZZ8yrhc2FgWlVMalEdDE3z5hi7g3X6JU8KWw2ciHf54=</dsig:DigestValue>
+      <dsig:DigestValue>0HGoT3kiKLHvtShzsXeGeOx2uOGOqUe0TiB/MGwF6l0=</dsig:DigestValue>
     </hash>
   </file>
   <file name="YoutubeSegmentDownloader.ico" size="270622">
