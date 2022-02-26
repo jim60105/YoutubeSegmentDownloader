@@ -1,0 +1,27 @@
+# NOTICE
+
+Please download and install with the **setup.exe**
+
+- Automatically check for upgrades when launching this software
+- Setup will install .NET 6.0 Runtime for you
+- Setting shortcuts on the Desktop and Start Up Menu
+
+Or you can just download YoutubeSegmentDownloader.exe, if you don't care about the above.
+
+## LICENSE
+
+This software is distributed under **GPLv3**.\
+Website: <https://github.com/jim60105/YoutubeSegmentDownloader>\
+Author: jim60105
+
+This software uses **FFmpeg** licensed under the **GPLv3**.\
+FFmpeg binary distributions will be downloaded from [here](https://github.com/GyanD/codexffmpeg/releases/tag/5.0).\
+FFmpeg source code can be found [here](https://github.com/FFmpeg/FFmpeg/commit/390d6853d0).
+
+This software uses **yt-dlp** licensed under the **Unlicense License**.\
+yt-dlp binary distribution will be downloaded from [here](https://github.com/yt-dlp/yt-dlp/releases/latest).
+
+This software uses **Xabe.FFmpeg** licensed under the [License Agreement](https://ffmpeg.xabe.net/license.html) with **Non-commercial use** - Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0).
+
+This software uses **Beautiful Flat Icons** licensed under the **GPLv2**.\
+Icon source can be found [here](https://www.elegantthemes.com/blog/freebie-of-the-week/beautiful-flat-icons-for-free).
