@@ -425,6 +425,7 @@
             // 
             // button_redownloadDependencies
             // 
+            this.button_redownloadDependencies.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button_redownloadDependencies.Font = new System.Drawing.Font("Microsoft JhengHei UI", 8.139131F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.button_redownloadDependencies.Location = new System.Drawing.Point(131, 489);
             this.button_redownloadDependencies.Name = "button_redownloadDependencies";
