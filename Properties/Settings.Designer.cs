@@ -46,5 +46,29 @@ namespace YoutubeSegmentDownloader.Properties {
                 this["LogVerbose"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Browser {
+            get {
+                return ((string)(this["Browser"]));
+            }
+            set {
+                this["Browser"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Format {
+            get {
+                return ((string)(this["Format"]));
+            }
+            set {
+                this["Format"] = value;
+            }
+        }
     }
 }

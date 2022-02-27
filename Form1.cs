@@ -20,6 +20,8 @@ public partial class Form1 : Form
     {
         textBox_outputDirectory.Text = Settings.Default.Directory;
         checkBox_logVerbose.Checked = Settings.Default.LogVerbose;
+        comboBox_browser.SelectedIndex = comboBox_browser.FindString(Settings.Default.Browser);
+        textBox_format.Text = Settings.Default.Format;
         checkBox_logVerbose_CheckedChanged(new(), new());
         _ = PrepareYtdlpAndFFmpegAsync(false).ConfigureAwait(true);  // Use same thread
         Application.CurrentInputLanguage = InputLanguage.FromCulture(new CultureInfo("en-us"));
@@ -71,7 +73,6 @@ public partial class Form1 : Form
     private void button_start_Click(object sender, EventArgs e)
     {
         Settings.Default.Directory = textBox_outputDirectory.Text;
-        Settings.Default.Save();
 
         string id = "";
         if (!textBox_youtube.Text.Contains('/'))
@@ -139,12 +140,15 @@ public partial class Form1 : Form
 
 
         string format = textBox_format.Text;
+        Settings.Default.Format = format;
 
         string browser = comboBox_browser.Text;
-        if (!string.IsNullOrEmpty(browser) && browser == "( Disabled )")
+        if (string.IsNullOrEmpty(browser) || browser == "( Disabled )")
         {
             browser = "";
         }
+        Settings.Default.Browser = browser;
+        Settings.Default.Save();
 
         _ = DownloadAsync(id, start, end, directory, format, browser).ConfigureAwait(true);
     }
