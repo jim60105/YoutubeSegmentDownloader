@@ -13,18 +13,24 @@ internal class Download
     private readonly float start;
     private readonly float end;
     private readonly DirectoryInfo outputDirectory;
+    private readonly string format;
+    private readonly string browser;
     public bool finished = false;
     public string? outputFilePath = null;
 
     public Download(string id,
                     float start,
                     float end,
-                    DirectoryInfo outputDirectory)
+                    DirectoryInfo outputDirectory,
+                    string format,
+                    string browser)
     {
         this.id = id;
         this.start = start;
         this.end = end;
         this.outputDirectory = outputDirectory;
+        this.format = format;
+        this.browser = browser;
     }
 
     public async Task Start()
@@ -40,14 +46,22 @@ internal class Download
         OptionSet optionSet = new()
         {
             NoCheckCertificate = true,
-            // Workaround for FFmpeg sometimes uses 251 as bestvideo
-            CustomOptions = new IOption[] {
-                new Option<string>(true, "-S")
-                {
-                    Value = "+codec:h264"
-                }
-            }
         };
+
+        if (!string.IsNullOrEmpty(format))
+        {
+            optionSet.Format = format;
+        }
+        else
+        {
+            // Workaround for FFmpeg sometimes uses 251 as bestvideo
+            optionSet.AddCustomOption("-S", "+codec:h264");
+        }
+
+        if (!string.IsNullOrEmpty(browser))
+        {
+            optionSet.AddCustomOption("--cookies-from-browser", browser);
+        }
 
         if (end != 0)
         {
@@ -67,7 +81,7 @@ internal class Download
 
         try
         {
-            VideoData? videoData = await FetchVideoInfoAsync(ytdl);
+            VideoData? videoData = await FetchVideoInfoAsync(ytdl, optionSet);
             if (null == videoData) return;
 
             outputFilePath = CalculatePath(videoData?.Title, videoData?.UploadDate);
@@ -104,10 +118,10 @@ internal class Download
     /// </summary>
     /// <param name="ytdl"></param>
     /// <returns></returns>
-    private async Task<VideoData?> FetchVideoInfoAsync(YoutubeDL ytdl)
+    private async Task<VideoData?> FetchVideoInfoAsync(YoutubeDL ytdl, OptionSet optionSet)
     {
         Log.Information("Start getting video information...");
-        RunResult<VideoData> result_VideoData = await ytdl.RunVideoDataFetch(@$"https://youtu.be/{id}");
+        RunResult<VideoData> result_VideoData = await ytdl.RunVideoDataFetch(@$"https://youtu.be/{id}", overrideOptions: optionSet);
 
         if (!result_VideoData.Success)
         {

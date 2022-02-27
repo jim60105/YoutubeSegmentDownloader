@@ -74,8 +74,6 @@ public partial class Form1 : Form
         Settings.Default.Save();
 
         string id = "";
-        float start = 0, end = 0;
-
         if (!textBox_youtube.Text.Contains('/'))
         {
             id = textBox_youtube.Text;
@@ -93,37 +91,6 @@ public partial class Form1 : Form
             }
         }
 
-        // 處理剪輯片段
-        bool isClip = false;
-        if (string.IsNullOrEmpty(id))
-        {
-            string clip = textBox_youtube.Text;
-            Regex clipReg = new(@"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/)clip\/[?=&+%\w.-]*");
-            if (!string.IsNullOrEmpty(clip) && clipReg.IsMatch(clip))
-            {
-                using HttpClient client = new();
-                var response =  client.GetAsync(clip).Result;
-                string body =  response.Content.ReadAsStringAsync().Result;
-
-                // "clipConfig":{"postId":"UgkxVQpxshiN76QUwblPu-ggj6fl594-ORiU","startTimeMs":"1891037","endTimeMs":"1906037"}
-                Regex reg1 = new(@"clipConfig"":{""postId"":""(?:[\w-]+)"",""startTimeMs"":""(\d+)"",""endTimeMs"":""(\d+)""}");
-                Match match1 = reg1.Match(body);
-                if (float.TryParse(match1.Groups[1].Value, out float _start)
-                    && float.TryParse(match1.Groups[2].Value, out float _end))
-                {
-                    start = _start / 1000;
-                    end = _end / 1000;
-                }
-
-                // {"videoId":"Gs7QYATahy4"}
-                Regex reg2 = new(@"{""videoId"":""([\w-]+)""");
-                Match match2 = reg2.Match(body);
-                id = match2.Groups[1].Value;
-                isClip = true;
-                Log.Information("Get info from clip: {videoId}, {start}, {end}", id, start, end);
-            }
-        }
-
         if (string.IsNullOrEmpty(id))
         {
             Log.Error("Youtube Link invalid!");
@@ -132,32 +99,24 @@ public partial class Form1 : Form
         }
         Log.Information("Get VideoID: {VideoId}", id);
 
-        if (isClip && end != 0)
+        float start = ConvertTimeStringToSecond(textBox_start.Text);
+        float end = ConvertTimeStringToSecond(textBox_end.Text);
+        if (checkBox_segment.Checked)
         {
-            Log.Information("The Start and End input text boxes are skipped because the link is a Youtube clip.");
+            if (start >= end
+                || end <= 0
+                || start < 0)
+            {
+                Log.Error("Segment time invalid!");
+                MessageBox.Show("Segment time invalid!", "Error!");
+                return;
+            }
+            Log.Information("Input segment: {start} ~ {end}", start, end);
         }
         else
         {
-            start = ConvertTimeStringToSecond(textBox_start.Text);
-            end = ConvertTimeStringToSecond(textBox_end.Text);
-
-            if (checkBox_segment.Checked)
-            {
-                if (start >= end
-                    || end <= 0
-                    || start < 0)
-                {
-                    Log.Error("Segment time invalid!");
-                    MessageBox.Show("Segment time invalid!", "Error!");
-                    return;
-                }
-                Log.Information("Input segment: {start} ~ {end}", start, end);
-            }
-            else
-            {
-                start = end = 0;
-                Log.Information("Segment input is disabled.");
-            }
+            start = end = 0;
+            Log.Information("Segment input is disabled.");
         }
 
         DirectoryInfo directory;
@@ -178,10 +137,19 @@ public partial class Form1 : Form
         Log.Information("Output directory:");
         Log.Information(directory.FullName);
 
-        _ = DownloadAsync(id, start, end, directory).ConfigureAwait(true);
+
+        string format = textBox_format.Text;
+
+        string browser = comboBox_browser.Text;
+        if (!string.IsNullOrEmpty(browser) && browser == "( Disabled )")
+        {
+            browser = "";
+        }
+
+        _ = DownloadAsync(id, start, end, directory, format, browser).ConfigureAwait(true);
     }
 
-    private async Task DownloadAsync(string id, float start, float end, DirectoryInfo directory)
+    private async Task DownloadAsync(string id, float start, float end, DirectoryInfo directory, string format, string browser)
     {
         try
         {
@@ -194,7 +162,9 @@ public partial class Form1 : Form
             Download download = new(id: id,
                                     start: start,
                                     end: end,
-                                    outputDirectory: directory);
+                                    outputDirectory: directory,
+                                    format: format,
+                                    browser: browser);
             _ = download.Start().ConfigureAwait(false);
 
             // Update UI
@@ -307,5 +277,67 @@ public partial class Form1 : Form
     private void button_redownloadDependencies_Click(object sender, EventArgs e)
     {
         _ = PrepareYtdlpAndFFmpegAsync(true).ConfigureAwait(true);  // Use same thread
+    }
+
+    private void textBox_youtube_TextChanged(object sender, EventArgs e)
+    {
+        button_start.Enabled = false;
+        try
+        {
+            if (FetchYoutubeClipInformation(textBox_youtube.Text, out string id, out var start, out var end))
+            {
+                textBox_youtube.Text = id;
+                checkBox_segment.Checked = true;
+                textBox_start.Text = start.ToString();
+                textBox_end.Text = end.ToString();
+            }
+        }
+        finally
+        {
+            button_start.Enabled = true;
+        }
+    }
+
+    private static bool FetchYoutubeClipInformation(string url, out string id, out float start, out float end)
+    {
+        id = "";
+        start = end = 0;
+
+        Regex clipReg = new(@"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/)clip\/[?=&+%\w.-]*");
+
+        if (string.IsNullOrEmpty(url) || !clipReg.IsMatch(url)) return false;
+
+        using HttpClient client = new();
+        var response = client.GetAsync(url).Result;
+        if (!response.IsSuccessStatusCode)
+        {
+            Log.Error("Couldn't get the clip. Status {code}.", response.StatusCode);
+            Log.Error(url);
+            return false;
+        }
+        string body = response.Content.ReadAsStringAsync().Result;
+
+        // "clipConfig":{"postId":"UgkxVQpxshiN76QUwblPu-ggj6fl594-ORiU","startTimeMs":"1891037","endTimeMs":"1906037"}
+        Regex reg1 = new(@"clipConfig"":{""postId"":""(?:[\w-]+)"",""startTimeMs"":""(\d+)"",""endTimeMs"":""(\d+)""}");
+        Match match1 = reg1.Match(body);
+        if (match1.Success)
+        {
+            if (float.TryParse(match1.Groups[1].Value, out float _start)
+                && float.TryParse(match1.Groups[2].Value, out float _end))
+            {
+                start = _start / 1000;
+                end = _end / 1000;
+            }
+        }
+
+        // {"videoId":"Gs7QYATahy4"}
+        Regex reg2 = new(@"{""videoId"":""([\w-]+)""");
+        Match match2 = reg2.Match(body);
+        if (match2.Success)
+        {
+            id = match2.Groups[1].Value;
+        }
+        Log.Information("Get info from clip: {videoId}, {start}, {end}", id, start, end);
+        return match1.Success && match2.Success;
     }
 }
