@@ -16,15 +16,26 @@ A lifesaver for anyone who is doing video clipping/translating or any need to do
 
 ## Feature
 
-Download Youtube video in **segment**.\
+**Download Youtube video in segment**\
 In detail, you can download only one segment in the middle of the video instead of downloading the whole video.
 
-This software is built on yt-dlp and FFmpeg. If you don't have them installed, this software will download them automatically at startup.
+**This software is built on yt-dlp and FFmpeg.**\
+If you don't have them installed, this software will download them automatically at startup.
 
-### New Feature
+**Can accept Youtube clips too!**\
+Try to put this in the Youtube Link textbox: [https://youtube.com/clip/UgkxdTb9o6I2pTr87wKgpO0kLEaZbYrkMDFv](https://youtube.com/clip/UgkxdTb9o6I2pTr87wKgpO0kLEaZbYrkMDFv)\
+It will be converted to id, start, and end time immediately.
 
-Now accepting Youtube clips too!\
-Try to put this in the Youtube Link textbox: [https://youtube.com/clip/UgkxdTb9o6I2pTr87wKgpO0kLEaZbYrkMDFv](https://youtube.com/clip/UgkxdTb9o6I2pTr87wKgpO0kLEaZbYrkMDFv)
+**Use the Youtube login status in your browser.**\
+Select your login browser and download the membership video/your private video.
+
+**The output video format conforms to the Youtube recommendation for uploading!**\
+[Recommended upload encoding settings - YouTube Help](https://support.google.com/youtube/answer/1722171/)
+
+**The download format can be specified.**\
+Input [the format](https://github.com/yt-dlp/yt-dlp#format-selection) such as `303+251`
+> Note: The video will be downloaded in this format and will ALWAYS be re-encoded to mp4 format.\
+> Re-encoded is needed after cutting the video. Please read the details below.
 
 ## Install
 
