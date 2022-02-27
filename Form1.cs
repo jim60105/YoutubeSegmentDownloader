@@ -84,7 +84,7 @@ public partial class Form1 : Form
         {
             // Regex for strip youtube video id from url c# and returl default thumbnail
             // https://gist.github.com/Flatlineato/f4cc3f3937272646d4b0
-            Regex idRegex = new("https?:\\/\\/(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube(?:-nocookie)?\\.com\\S*[^\\w\\s-])([\\w-]{11})(?=[^\\w-]|$)(?![?=&+%\\w.-]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w.-]*");
+            Regex idRegex = new(@"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\S*[^\w\s-])([\w-]{11})(?=[^\w-]|$)(?![?=&+%\w.-]*(?:['""][^<>]*>|<\/a>))[?=&+%\w.-]*");
             Match idMatch = idRegex.Match(textBox_youtube.Text);
             if (idMatch.Success)
             {
