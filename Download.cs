@@ -186,11 +186,14 @@ internal class Download
 
         FFmpeg.SetExecutablesPath(ExternalProgram.FFmpegPath);
         IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(inputPath);
+        // How to Encode Videos for YouTube, Facebook, Vimeo, twitch, and other Video Sharing Sites
+        // https://trac.ffmpeg.org/wiki/Encode/YouTube
         IConversion conversion = FFmpeg.Conversions.New()
+                                   .AddParameter($"-sseof -{duration}", ParameterPosition.PreInput)
                                    .AddStream(mediaInfo.Streams)
-                                   .AddParameter($"-ss {mediaInfo.Duration - TimeSpan.FromSeconds(duration)}")
+                                   .AddParameter("-c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k -pix_fmt yuv420p")
+                                   .AddParameter("-movflags +faststart")
                                    .SetOutput(outputPath)
-                                   .AddParameter($"-movflags +faststart")
                                    .SetOverwriteOutput(true);
         conversion.OnDataReceived += (_, e) => Log.Verbose(e.Data);
         Log.Debug("FFmpeg arguments: {arguments}", conversion.Build());
