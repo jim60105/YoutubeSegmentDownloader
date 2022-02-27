@@ -74,7 +74,7 @@ Website: <https://github.com/jim60105/YoutubeSegmentDownloader>\
 Author: jim60105
 
 This software uses **FFmpeg** licensed under the **GPLv3**.\
-FFmpeg binary distributions will be downloaded from [here](https://github.com/GyanD/codexffmpeg/releases/tag/5.0).\
+FFmpeg binary distributions will be downloaded from [here](https://github.com/yt-dlp/FFmpeg-Builds/releases/latest).\
 FFmpeg source code can be found [here](https://github.com/FFmpeg/FFmpeg/commit/390d6853d0).
 
 This software uses **yt-dlp** licensed under the **Unlicense License**.\

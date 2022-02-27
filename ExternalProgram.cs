@@ -1,6 +1,6 @@
 ﻿using Serilog;
 using SharpCompress.Archives;
-using SharpCompress.Archives.SevenZip;
+using SharpCompress.Archives.Zip;
 using SharpCompress.Common;
 
 namespace YoutubeSegmentDownloader;
@@ -61,11 +61,11 @@ public static class ExternalProgram
 
         FFmpegPath = TempDirectory.FullName;
         HttpClient client = new();
-        string ffmpegUrl = @"https://github.com/GyanD/codexffmpeg/releases/download/5.0/ffmpeg-5.0-essentials_build.7z";
+        string ffmpegUrl = @"https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-n5.0-latest-win64-gpl-shared-5.0.zip";
         var response = await client.GetAsync(ffmpegUrl, HttpCompletionOption.ResponseHeadersRead);
         Log.Debug("Get response from {FFmpegUrl}", ffmpegUrl);
 
-        string archivePath = Path.Combine(FFmpegPath, "ffmpeg-5.0-essentials_build.7z");
+        string archivePath = Path.Combine(FFmpegPath, "ffmpeg-n5.0-latest-win64-gpl-shared-5.0.zip");
         File.Delete(archivePath);
 
         using (FileStream fs = new(archivePath, FileMode.Create))
@@ -77,11 +77,12 @@ public static class ExternalProgram
 
         try
         {
-            using SevenZipArchive archive = SevenZipArchive.Open(archivePath);
-            Log.Information("Start unpacking ffmpeg-5.0-essentials_build.7z");
+            using ZipArchive archive = ZipArchive.Open(archivePath);
+            Log.Information("Start unpacking ffmpeg-n5.0-latest-win64-gpl-shared-5.0.zip");
 
             foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory
                                                                  && (entry.Key.EndsWith("exe")
+                                                                     || entry.Key.EndsWith("dll")
                                                                      || entry.Key.Contains("LICENSE"))))
             {
                 Log.Information("{FilePath}", Path.Combine(FFmpegPath, Path.GetFileName(entry.Key)));
