@@ -235,9 +235,9 @@
             this.label3.Font = new System.Drawing.Font("Microsoft JhengHei UI", 13.77391F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label3.Location = new System.Drawing.Point(3, 43);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(147, 28);
+            this.label3.Size = new System.Drawing.Size(102, 28);
             this.label3.TabIndex = 0;
-            this.label3.Text = "Youtube Link";
+            this.label3.Text = "Video ID";
             // 
             // textBox_youtube
             // 
@@ -245,7 +245,7 @@
             this.textBox_youtube.Font = new System.Drawing.Font("Microsoft JhengHei UI", 11.89565F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.textBox_youtube.Location = new System.Drawing.Point(202, 41);
             this.textBox_youtube.Name = "textBox_youtube";
-            this.textBox_youtube.PlaceholderText = "https://youtu.be/......";
+            this.textBox_youtube.PlaceholderText = "( Paste any kind of Youtube link here )";
             this.textBox_youtube.Size = new System.Drawing.Size(571, 32);
             this.textBox_youtube.TabIndex = 1;
             this.toolTip1.SetToolTip(this.textBox_youtube, "Also accepts Youtube clips!");

@@ -1,5 +1,4 @@
 ﻿using Serilog;
-using System.Diagnostics;
 using Xabe.FFmpeg;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Metadata;
@@ -16,6 +15,7 @@ internal class Download
     private readonly string format;
     private readonly string browser;
     public bool finished = false;
+    public bool successed = false;
     public string? outputFilePath = null;
 
     public Download(string id,
@@ -36,6 +36,8 @@ internal class Download
     public async Task Start()
     {
         Log.Information("Start the download process...");
+        successed = false;
+        finished = false;
 
         string tempFilePath1 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
         string tempFilePath2 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
@@ -43,6 +45,56 @@ internal class Download
         Log.Debug("{TempFilePath}", tempFilePath1);
         Log.Debug("{TempFilePath}", tempFilePath2);
 
+        try
+        {
+            OptionSet optionSet = CreateOptionSet();
+
+            YoutubeDL? ytdl = new()
+            {
+                YoutubeDLPath = Path.Combine(ExternalProgram.YtdlpPath ?? "./", "yt-dlp.exe"),
+                FFmpegPath = Path.Combine(ExternalProgram.FFmpegPath ?? "./", "ffmpeg.exe"),
+                //OutputFolder = outputDirectory.FullName,
+                OutputFileTemplate = tempFilePath1,
+                OverwriteFiles = true,
+                IgnoreDownloadErrors = true
+            };
+
+            VideoData? videoData = await FetchVideoInfoAsync(ytdl, optionSet);
+            if (null == videoData) return;
+
+            outputFilePath = CalculatePath(videoData?.Title, videoData?.UploadDate);
+
+            bool downloadSuccess = await DownloadVideoAsync(ytdl, optionSet);
+            if (!downloadSuccess) return;
+
+            if (end == 0)
+            {
+                Log.Information("Move file to {filePath}", outputFilePath);
+                File.Move(tempFilePath1, outputFilePath, true);
+            }
+            else
+            {
+                await CutWithFFmpegAsync(tempFilePath1, tempFilePath2);
+                File.Move(tempFilePath2, outputFilePath, true);
+            }
+            Log.Information("Download completed:");
+            Log.Information(outputFilePath);
+            successed = true;
+        }
+        finally
+        {
+            File.Delete(tempFilePath1);
+            File.Delete(tempFilePath2);
+            File.Delete(Path.ChangeExtension(tempFilePath1, "tmp"));
+            File.Delete(Path.ChangeExtension(tempFilePath2, "tmp"));
+            Log.Information("Clean up temporary files.");
+            Log.Information("Process ends.");
+            finished = true;
+        }
+    }
+
+    private OptionSet CreateOptionSet()
+    {
         OptionSet optionSet = new()
         {
             NoCheckCertificate = true,
@@ -69,48 +121,7 @@ internal class Download
             optionSet.ExternalDownloaderArgs = $"ffmpeg_i:-ss {start} -to {end}";
         }
 
-        YoutubeDL? ytdl = new()
-        {
-            YoutubeDLPath = Path.Combine(ExternalProgram.YtdlpPath ?? "./", "yt-dlp.exe"),
-            FFmpegPath = Path.Combine(ExternalProgram.FFmpegPath ?? "./", "ffmpeg.exe"),
-            //OutputFolder = outputDirectory.FullName,
-            OutputFileTemplate = tempFilePath1,
-            OverwriteFiles = true,
-            IgnoreDownloadErrors = true
-        };
-
-        try
-        {
-            VideoData? videoData = await FetchVideoInfoAsync(ytdl, optionSet);
-            if (null == videoData) return;
-
-            outputFilePath = CalculatePath(videoData?.Title, videoData?.UploadDate);
-
-            if (!await DownloadVideoAsync(ytdl, optionSet)) return;
-
-            if (end != 0)
-            {
-                await CutWithFFmpegAsync(tempFilePath1, tempFilePath2);
-                Log.Information("Move file to {filePath}", outputFilePath);
-                File.Move(tempFilePath2, outputFilePath, true);
-            }
-            else
-            {
-                Log.Information("Move file to {filePath}", outputFilePath);
-                File.Move(tempFilePath1, outputFilePath, true);
-            }
-            Log.Information("Download completed:");
-            Log.Information(outputFilePath);
-            finished = true;
-        }
-        finally
-        {
-            File.Delete(tempFilePath1);
-            File.Delete(tempFilePath2);
-            File.Delete(Path.ChangeExtension(tempFilePath1, "tmp"));
-            File.Delete(Path.ChangeExtension(tempFilePath2, "tmp"));
-            Log.Information("Clean up temporary files.");
-        }
+        return optionSet;
     }
 
     /// <summary>
@@ -126,6 +137,7 @@ internal class Download
         if (!result_VideoData.Success)
         {
             Log.Error("Failed to get video information! VideoId: {id}", id);
+            Log.Error("Please make sure your network is working and you have permission to access the video.");
             return null;
         }
 
@@ -161,7 +173,7 @@ internal class Download
 
         if (!result_string.Success)
         {
-            Log.Error("Failed to download video!");
+            Log.Error("Failed to download video! Please try again later.");
             foreach (var str in result_string.ErrorOutput)
             {
                 Log.Information(str);
