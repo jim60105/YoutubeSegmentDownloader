@@ -6,6 +6,7 @@ A lifesaver for anyone who is doing video clipping/translating or any need to do
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/jim60105/YoutubeSegmentDownloader?style=for-the-badge)](https://github.com/jim60105/YoutubeSegmentDownloader/releases/latest)
 ![GitHub Release Date](https://img.shields.io/github/release-date/jim60105/YoutubeSegmentDownloader?style=for-the-badge)
+![GitHub all releases](https://img.shields.io/github/downloads/jim60105/YoutubeSegmentDownloader/total?style=for-the-badge)
 
 ![Preview](assets/preview.png)
 
@@ -37,7 +38,7 @@ Input [the format](https://github.com/yt-dlp/yt-dlp#format-selection) such as `3
 > Note: The video will be downloaded in this format and will ALWAYS be re-encoded to mp4 format.\
 > Re-encoded is needed after cutting the video. Please read the details below.
 
-**I18n 多國語系**
+**I18n 多國語系**\
 我只做了中文介面\
 I only speak Chinese. Give me PR if you make more languages!
 
