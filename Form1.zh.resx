@@ -1,4 +1,64 @@
-﻿<root>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -57,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="panel1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>None</value>
   </data>
@@ -75,7 +135,6 @@
   <data name="label_checking_ytdlp.Location" type="System.Drawing.Point, System.Drawing">
     <value>468, -1</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="label_checking_ytdlp.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
@@ -125,7 +184,7 @@
     <value>0</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
-    <value>Updating FFmpeg</value>
+    <value>正在更新 FFmpeg</value>
   </data>
   <data name="label2.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>BottomLeft</value>
@@ -161,7 +220,7 @@
     <value>0</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
-    <value>Updating yt-dlp</value>
+    <value>正在更新 yt-dlp</value>
   </data>
   <data name="&gt;&gt;label1.Name" xml:space="preserve">
     <value>label1</value>
@@ -265,11 +324,11 @@
   <data name="textBox_outputDirectory.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>220, 17</value>
-  </metadata>
+  </data>
   <data name="textBox_outputDirectory.ToolTip" xml:space="preserve">
-    <value>This is where your videos will be downloaded to.</value>
+    <value>影片會被下載至這個位置</value>
   </data>
   <data name="&gt;&gt;textBox_outputDirectory.Name" xml:space="preserve">
     <value>textBox_outputDirectory</value>
@@ -299,7 +358,7 @@
     <value>0</value>
   </data>
   <data name="button_folder.Text" xml:space="preserve">
-    <value>📂 Folder</value>
+    <value>📂 資料夾</value>
   </data>
   <data name="&gt;&gt;button_folder.Name" xml:space="preserve">
     <value>button_folder</value>
@@ -362,7 +421,7 @@
     <value>0</value>
   </data>
   <data name="label8.Text" xml:space="preserve">
-    <value>Output Directory</value>
+    <value>輸出資料夾</value>
   </data>
   <data name="label8.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleCenter</value>
@@ -398,7 +457,7 @@
     <value>0</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
-    <value>Video ID</value>
+    <value>影片來源</value>
   </data>
   <data name="&gt;&gt;label3.Name" xml:space="preserve">
     <value>label3</value>
@@ -422,7 +481,7 @@
     <value>202, 41</value>
   </data>
   <data name="textBox_youtube.PlaceholderText" xml:space="preserve">
-    <value>( Paste any kind of Youtube link here )</value>
+    <value>( 在此貼上任何Youtube連結 )</value>
   </data>
   <data name="textBox_youtube.Size" type="System.Drawing.Size, System.Drawing">
     <value>571, 32</value>
@@ -431,7 +490,7 @@
     <value>1</value>
   </data>
   <data name="textBox_youtube.ToolTip" xml:space="preserve">
-    <value>Also accepts Youtube clips!</value>
+    <value>也接受Youtube剪輯片段喔!</value>
   </data>
   <data name="&gt;&gt;textBox_youtube.Name" xml:space="preserve">
     <value>textBox_youtube</value>
@@ -473,7 +532,7 @@
     <value>panel_main</value>
   </data>
   <data name="&gt;&gt;tableLayoutPanel_main.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="tableLayoutPanel_main.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
     <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="tableLayoutPanel1" Row="0" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="label8" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="label3" Row="1" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="textBox_youtube" Row="1" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="Percent,25.64433,Percent,74.35567" /&gt;&lt;Rows Styles="Percent,50,Percent,50" /&gt;&lt;/TableLayoutSettings&gt;</value>
@@ -500,7 +559,7 @@
     <value>0</value>
   </data>
   <data name="checkBox_segment.ToolTip" xml:space="preserve">
-    <value>If you want to download the entire video, uncheck it.</value>
+    <value>若想要下載整部影片，反選它</value>
   </data>
   <data name="&gt;&gt;checkBox_segment.Name" xml:space="preserve">
     <value>checkBox_segment</value>
@@ -542,7 +601,7 @@
     <value>Center</value>
   </data>
   <data name="textBox_end.ToolTip" xml:space="preserve">
-    <value>Enter 00:00:00.000, or the number of seconds in floating point numbers.</value>
+    <value>輸入 00:00:00.000，或是浮點秒數</value>
   </data>
   <data name="&gt;&gt;textBox_end.Name" xml:space="preserve">
     <value>textBox_end</value>
@@ -575,7 +634,7 @@
     <value>0</value>
   </data>
   <data name="label6.Text" xml:space="preserve">
-    <value>Start</value>
+    <value>開始時間</value>
   </data>
   <data name="label6.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleCenter</value>
@@ -614,7 +673,7 @@
     <value>Center</value>
   </data>
   <data name="textBox_start.ToolTip" xml:space="preserve">
-    <value>Enter 00:00:00.000, or the number of seconds in floating point numbers.</value>
+    <value>輸入 00:00:00.000，或是浮點秒數</value>
   </data>
   <data name="&gt;&gt;textBox_start.Name" xml:space="preserve">
     <value>textBox_start</value>
@@ -647,7 +706,7 @@
     <value>0</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
-    <value>End</value>
+    <value>結束時間</value>
   </data>
   <data name="label5.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleCenter</value>
@@ -716,10 +775,10 @@
     <value>3</value>
   </data>
   <data name="button_start.Text" xml:space="preserve">
-    <value>Start</value>
+    <value>開始</value>
   </data>
   <data name="button_start.ToolTip" xml:space="preserve">
-    <value>Start!</value>
+    <value>開始!</value>
   </data>
   <data name="&gt;&gt;button_start.Name" xml:space="preserve">
     <value>button_start</value>
@@ -755,14 +814,14 @@
     <value>0</value>
   </data>
   <data name="richTextBox2.Text" xml:space="preserve">
-    <value>This software uses FFmpeg licensed under the GPLv3.
-FFmpeg binary distributions is downloading from here.
+    <value>此軟體根據 GPLv3 許可證使用 FFmpeg
+FFmpeg 編譯分發是由此下載:
 https://github.com/yt-dlp/FFmpeg-Builds/releases/latest
-FFmpeg source code can be found here.
+FFmpeg 原始碼可以在這裡找到:
 https://github.com/FFmpeg/FFmpeg/commit/390d6853d0
 
-This software uses yt-dlp licensed under the Unlicense License.
-yt-dlp binary distribution and source code is downloading from here.
+此軟體根據 The Unlicense 許可證使用  yt-dlp
+yt-dlp 編譯分發和原始碼是由此下載:
 https://github.com/yt-dlp/yt-dlp/releases/latest</value>
   </data>
   <data name="&gt;&gt;richTextBox2.Name" xml:space="preserve">
@@ -829,7 +888,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>panel_main</value>
   </data>
   <data name="&gt;&gt;richTextBoxLogControl1.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>6</value>
   </data>
   <data name="checkBox_logVerbose.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left</value>
@@ -847,10 +906,10 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>0</value>
   </data>
   <data name="checkBox_logVerbose.Text" xml:space="preserve">
-    <value>Log Verbose</value>
+    <value>詳細記錄</value>
   </data>
   <data name="checkBox_logVerbose.ToolTip" xml:space="preserve">
-    <value>Displays detailed logs.</value>
+    <value>顯示詳細記錄</value>
   </data>
   <data name="&gt;&gt;checkBox_logVerbose.Name" xml:space="preserve">
     <value>checkBox_logVerbose</value>
@@ -862,7 +921,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>panel_main</value>
   </data>
   <data name="&gt;&gt;checkBox_logVerbose.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="tableLayoutPanel2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -892,7 +951,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>False</value>
   </data>
   <data name="comboBox_browser.Items" xml:space="preserve">
-    <value>( Disabled )</value>
+    <value>( 不使用 )</value>
   </data>
   <data name="comboBox_browser.Items1" xml:space="preserve">
     <value>brave</value>
@@ -931,7 +990,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>0</value>
   </data>
   <data name="comboBox_browser.ToolTip" xml:space="preserve">
-    <value>Select the browser where you are logged into your Youtube account.</value>
+    <value>選擇你已登入Youtube帳號的瀏覧器</value>
   </data>
   <data name="&gt;&gt;comboBox_browser.Name" xml:space="preserve">
     <value>comboBox_browser</value>
@@ -955,10 +1014,10 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>0</value>
   </data>
   <data name="groupBox2.Text" xml:space="preserve">
-    <value>Cookies from browser</value>
+    <value>使用瀏覧器的登入授權</value>
   </data>
   <data name="groupBox2.ToolTip" xml:space="preserve">
-    <value>This will extract the Youtube login status from the selected browser to obtain permission to access the video.</value>
+    <value>由你選擇的瀏覧器導出Youtube登入授權，並用來下載影片</value>
   </data>
   <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
     <value>groupBox2</value>
@@ -985,7 +1044,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>6, 24</value>
   </data>
   <data name="textBox_format.PlaceholderText" xml:space="preserve">
-    <value>( Keep it Blank )</value>
+    <value>( 保留空欄 )</value>
   </data>
   <data name="textBox_format.Size" type="System.Drawing.Size, System.Drawing">
     <value>214, 35</value>
@@ -997,7 +1056,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>Center</value>
   </data>
   <data name="textBox_format.ToolTip" xml:space="preserve">
-    <value>Please leave this field blank unless you are sure you know what it does.</value>
+    <value>除非你確信這是做什麼的，否則請保留空欄！</value>
   </data>
   <data name="&gt;&gt;textBox_format.Name" xml:space="preserve">
     <value>textBox_format</value>
@@ -1021,10 +1080,10 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>0</value>
   </data>
   <data name="groupBox3.Text" xml:space="preserve">
-    <value>Overwrite download format</value>
+    <value>覆寫下載格式</value>
   </data>
   <data name="groupBox3.ToolTip" xml:space="preserve">
-    <value>It will be downloaded in this format and re-encoded to mp4.</value>
+    <value>影片會以此格式下載，然後重編碼為mp4</value>
   </data>
   <data name="&gt;&gt;groupBox3.Name" xml:space="preserve">
     <value>groupBox3</value>
@@ -1102,7 +1161,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>0</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
-    <value>Enable</value>
+    <value>啟用片段截取</value>
   </data>
   <data name="label4.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleCenter</value>
@@ -1189,7 +1248,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>2</value>
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
-    <value>Segment</value>
+    <value>片段</value>
   </data>
   <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
     <value>groupBox1</value>
@@ -1249,10 +1308,10 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>0</value>
   </data>
   <data name="button_redownloadDependencies.Text" xml:space="preserve">
-    <value>Redownload Dependencies</value>
+    <value>重新下載依賴元件</value>
   </data>
   <data name="button_redownloadDependencies.ToolTip" xml:space="preserve">
-    <value>Try this if things aren't going well.</value>
+    <value>如果有哪裡不太對勁，試試這個</value>
   </data>
   <data name="&gt;&gt;button_redownloadDependencies.Name" xml:space="preserve">
     <value>button_redownloadDependencies</value>
@@ -1265,6 +1324,60 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
   </data>
   <data name="&gt;&gt;button_redownloadDependencies.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="label9.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="label9.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label9.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="label9.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe Print, 8.765218pt</value>
+  </data>
+  <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
+    <value>629, 438</value>
+  </data>
+  <data name="label9.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>No</value>
+  </data>
+  <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
+    <value>154, 26</value>
+  </data>
+  <data name="label9.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="label9.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="label7.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="label7.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label7.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="label7.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe Print, 8.765218pt</value>
+  </data>
+  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
+    <value>459, 461</value>
+  </data>
+  <data name="label7.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>No</value>
+  </data>
+  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
+    <value>324, 26</value>
+  </data>
+  <data name="label7.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="label7.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
   </data>
   <data name="richTextBox1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -1297,7 +1410,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>https://github.com/jim60105/YoutubeSegmentDownloader</value>
   </data>
   <data name="richTextBox1.ToolTip" xml:space="preserve">
-    <value>In this link you can find everything about this software.</value>
+    <value>你可以在這裡找到關於此軟體的一切！</value>
   </data>
   <data name="&gt;&gt;richTextBox1.Name" xml:space="preserve">
     <value>richTextBox1</value>
@@ -1309,7 +1422,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>panel_main</value>
   </data>
   <data name="&gt;&gt;richTextBox1.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>7</value>
   </data>
   <data name="panel_main.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>
@@ -1335,18 +1448,18 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
   <data name="&gt;&gt;panel_main.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <metadata name="folderBrowserDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="folderBrowserDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>17, 17</value>
-  </metadata>
+  </data>
   <data name="folderBrowserDialog1.Description" xml:space="preserve">
-    <value>Output Directory</value>
+    <value>輸出資料夾</value>
   </data>
   <data name="folderBrowserDialog1.UseDescriptionForTitle" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
-  </metadata>
+  </data>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>8, 18</value>
   </data>
@@ -5869,7 +5982,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
 </value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Youtube Segment Downloader</value>
+    <value>Youtube片段下載器 (Youtube Segment Downloader)</value>
   </data>
   <data name="&gt;&gt;folderBrowserDialog1.Name" xml:space="preserve">
     <value>folderBrowserDialog1</value>

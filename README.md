@@ -37,6 +37,10 @@ Input [the format](https://github.com/yt-dlp/yt-dlp#format-selection) such as `3
 > Note: The video will be downloaded in this format and will ALWAYS be re-encoded to mp4 format.\
 > Re-encoded is needed after cutting the video. Please read the details below.
 
+**I18n 多國語系**
+我只做了中文介面\
+I only speak Chinese. Give me PR if you make more languages!
+
 ## Install
 
 Get the latest release
