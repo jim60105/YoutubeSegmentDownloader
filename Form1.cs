@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using Serilog.Events;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -93,7 +94,8 @@ public partial class Form1 : Form
         Settings.Default.Format = format;
 
         string browser = comboBox_browser.Text;
-        if (string.IsNullOrEmpty(browser) || browser == "( Disabled )")
+        if (string.IsNullOrEmpty(browser) 
+            || browser == new ComponentResourceManager(typeof(Form1)).GetString("comboBox_browser.Items"))
         {
             browser = "";
         }
