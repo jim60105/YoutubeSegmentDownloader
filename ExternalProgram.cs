@@ -23,6 +23,9 @@ public static class ExternalProgram
     public static string? YtdlpPath { get; private set; }
     public static string? FFmpegPath { get; private set; }
 
+    // https://github.com/yt-dlp/FFmpeg-Builds/releases/latest
+    private const string FFmpegFileName = "ffmpeg-n5.1-latest-win64-gpl-shared-5.1.zip";
+
     internal static async Task DownloadYtdlp()
     {
         Log.Information("Start downloading yt-dlp...");
@@ -61,11 +64,11 @@ public static class ExternalProgram
 
         FFmpegPath = TempDirectory.FullName;
         HttpClient client = new();
-        string ffmpegUrl = @"https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-n5.0-latest-win64-gpl-shared-5.0.zip";
+        string ffmpegUrl = @$"https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/{FFmpegFileName}";
         var response = await client.GetAsync(ffmpegUrl, HttpCompletionOption.ResponseHeadersRead);
         Log.Debug("Get response from {FFmpegUrl}", ffmpegUrl);
 
-        string archivePath = Path.Combine(FFmpegPath, "ffmpeg-n5.0-latest-win64-gpl-shared-5.0.zip");
+        string archivePath = Path.Combine(FFmpegPath, FFmpegFileName);
         File.Delete(archivePath);
 
         using (FileStream fs = new(archivePath, FileMode.Create))
@@ -78,7 +81,7 @@ public static class ExternalProgram
         try
         {
             using ZipArchive archive = ZipArchive.Open(archivePath);
-            Log.Information("Start unpacking ffmpeg-n5.0-latest-win64-gpl-shared-5.0.zip");
+            Log.Information("Start unpacking {FFmpegFileName}", FFmpegFileName);
 
             foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory
                                                                  && (entry.Key.EndsWith("exe")
