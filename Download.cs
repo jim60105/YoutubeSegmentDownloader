@@ -97,8 +97,9 @@ internal class Download
     {
         OptionSet optionSet = new()
         {
-            NoCheckCertificate = true,
+            NoCheckCertificate = true
         };
+        optionSet.AddCustomOption("--extractor-args", "youtube:skip=dash");
 
         if (!string.IsNullOrEmpty(format))
         {
