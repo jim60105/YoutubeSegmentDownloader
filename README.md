@@ -39,8 +39,13 @@ Input [the format](https://github.com/yt-dlp/yt-dlp#format-selection) such as `3
 > Re-encoded is needed after cutting the video. Please read the details below.
 
 **I18n 多國語系**\
-我只做了中文介面\
+我做了中文介面\
 I only speak Chinese. Give me PR if you make more languages!
+
+**It can accept any yt-dlp supported site.**\
+I only support Youtube, but this application can theoretically be used on [any site supported by yt-dlp](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md).\
+The actual situation depends on the video format and whether ffmpeg can index it correctly, but it's still worth a try.\
+For reference, I have had success with Youtube, Twitch, and niconico.
 
 ## Install
 

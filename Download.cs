@@ -68,7 +68,7 @@ internal class Download
             VideoData? videoData = await FetchVideoInfoAsync(ytdl, optionSet);
             if (null == videoData) return;
 
-            outputFilePath = CalculatePath(videoData?.Title, videoData?.UploadDate, videoData.ID);
+            outputFilePath = CalculatePath(videoData?.Title, videoData?.UploadDate, videoData?.ID);
 
             bool downloadSuccess = await DownloadVideoAsync(ytdl, optionSet);
             if (!downloadSuccess) return;
@@ -87,7 +87,8 @@ internal class Download
             Log.Information(outputFilePath);
             successed = true;
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             Log.Error("vvvvvvv");
             Log.Error(e.Message);
             Log.Error("^^^^^^^");
@@ -231,7 +232,7 @@ internal class Download
     /// <param name="title">影片標題，用做檔名</param>
     /// <param name="date">影片日期，用做檔名</param>
     /// <returns></returns>
-    private string CalculatePath(string? title, DateTime? date, string videoId)
+    private string CalculatePath(string? title, DateTime? date, string? videoId)
     {
         title ??= "";
         // 取代掉檔名中的非法字元
@@ -246,7 +247,7 @@ internal class Download
 
         date ??= DateTime.Now;
 
-        string newPath = Path.Combine(outputDirectory.FullName, $"{date:yyyyMMdd} {title} ({videoId}) [{start}_{end}].mp4");
+        string newPath = Path.Combine(outputDirectory.FullName, $"{date:yyyyMMdd} {title} ({videoId ?? id}) [{start}_{end}].mp4");
 
         Log.Debug("Calculate output file path as {newPath}", newPath);
         return newPath;

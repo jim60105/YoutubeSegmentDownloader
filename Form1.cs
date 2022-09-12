@@ -92,7 +92,7 @@ public partial class Form1 : Form
         Settings.Default.Format = format;
 
         string browser = comboBox_browser.Text;
-        if (string.IsNullOrEmpty(browser) 
+        if (string.IsNullOrEmpty(browser)
             || browser == resources.GetString("comboBox_browser.Items"))
         {
             browser = "";
@@ -313,7 +313,7 @@ public partial class Form1 : Form
                 textBox_end.Text = end.ToString();
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Log.Error(ex.Message);
         }
