@@ -6002,4 +6002,8 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="hiddenlabel1.Text" xml:space="preserve">
+    <value>你輸入的影片來源並非Youtube連結或是影片ID。
+程式會將此來源直接交給yt-dlp，這很可能會失敗！</value>
+  </data>
 </root>

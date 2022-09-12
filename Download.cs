@@ -9,6 +9,12 @@ namespace YoutubeSegmentDownloader;
 internal class Download
 {
     private readonly string id;
+    private string link
+    {
+        get => id.Contains('/')
+                ? id
+                : @$"https://youtu.be/{id}";
+    }
     private readonly float start;
     private readonly float end;
     private readonly DirectoryInfo outputDirectory;
@@ -133,7 +139,7 @@ internal class Download
     private async Task<VideoData?> FetchVideoInfoAsync(YoutubeDL ytdl, OptionSet optionSet)
     {
         Log.Information("Start getting video information...");
-        RunResult<VideoData> result_VideoData = await ytdl.RunVideoDataFetch(@$"https://youtu.be/{id}", overrideOptions: optionSet);
+        RunResult<VideoData> result_VideoData = await ytdl.RunVideoDataFetch(link, overrideOptions: optionSet);
 
         if (!result_VideoData.Success)
         {
@@ -167,7 +173,7 @@ internal class Download
     {
         Log.Information("Start downloading video...");
         var result_string = await ytdl.RunVideoDownload(
-            url: @$"https://youtu.be/{id}",
+            url: link,
             mergeFormat: DownloadMergeFormat.Mp4,
             output: new Progress<string>(s => Log.Verbose(s)),
             overrideOptions: optionSet);

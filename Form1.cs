@@ -11,6 +11,7 @@ namespace YoutubeSegmentDownloader;
 
 public partial class Form1 : Form
 {
+    readonly ComponentResourceManager resources = new(typeof(Form1));
     public Form1()
     {
         InitializeComponent();
@@ -75,10 +76,7 @@ public partial class Form1 : Form
     {
         Settings.Default.Directory = textBox_outputDirectory.Text;
 
-        if (!TryPrepareVideoID(textBox_youtube.Text, out string? id))
-        {
-            return;
-        }
+        string id = TryPrepareVideoID(textBox_youtube.Text);
 
         if (!TryPrepareStartEndTime(textBox_start.Text, textBox_end.Text, checkBox_segment.Checked, out float start, out float end))
         {
@@ -95,39 +93,35 @@ public partial class Form1 : Form
 
         string browser = comboBox_browser.Text;
         if (string.IsNullOrEmpty(browser) 
-            || browser == new ComponentResourceManager(typeof(Form1)).GetString("comboBox_browser.Items"))
+            || browser == resources.GetString("comboBox_browser.Items"))
         {
             browser = "";
         }
         Settings.Default.Browser = browser;
         Settings.Default.Save();
 
-        _ = DownloadAsync(id!, start, end, directory!, format, browser).ConfigureAwait(true);
+        _ = DownloadAsync(id, start, end, directory!, format, browser).ConfigureAwait(true);
     }
 
-    private static bool TryPrepareVideoID(string text, out string? id)
+    private string TryPrepareVideoID(string text)
     {
-        if (!text.Contains('/'))
+        if (text.Contains('/'))
         {
-            // Not url, treat it as VideoID
-            id = text;
-        }
-        else
-        {
-            id = ExtractVideoIDFromLink(text);
+            string? id = ExtractVideoIDFromLink(text);
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                Log.Information("Get VideoID: {VideoId}", id);
+                return id;
+            }
+            else
+            {
+                Log.Error(resources.GetString("hiddenlabel1.Text", new("en")));
+                MessageBox.Show(resources.GetString("hiddenlabel1.Text"), "Warning!");
+            }
         }
 
-        if (string.IsNullOrEmpty(id))
-        {
-            Log.Error("Youtube Link invalid!");
-            MessageBox.Show("Youtube Link invalid!", "Error!");
-            return false;
-        }
-        else
-        {
-            Log.Information("Get VideoID: {VideoId}", id);
-            return true;
-        }
+        return text;
     }
 
     private static bool TryPrepareStartEndTime(string startString, string endString, bool @checked, out float start, out float end)
