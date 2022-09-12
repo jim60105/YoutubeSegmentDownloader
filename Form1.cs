@@ -214,6 +214,7 @@ public partial class Form1 : Form
         {
             Log.Logger.Error(e.Message);
             MessageBox.Show($"Download not successful!", "Failed!!!");
+            Log.Logger.Error("!!!! FAILED !!!!");
             Log.Logger.Error("Please check the \"Log Verbose\" checkbox for more details and try again.");
             Log.Logger.Error("If you're sure you've found a bug, please report it back to me along with the ENTIRE VERBOSE log.");
         }
@@ -311,6 +312,10 @@ public partial class Form1 : Form
                 textBox_start.Text = start.ToString();
                 textBox_end.Text = end.ToString();
             }
+        }
+        catch(Exception ex)
+        {
+            Log.Error(ex.Message);
         }
         finally
         {

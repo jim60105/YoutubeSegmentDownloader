@@ -87,6 +87,11 @@ internal class Download
             Log.Information(outputFilePath);
             successed = true;
         }
+        catch (Exception e) {
+            Log.Error("vvvvvvv");
+            Log.Error(e.Message);
+            Log.Error("^^^^^^^");
+        }
         finally
         {
             File.Delete(tempFilePath1);
