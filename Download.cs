@@ -180,6 +180,7 @@ internal class Download
         var result_string = await ytdl.RunVideoDownload(
             url: link,
             mergeFormat: DownloadMergeFormat.Mp4,
+            progress: new Progress<DownloadProgress>(s => Log.Verbose(s.Data)),
             output: new Progress<string>(s => Log.Verbose(s)),
             overrideOptions: optionSet);
 
