@@ -11,10 +11,10 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v2
-      - name: Setup .NET Core SDK 6.0.101
+      - name: Setup .NET Core SDK 7.0.100
         uses: actions/setup-dotnet@v1.7.2
         with:
-          dotnet-version: 6.0.101
+          dotnet-version: 7.0.100
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
 
@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: artifact
-          path: bin/Release/net6.0-windows/win-x64/app.publish
+          path: bin/Release/net7.0-windows/win-x64/app.publish
           retention-days: 1
 
   deploy_setup:
