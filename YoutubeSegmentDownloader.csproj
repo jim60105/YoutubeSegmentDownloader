@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
@@ -30,10 +30,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog.Sinks.WinForms" Version="2.3.1" />
-    <PackageReference Include="SharpCompress" Version="0.30.1" />
-    <PackageReference Include="Xabe.FFmpeg" Version="5.1.0" />
-    <PackageReference Include="YoutubeDLSharp" Version="0.4.1" />
+    <PackageReference Include="Serilog.Sinks.WinForms" Version="2.4.3" />
+    <PackageReference Include="SharpCompress" Version="0.32.2" />
+    <PackageReference Include="Xabe.FFmpeg" Version="5.2.3" />
+    <PackageReference Include="YoutubeDLSharp" Version="0.4.3" />
   </ItemGroup>
 
   <ItemGroup>

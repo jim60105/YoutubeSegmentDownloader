@@ -11,7 +11,7 @@ A lifesaver for anyone who is doing video clipping/translating or any need to do
 ![Preview](assets/preview.png)
 
 ![Windows](https://img.shields.io/static/v1?style=for-the-badge&message=WinForm&color=0078D6&logo=Windows&logoColor=FFFFFF&label=)
-![.NET 6.0](https://img.shields.io/static/v1?style=for-the-badge&message=.NET+6.0&color=512BD4&logo=.NET&logoColor=FFFFFF&label=)
+![.NET 7.0](https://img.shields.io/static/v1?style=for-the-badge&message=.NET+7.0&color=512BD4&logo=.NET&logoColor=FFFFFF&label=)
 ![GitHub](https://img.shields.io/github/license/jim60105/YoutubeSegmentDownloader?style=for-the-badge)
 > The software can only be run on Windows x64 platforms.
 
@@ -56,7 +56,7 @@ Please download and install with the *setup.exe*
 
 - Automatically check for upgrades when launching this software
   ![update](assets/update.png)
-- Setup installer will install .NET 6.0 Runtime for you
+- Setup installer will install **.NET 7.0** Runtime for you
 - Setting shortcuts on the Desktop and Start Up Menu
 
 Or you can just download *YoutubeSegmentDownloader.exe*, if you don't care about the above.
@@ -75,6 +75,7 @@ For example, downloading [this video](https://youtu.be/89kXyUCenD0) from 230s ~ 
 ```bash
 yt-dlp --downloader ffmpeg --downloader-args "ffmpeg_i:-ss 230 -to 250" 89kXyUCenD0 
 ```
+
 > yt-dlp `--download-sections "*230-250"` is actually equivalent to `--downloader ffmpeg --downloader-args "ffmpeg_i:-ss 230 -t 20"` [*ref](https://github.com/yt-dlp/yt-dlp/commit/5ec1b6b71689d2f0cbdcd2b6c4dd861fb2fcf911#diff-045340cd706a52a49d1614a44d092c244144486fdd4101f4b56ae644ac9fdd04R452-R455)
 
 would result in a video duration of 29.98 seconds, with the first 7 seconds being corrupted. This is *inaccurate* by, well, about 10 seconds. This is because the last seek point is around 220s, so it cuts off 220s ~ 250s.
@@ -109,5 +110,5 @@ Icon source can be found [here](https://www.elegantthemes.com/blog/freebie-of-th
 
 ---
 
-> A winform project written in .NET 6 and CI/CD the ClickOnce installer on the github workflow.\
-> What am I doing in 2202? ¯\\\_(ツ)_/¯
+> A winform project written in .NET ~~6~~ 7 and CI/CD the ClickOnce installer on the github workflow.\
+> Anyone want to turn it into MAUI? ¯\\\_(ツ)_/¯

@@ -2,7 +2,7 @@
 using Serilog;
 using Serilog.Core;
 using Serilog.Formatting.Display;
-using Serilog.Sinks.WinForms;
+using Serilog.Sinks.WinForms.Base;
 
 namespace YoutubeSegmentDownloader;
 

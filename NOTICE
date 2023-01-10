@@ -1,9 +1,13 @@
 # NOTICE
 
+> *Warning*
+> This tool is updated to **.NET 7.0**
+> You will need to get the runtime if you are not using setup.exe.
+
 Please download and install with the **setup.exe**
 
 - Automatically check for upgrades when launching this software
-- Setup will install .NET 6.0 Runtime for you
+- Setup will install **.NET 7.0** Runtime for you
 - Setting shortcuts on the Desktop and Start Up Menu
 
 Or you can just download YoutubeSegmentDownloader.exe, if you don't care about the above.
