@@ -1,8 +1,9 @@
 ﻿using Serilog;
 using Xabe.FFmpeg;
 using YoutubeDLSharp;
-using YoutubeDLSharp.Metadata;
 using YoutubeDLSharp.Options;
+using YoutubeSegmentDownloader.Extension;
+using YoutubeSegmentDownloader.Models;
 
 namespace YoutubeSegmentDownloader;
 
@@ -65,10 +66,14 @@ internal class Download
                 IgnoreDownloadErrors = true
             };
 
-            VideoData? videoData = await FetchVideoInfoAsync(ytdl, optionSet);
+            YtdlpVideoData? videoData = await FetchVideoInfoAsync(ytdl, optionSet);
             if (null == videoData) return;
 
-            outputFilePath = CalculatePath(videoData?.Title, videoData?.UploadDate, videoData?.ID);
+            outputFilePath = CalculatePath(videoData?.Title,
+                                           DateTime.ParseExact(videoData?.UploadDate ?? "19700101",
+                                                               "yyyyMMdd",
+                                                               System.Globalization.CultureInfo.InvariantCulture),
+                                           videoData?.Id);
 
             bool downloadSuccess = await DownloadVideoAsync(ytdl, optionSet);
             if (!downloadSuccess) return;
@@ -142,10 +147,10 @@ internal class Download
     /// </summary>
     /// <param name="ytdl"></param>
     /// <returns></returns>
-    private async Task<VideoData?> FetchVideoInfoAsync(YoutubeDL ytdl, OptionSet optionSet)
+    private async Task<YtdlpVideoData?> FetchVideoInfoAsync(YoutubeDL ytdl, OptionSet optionSet)
     {
         Log.Information("Start getting video information...");
-        RunResult<VideoData> result_VideoData = await ytdl.RunVideoDataFetch(link, overrideOptions: optionSet);
+        RunResult<YtdlpVideoData> result_VideoData = await ytdl.RunVideoDataFetch_Alt(link, overrideOptions: optionSet);
 
         if (!result_VideoData.Success)
         {
