@@ -18,7 +18,7 @@ public static class ExternalProgram
     public static DependencyStatus Ytdlp_Status { get; private set; } = DependencyStatus.Unknown;
     public static DependencyStatus FFmpeg_Status { get; private set; } = DependencyStatus.Unknown;
 
-    private static readonly DirectoryInfo TempDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), nameof(YoutubeSegmentDownloader)));
+    private static readonly DirectoryInfo WorkingDir = new(Path.GetDirectoryName(Application.ExecutablePath) ?? Path.GetTempPath());
 
     public static string? YtdlpPath { get; private set; }
     public static string? FFmpegPath { get; private set; }
@@ -31,7 +31,7 @@ public static class ExternalProgram
         Log.Information("Start downloading yt-dlp...");
         Ytdlp_Status = DependencyStatus.Downloading;
 
-        YtdlpPath = TempDirectory.FullName;
+        YtdlpPath = WorkingDir.FullName;
         HttpClient client = new();
         string ytdlpUrl = @"https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
         HttpResponseMessage response = await client.GetAsync(ytdlpUrl, HttpCompletionOption.ResponseHeadersRead);
@@ -62,7 +62,7 @@ public static class ExternalProgram
         Log.Information("Start downloading FFmpeg...");
         FFmpeg_Status = DependencyStatus.Downloading;
 
-        FFmpegPath = TempDirectory.FullName;
+        FFmpegPath = WorkingDir.FullName;
         HttpClient client = new();
         string ffmpegUrl = @$"https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/{FFmpegFileName}";
         var response = await client.GetAsync(ffmpegUrl, HttpCompletionOption.ResponseHeadersRead);
@@ -128,13 +128,13 @@ public static class ExternalProgram
         // https://github.com/yt-dlp/yt-dlp/issues/2191
 
         //string? _YtdlpPath = (from p in new[] { Environment.CurrentDirectory, TempDirectory.FullName }.Concat(paths)
-        string? _YtdlpPath = (from p in new[] { TempDirectory.FullName }
+        string? _YtdlpPath = (from p in new[] { WorkingDir.FullName }
                               from e in extensions
                               let path = Path.Combine(p.Trim(), "yt-dlp" + e.ToLower())
                               where File.Exists(path)
                               select Path.GetDirectoryName(path))?.FirstOrDefault();
         //string? _FFmpegPath = (from p in new[] { Environment.CurrentDirectory, TempDirectory.FullName }.Concat(paths)
-        string? _FFmpegPath = (from p in new[] { TempDirectory.FullName }
+        string? _FFmpegPath = (from p in new[] { WorkingDir.FullName }
                                from e in extensions
                                let path = Path.Combine(p.Trim(), "ffmpeg" + e.ToLower())
                                where File.Exists(path)
