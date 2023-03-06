@@ -24,7 +24,7 @@ public static class ExternalProgram
     public static string? FFmpegPath { get; private set; }
 
     // https://github.com/yt-dlp/FFmpeg-Builds/releases/latest
-    private const string FFmpegFileName = "ffmpeg-n5.1-latest-win64-gpl-shared-5.1.zip";
+    private const string FFmpegFileName = "ffmpeg-n6.0-latest-win64-gpl-shared-6.0.zip";
 
     internal static async Task DownloadYtdlp()
     {
