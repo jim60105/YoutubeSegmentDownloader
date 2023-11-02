@@ -94,9 +94,9 @@ internal class Download
         }
         catch (Exception e)
         {
-            Log.Error("vvvvvvv");
+            Log.Error("vvvvvvvvvvvvvvvvvvvvv");
             Log.Error(e.Message);
-            Log.Error("^^^^^^^");
+            Log.Error("^^^^^^^^^^^^^^^^^^^^^");
         }
         finally
         {
@@ -154,8 +154,13 @@ internal class Download
 
         if (!result_VideoData.Success)
         {
+            Log.Error("vvvvvvvvvvvvvvvvvvvvv");
+            Log.Error(string.Join("\n", result_VideoData.ErrorOutput));
+            Log.Error("^^^^^^^^^^^^^^^^^^^^^");
+
             Log.Error("Failed to get video information! VideoId: {id}", id);
-            Log.Error("Please make sure your network is working and you have permission to access the video.");
+            Log.Error("Please ensure that your network connection is stable and that you have the necessary permissions to access the video.");
+            Log.Error("Additionally, if you are using the 'Cookies from browser' feature, please close your browser.");
             return null;
         }
 
