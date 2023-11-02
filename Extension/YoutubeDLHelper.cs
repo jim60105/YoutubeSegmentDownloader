@@ -1,6 +1,4 @@
-﻿using Serilog;
-using System.Reflection;
-using System.Runtime.InteropServices;
+﻿using System.Reflection;
 using System.Text.RegularExpressions;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Helpers;
@@ -22,31 +20,39 @@ internal static partial class YoutubeDLExtension
     /// <param name="overrideOptions"></param>
     /// <returns></returns>
 #pragma warning disable CA1068 // CancellationToken 參數必須位於最後
-    public static async Task<RunResult<YtdlpVideoData>> RunVideoDataFetch_Alt(this YoutubeDLSharp.YoutubeDL ytdl, string url, CancellationToken ct = default, bool flat = true, OptionSet overrideOptions = null)
+    public static async Task<RunResult<YtdlpVideoData>> RunVideoDataFetch_Alt(this YoutubeDLSharp.YoutubeDL ytdl,
+            string url,
+            CancellationToken ct = default,
+            bool flat = true,
+            bool fetchComments = false,
+            OptionSet overrideOptions = null)
 #pragma warning restore CA1068 // CancellationToken 參數必須位於最後
     {
-        OptionSet optionSet = new()
+#pragma warning disable IDE0017 // 簡化物件初始化
+        OptionSet opts = new()
         {
             IgnoreErrors = ytdl.IgnoreDownloadErrors,
             IgnoreConfig = true,
             NoPlaylist = true,
-            HlsPreferNative = true,
-            ExternalDownloaderArgs = "-nostats -loglevel 0",
+            Downloader = "m3u8:native",
+            DownloaderArgs = "ffmpeg:-nostats -loglevel 0",
             Output = Path.Combine(ytdl.OutputFolder, ytdl.OutputFileTemplate),
             RestrictFilenames = ytdl.RestrictFilenames,
-            NoContinue = ytdl.OverwriteFiles,
+            ForceOverwrites = ytdl.OverwriteFiles,
             NoOverwrites = !ytdl.OverwriteFiles,
             NoPart = true,
             FfmpegLocation = Utils.GetFullPath(ytdl.FFmpegPath),
-            Exec = "echo {}"
+            Exec = "echo outfile: {}"
         };
+
+        opts.DumpSingleJson = true;
+        opts.FlatPlaylist = flat;
+        opts.WriteComments = fetchComments;
+#pragma warning restore IDE0017 // 簡化物件初始化
         if (overrideOptions != null)
         {
-            optionSet = optionSet.OverrideOptions(overrideOptions);
+            opts = opts.OverrideOptions(overrideOptions);
         }
-
-        optionSet.DumpSingleJson = true;
-        optionSet.FlatPlaylist = flat;
         YtdlpVideoData videoData = null;
         YoutubeDLProcess youtubeDLProcess = new(ytdl.YoutubeDLPath);
         youtubeDLProcess.OutputReceived += (o, e) =>
@@ -61,7 +67,7 @@ internal static partial class YoutubeDLExtension
             videoData = Newtonsoft.Json.JsonConvert.DeserializeObject<YtdlpVideoData>(data);
         };
         FieldInfo fieldInfo = typeof(YoutubeDLSharp.YoutubeDL).GetField("runner", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.SetField);
-        (int code, string[] errors) = await (fieldInfo.GetValue(ytdl) as ProcessRunner).RunThrottled(youtubeDLProcess, new[] { url }, optionSet, ct);
+        (int code, string[] errors) = await (fieldInfo.GetValue(ytdl) as ProcessRunner).RunThrottled(youtubeDLProcess, new[] { url }, opts, ct);
         return new RunResult<YtdlpVideoData>(code == 0, errors, videoData);
     }
 #nullable enable 

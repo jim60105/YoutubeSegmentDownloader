@@ -31,9 +31,9 @@
 
   <ItemGroup>
     <PackageReference Include="Serilog.Sinks.WinForms" Version="2.4.3" />
-    <PackageReference Include="SharpCompress" Version="0.32.2" />
-    <PackageReference Include="Xabe.FFmpeg" Version="5.2.3" />
-    <PackageReference Include="YoutubeDLSharp" Version="0.4.3" />
+    <PackageReference Include="SharpCompress" Version="0.34.1" />
+    <PackageReference Include="Xabe.FFmpeg" Version="5.2.6" />
+    <PackageReference Include="YoutubeDLSharp" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -114,9 +114,10 @@ internal class Download
     {
         OptionSet optionSet = new()
         {
-            NoCheckCertificate = true
+            NoCheckCertificates = true,
+            ExtractorArgs = "youtube:skip=dash",
+            NoColors = true,
         };
-        optionSet.AddCustomOption("--extractor-args", "youtube:skip=dash");
 
         if (!string.IsNullOrEmpty(format))
         {
@@ -135,8 +136,8 @@ internal class Download
 
         if (end != 0)
         {
-            optionSet.ExternalDownloader = "ffmpeg";
-            optionSet.ExternalDownloaderArgs = $"ffmpeg_i:-ss {start} -to {end}";
+            optionSet.Downloader = "ffmpeg";
+            optionSet.DownloaderArgs = $"ffmpeg_i:-ss {start} -to {end}";
         }
 
         return optionSet;
