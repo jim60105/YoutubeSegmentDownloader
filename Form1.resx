@@ -883,7 +883,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>richTextBoxLogControl1</value>
   </data>
   <data name="&gt;&gt;richTextBoxLogControl1.Type" xml:space="preserve">
-    <value>Serilog.Sinks.WinForms.RichTextBoxLogControl, Serilog.Sinks.WinForms, Culture=neutral, PublicKeyToken=null</value>
+    <value>Serilog.Sinks.WinForms.Core.RichTextBoxLogControl, Serilog.Sinks.WinForms.Core, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;richTextBoxLogControl1.Parent" xml:space="preserve">
     <value>panel_main</value>

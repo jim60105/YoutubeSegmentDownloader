@@ -51,7 +51,7 @@
             button_start = new Button();
             panel_download = new Panel();
             richTextBox2 = new RichTextBox();
-            richTextBoxLogControl1 = new Serilog.Sinks.WinForms.RichTextBoxLogControl();
+            richTextBoxLogControl1 = new Serilog.Sinks.WinForms.Core.RichTextBoxLogControl();
             checkBox_logVerbose = new CheckBox();
             panel_main = new Panel();
             hiddenlabel1 = new Label();
@@ -419,7 +419,7 @@
         private Label label8;
         private Button button_start;
         private Panel panel_download;
-        private Serilog.Sinks.WinForms.RichTextBoxLogControl richTextBoxLogControl1;
+        private Serilog.Sinks.WinForms.Core.RichTextBoxLogControl richTextBoxLogControl1;
         private CheckBox checkBox_logVerbose;
         private Panel panel_main;
         private FolderBrowserDialog folderBrowserDialog1;
