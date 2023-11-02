@@ -3,20 +3,20 @@ name: dotnet package
 on:
   push:
     # Sequence of patterns matched against refs/tags
-    tags:        
+    tags:
       - v*
 
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET Core SDK 7.0.100
-        uses: actions/setup-dotnet@v1.7.2
+      - uses: actions/checkout@v4
+      - name: Setup .NET Core SDK 7.0
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 7.0.100
+          dotnet-version: '7.0.x'
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
+        uses: microsoft/setup-msbuild@v1
 
       - name: Install dependencies
         run: dotnet restore --nologo
@@ -25,7 +25,7 @@ jobs:
         run: msbuild YoutubeSegmentDownloader.sln -t:publish -p:Configuration=Release -p:DeployOnBuild=true -p:PublishProfile=ClickOnceProfile
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: artifact
           path: bin/Release/net7.0-windows/win-x64/app.publish
@@ -36,7 +36,7 @@ jobs:
     needs: build
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: artifact
 
@@ -53,7 +53,7 @@ jobs:
     needs: build
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: artifact
 
@@ -61,6 +61,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
+          generate_release_notes: true
           body_path: NOTICE
           files: |
             YoutubeSegmentDownloader.exe
