@@ -35,9 +35,24 @@ public partial class Form1 : Form
         _ = UpdateDependenciesAsync(ytdlpPath, ffmpegPath, forceUpdate).ConfigureAwait(false);
 
         // Update UI
-        while (FFmpeg_Status != DependencyStatus.Exist
-                || Ytdlp_Status != DependencyStatus.Exist)
+        while (true)
         {
+            if (FFmpeg_Status == DependencyStatus.Exist
+                && Ytdlp_Status == DependencyStatus.Exist)
+            {
+                Log.Information("Finish downloading all dependencies.");
+                if (forceUpdate) MessageBox.Show("Finish downloading all dependencies.", "Finish");
+                break;
+            }
+
+            if (FFmpeg_Status == DependencyStatus.Failed
+                || Ytdlp_Status == DependencyStatus.Failed)
+            {
+                Log.Fatal("!!!! Failed to download dependencies !!!!");
+                MessageBox.Show("Failed to download dependencies. Please check the log for detailed exceptions.", "Error!");
+                break;
+            }
+
             panel_download.Visible = true;
 
             await Task.Delay(TimeSpan.FromSeconds(1));
@@ -48,6 +63,7 @@ public partial class Form1 : Form
                     DependencyStatus.NotExist => "❌",
                     DependencyStatus.Downloading => "⌛",
                     DependencyStatus.Exist => "✔️",
+                    DependencyStatus.Failed => "😕",
                     _ => throw new NotImplementedException()
                 };
             label_checking_ffmpeg.Text =
@@ -57,13 +73,13 @@ public partial class Form1 : Form
                     DependencyStatus.NotExist => "❌",
                     DependencyStatus.Downloading => "⌛",
                     DependencyStatus.Exist => "✔️",
+                    DependencyStatus.Failed => "😕",
                     _ => throw new NotImplementedException()
                 };
 
             Application.DoEvents();
         }
 
-        Log.Information("Finish downloading all dependencies.");
         panel_download.Visible = false;
     }
 

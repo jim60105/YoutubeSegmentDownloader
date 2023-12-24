@@ -12,7 +12,8 @@ public static class ExternalProgram
         Unknown,
         NotExist,
         Downloading,
-        Exist
+        Exist,
+        Failed
     }
 
     public static DependencyStatus Ytdlp_Status { get; private set; } = DependencyStatus.Unknown;
@@ -24,7 +25,7 @@ public static class ExternalProgram
     public static string? FFmpegPath { get; private set; }
 
     // https://github.com/yt-dlp/FFmpeg-Builds/releases/latest
-    private const string FFmpegFileName = "ffmpeg-n6.0-latest-win64-gpl-shared-6.0.zip";
+    private const string FFmpegFileName = "ffmpeg-master-latest-win64-gpl-shared.zip";
 
     internal static async Task DownloadYtdlp()
     {
@@ -36,6 +37,13 @@ public static class ExternalProgram
         string ytdlpUrl = @"https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
         HttpResponseMessage response = await client.GetAsync(ytdlpUrl, HttpCompletionOption.ResponseHeadersRead);
         Log.Debug("Get response from {YtdlpUrl}", ytdlpUrl);
+
+        if (response == null || !response.IsSuccessStatusCode)
+        {
+            Log.Fatal("Failed to get yt-dlp from {YtdlpUrl}!", ytdlpUrl);
+            Ytdlp_Status = DependencyStatus.Failed;
+            return;
+        }
 
         string filePath = Path.Combine(YtdlpPath, "yt-dlp.exe");
         File.Delete(filePath);
@@ -53,7 +61,8 @@ public static class ExternalProgram
         else
         {
             Log.Fatal("Finished downloading yt-dlp but file not found in {filePath}!", filePath);
-            Ytdlp_Status = DependencyStatus.NotExist;
+            Ytdlp_Status = DependencyStatus.Failed;
+            return;
         }
     }
 
@@ -67,6 +76,13 @@ public static class ExternalProgram
         string ffmpegUrl = @$"https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/{FFmpegFileName}";
         var response = await client.GetAsync(ffmpegUrl, HttpCompletionOption.ResponseHeadersRead);
         Log.Debug("Get response from {FFmpegUrl}", ffmpegUrl);
+
+        if (response == null || !response.IsSuccessStatusCode)
+        {
+            Log.Fatal("Failed to get ffmpeg from {FFmpegUrl}!", ffmpegUrl);
+            Ytdlp_Status = DependencyStatus.Failed;
+            return;
+        }
 
         string archivePath = Path.Combine(FFmpegPath, FFmpegFileName);
         File.Delete(archivePath);
@@ -100,12 +116,20 @@ public static class ExternalProgram
             {
                 Log.Information("Complete FFmpeg unpacking to {filePath}", FFmpegPath);
                 FFmpeg_Status = DependencyStatus.Exist;
+                return;
             }
             else
             {
                 Log.Fatal("Finished unpacking FFmpeg under {filePath} but couldn't find ffmpeg.exe!", FFmpegPath);
-                FFmpeg_Status = DependencyStatus.NotExist;
+                FFmpeg_Status = DependencyStatus.Failed;
+                return;
             }
+        }
+        catch (Exception e)
+        {
+            Log.Fatal(e, "Failed to unpack FFmpeg!");
+            FFmpeg_Status = DependencyStatus.Failed;
+            return;
         }
         finally
         {
