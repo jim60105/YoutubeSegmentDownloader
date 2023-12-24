@@ -1,0 +1,156 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0/win-x64",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {},
+    ".NETCoreApp,Version=v8.0/win-x64": {
+      "YoutubeSegmentDownloader/1.0.0": {
+        "dependencies": {
+          "Serilog.Sinks.WinForms.Core": "1.0.3",
+          "SharpCompress": "0.35.0",
+          "Xabe.FFmpeg": "5.2.6",
+          "YoutubeDLSharp": "1.0.0"
+        },
+        "runtime": {
+          "YoutubeSegmentDownloader.dll": {}
+        },
+        "resources": {
+          "zh/YoutubeSegmentDownloader.resources.dll": {
+            "locale": "zh"
+          }
+        }
+      },
+      "Newtonsoft.Json/13.0.3": {
+        "runtime": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.3.27908"
+          }
+        }
+      },
+      "Serilog/2.10.0": {
+        "runtime": {
+          "lib/netstandard2.1/Serilog.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.10.0.0"
+          }
+        }
+      },
+      "Serilog.Sinks.WinForms.Core/1.0.3": {
+        "dependencies": {
+          "Serilog": "2.10.0"
+        },
+        "runtime": {
+          "lib/net6.0-windows7.0/Serilog.Sinks.WinForms.Base.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          },
+          "lib/net6.0-windows7.0/Serilog.Sinks.WinForms.Core.dll": {
+            "assemblyVersion": "1.0.3.0",
+            "fileVersion": "1.0.3.0"
+          }
+        }
+      },
+      "SharpCompress/0.35.0": {
+        "dependencies": {
+          "ZstdSharp.Port": "0.7.4"
+        },
+        "runtime": {
+          "lib/net8.0/SharpCompress.dll": {
+            "assemblyVersion": "0.35.0.0",
+            "fileVersion": "0.35.0.0"
+          }
+        }
+      },
+      "Xabe.FFmpeg/5.2.6": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Xabe.FFmpeg.dll": {
+            "assemblyVersion": "5.2.6.0",
+            "fileVersion": "5.2.6.0"
+          }
+        }
+      },
+      "YoutubeDLSharp/1.0.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "runtime": {
+          "lib/net6.0/YoutubeDLSharp.dll": {
+            "assemblyVersion": "1.0.0.23183",
+            "fileVersion": "1.0.0.23183"
+          }
+        }
+      },
+      "ZstdSharp.Port/0.7.4": {
+        "runtime": {
+          "lib/net8.0/ZstdSharp.dll": {
+            "assemblyVersion": "0.7.4.0",
+            "fileVersion": "0.7.4.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "YoutubeSegmentDownloader/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Newtonsoft.Json/13.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
+      "path": "newtonsoft.json/13.0.3",
+      "hashPath": "newtonsoft.json.13.0.3.nupkg.sha512"
+    },
+    "Serilog/2.10.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+QX0hmf37a0/OZLxM3wL7V6/ADvC1XihXN4Kq/p6d8lCPfgkRdiuhbWlMaFjR9Av0dy5F0+MBeDmDdRZN/YwQA==",
+      "path": "serilog/2.10.0",
+      "hashPath": "serilog.2.10.0.nupkg.sha512"
+    },
+    "Serilog.Sinks.WinForms.Core/1.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OFCxAw5NPIPb0xTB4UPXUpmB6RHlTil3ZvtCAkwutR6sZYbBjSY1fKQMN8webd9gKWcGBpzV2wVs60C8lgBkIw==",
+      "path": "serilog.sinks.winforms.core/1.0.3",
+      "hashPath": "serilog.sinks.winforms.core.1.0.3.nupkg.sha512"
+    },
+    "SharpCompress/0.35.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pR64DKzJ63zt3me8VvhfWqxxzXA0+1S/gRjDUBVovlQ0wCGXGATp/zpVL1Bdoo5tRy887tR5vYS9Bd5MaErEDA==",
+      "path": "sharpcompress/0.35.0",
+      "hashPath": "sharpcompress.0.35.0.nupkg.sha512"
+    },
+    "Xabe.FFmpeg/5.2.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AFT06eHAZ4OV3s6H2dZWeRQ6kkdWkY1dGq76iFprlOG6quB7V7Nm8wWhEF63As1txsh/8kwAbybtffrgqfQ0dg==",
+      "path": "xabe.ffmpeg/5.2.6",
+      "hashPath": "xabe.ffmpeg.5.2.6.nupkg.sha512"
+    },
+    "YoutubeDLSharp/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WVqgPGWgcL2ZR6tGHDiwxkahSIkgEzw/PCYfdpT77ETgyHlPdVyIqwoOb8240JS9IxVmGWMkO6byO62UAZ4cog==",
+      "path": "youtubedlsharp/1.0.0",
+      "hashPath": "youtubedlsharp.1.0.0.nupkg.sha512"
+    },
+    "ZstdSharp.Port/0.7.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ziptnotpUJr51afwXJQ5Wc03dvDiZAdmxS08s1g7SHn/VzbyZUXdH6yORk/zaNjzUOEE6pVZ0Nqztab0rYROgQ==",
+      "path": "zstdsharp.port/0.7.4",
+      "hashPath": "zstdsharp.port.0.7.4.nupkg.sha512"
+    }
+  }
+}
