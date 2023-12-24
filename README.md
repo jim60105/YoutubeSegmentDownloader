@@ -4,6 +4,8 @@
 
 A lifesaver for anyone who is doing video clipping/translating or any need to download segments from Youtube.
 
+[![CodeFactor](https://www.codefactor.io/repository/github/jim60105/youtubesegmentdownloader/badge?style=for-the-badge)](https://www.codefactor.io/repository/github/jim60105/youtubesegmentdownloader)
+
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/jim60105/YoutubeSegmentDownloader?style=for-the-badge)](https://github.com/jim60105/YoutubeSegmentDownloader/releases/latest)
 ![GitHub Release Date](https://img.shields.io/github/release-date/jim60105/YoutubeSegmentDownloader?style=for-the-badge)
 ![GitHub all releases](https://img.shields.io/github/downloads/jim60105/YoutubeSegmentDownloader/total?style=for-the-badge)

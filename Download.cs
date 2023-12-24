@@ -3,42 +3,27 @@ using Xabe.FFmpeg;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Options;
 using YoutubeSegmentDownloader.Extension;
-using YoutubeSegmentDownloader.Models;
+using YtdlpVideoData = YoutubeSegmentDownloader.Models.YtdlpVideoData.ytdlpVideoData;
 
 namespace YoutubeSegmentDownloader;
 
-internal class Download
+internal class Download(string id,
+                        float start,
+                        float end,
+                        DirectoryInfo outputDirectory,
+                        string format,
+                        string browser)
 {
-    private readonly string id;
     private string link
     {
         get => id.Contains('/')
                 ? id
                 : @$"https://youtu.be/{id}";
     }
-    private readonly float start;
-    private readonly float end;
-    private readonly DirectoryInfo outputDirectory;
-    private readonly string format;
-    private readonly string browser;
+
     public bool finished = false;
     public bool successed = false;
     public string? outputFilePath = null;
-
-    public Download(string id,
-                    float start,
-                    float end,
-                    DirectoryInfo outputDirectory,
-                    string format,
-                    string browser)
-    {
-        this.id = id;
-        this.start = start;
-        this.end = end;
-        this.outputDirectory = outputDirectory;
-        this.format = format;
-        this.browser = browser;
-    }
 
     public async Task Start()
     {

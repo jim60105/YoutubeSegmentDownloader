@@ -64,4 +64,3 @@ internal static class Program
     }
 #pragma warning restore CS8602 // 可能 null 參考的取值 (dereference)。
 }
-

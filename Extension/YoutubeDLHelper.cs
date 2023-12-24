@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Helpers;
 using YoutubeDLSharp.Options;
-using YoutubeSegmentDownloader.Models;
+using YtdlpVideoData = YoutubeSegmentDownloader.Models.YtdlpVideoData.ytdlpVideoData;
 
 namespace YoutubeSegmentDownloader.Extension;
 
@@ -28,7 +28,6 @@ internal static partial class YoutubeDLExtension
             OptionSet overrideOptions = null)
 #pragma warning restore CA1068 // CancellationToken 參數必須位於最後
     {
-#pragma warning disable IDE0017 // 簡化物件初始化
         OptionSet opts = new()
         {
             IgnoreErrors = ytdl.IgnoreDownloadErrors,
@@ -42,13 +41,11 @@ internal static partial class YoutubeDLExtension
             NoOverwrites = !ytdl.OverwriteFiles,
             NoPart = true,
             FfmpegLocation = Utils.GetFullPath(ytdl.FFmpegPath),
-            Exec = "echo outfile: {}"
+            Exec = "echo outfile: {}",
+            DumpSingleJson = true,
+            FlatPlaylist = flat,
+            WriteComments = fetchComments
         };
-
-        opts.DumpSingleJson = true;
-        opts.FlatPlaylist = flat;
-        opts.WriteComments = fetchComments;
-#pragma warning restore IDE0017 // 簡化物件初始化
         if (overrideOptions != null)
         {
             opts = opts.OverrideOptions(overrideOptions);
@@ -66,8 +63,8 @@ internal static partial class YoutubeDLExtension
             data = ChangeJsonStringSingleQuotesToDoubleQuotes().Replace(data, @"""$1""");
             videoData = Newtonsoft.Json.JsonConvert.DeserializeObject<YtdlpVideoData>(data);
         };
-        FieldInfo fieldInfo = typeof(YoutubeDLSharp.YoutubeDL).GetField("runner", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.SetField);
-        (int code, string[] errors) = await (fieldInfo.GetValue(ytdl) as ProcessRunner).RunThrottled(youtubeDLProcess, new[] { url }, opts, ct);
+        FieldInfo fieldInfo = typeof(YoutubeDL).GetField("runner", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.SetField);
+        (int code, string[] errors) = await (fieldInfo.GetValue(ytdl) as ProcessRunner).RunThrottled(youtubeDLProcess, [url], opts, ct);
         return new RunResult<YtdlpVideoData>(code == 0, errors, videoData);
     }
 #nullable enable 
