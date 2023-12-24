@@ -11,10 +11,13 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup .NET Core SDK 7.0
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '7.0.x'
+      
+      # Pre-installed in windows-latest
+      # - name: Setup .NET Core SDK 8.0
+      #   uses: actions/setup-dotnet@v4
+      #   with:
+      #     dotnet-version: '8.0.x'
+
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1
 
@@ -25,10 +28,10 @@ jobs:
         run: msbuild YoutubeSegmentDownloader.sln -t:publish -p:Configuration=Release -p:DeployOnBuild=true -p:PublishProfile=ClickOnceProfile
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: artifact
-          path: bin/Release/net7.0-windows/win-x64/app.publish
+          path: bin/Release/net8.0-windows/win-x64/app.publish
           retention-days: 1
 
   deploy_setup:
@@ -36,7 +39,7 @@ jobs:
     needs: build
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: artifact
 
@@ -53,7 +56,7 @@ jobs:
     needs: build
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: artifact
 
