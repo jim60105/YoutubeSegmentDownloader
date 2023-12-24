@@ -26,7 +26,7 @@ public partial class Form1 : Form
         textBox_format.Text = Settings.Default.Format;
         checkBox_logVerbose_CheckedChanged(new(), new());
         _ = PrepareYtdlpAndFFmpegAsync(false).ConfigureAwait(true);  // Use same thread
-        Application.CurrentInputLanguage = InputLanguage.FromCulture(new CultureInfo("en-us"));
+        Application.CurrentInputLanguage = InputLanguage.FromCulture(new CultureInfo("en-us")) ?? InputLanguage.DefaultInputLanguage;
     }
 
     private async Task PrepareYtdlpAndFFmpegAsync(bool forceUpdate = false)
@@ -84,9 +84,7 @@ public partial class Form1 : Form
     }
 
     private void checkBox_segment_CheckedChanged(object sender, EventArgs e)
-    {
-        tableLayoutPanel_segment.Enabled = checkBox_segment.Checked;
-    }
+        => tableLayoutPanel_segment.Enabled = checkBox_segment.Checked;
 
     private void button_start_Click(object sender, EventArgs e)
     {
@@ -288,9 +286,7 @@ public partial class Form1 : Form
     }
 
     private void button_redownloadDependencies_Click(object sender, EventArgs e)
-    {
-        _ = PrepareYtdlpAndFFmpegAsync(true).ConfigureAwait(true);  // Use same thread
-    }
+        => _ = PrepareYtdlpAndFFmpegAsync(true).ConfigureAwait(true);  // Use same thread
 
     private void textBox_youtube_TextChanged(object sender, EventArgs e)
     {
@@ -348,8 +344,7 @@ public partial class Form1 : Form
     {
         // Regex for strip youtube video id from url c# and returl default thumbnail
         // https://gist.github.com/Flatlineato/f4cc3f3937272646d4b0
-        Regex idRegex = new(@"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\S*[^\w\s-])([\w-]{11})(?=[^\w-]|$)(?![?=&+%\w.-]*(?:['""][^<>]*>|<\/a>))[?=&+%\w.-]*");
-        Match idMatch = idRegex.Match(url);
+        Match idMatch = getYoutubeId().Match(url);
 
         return idMatch.Success
                 ? idMatch.Groups[1].Value
@@ -365,7 +360,7 @@ public partial class Form1 : Form
     {
         if (string.IsNullOrEmpty(url)) return 0;
 
-        Match match = new Regex(@"^.*[?&]t=([^&smh]*).*$").Match(url);
+        Match match = ExtractYoutubeStartTime().Match(url);
 
         return match.Success
                && float.TryParse(match.Groups[1].Value, out float start)
@@ -386,9 +381,8 @@ public partial class Form1 : Form
         id = null;
         start = end = 0;
 
-        Regex clipReg = new(@"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/)clip\/[?=&+%\w.-]*");
 
-        if (string.IsNullOrEmpty(url) || !clipReg.IsMatch(url)) return false;
+        if (string.IsNullOrEmpty(url) || !IsYoutubeClipLink().IsMatch(url)) return false;
 
         using HttpClient client = new();
         var response = client.GetAsync(url).Result;
@@ -401,7 +395,7 @@ public partial class Form1 : Form
         string body = response.Content.ReadAsStringAsync().Result;
 
         // "clipConfig":{"postId":"UgkxVQpxshiN76QUwblPu-ggj6fl594-ORiU","startTimeMs":"1891037","endTimeMs":"1906037"}
-        Regex reg1 = new(@"clipConfig"":{""postId"":""(?:[\w-]+)"",""startTimeMs"":""(\d+)"",""endTimeMs"":""(\d+)""}");
+        Regex reg1 = ParseYoutubeClipInfo();
         Match match1 = reg1.Match(body);
         if (match1.Success)
         {
@@ -414,7 +408,7 @@ public partial class Form1 : Form
         }
 
         // {"videoId":"Gs7QYATahy4"}
-        Regex reg2 = new(@"{""videoId"":""([\w-]+)""");
+        Regex reg2 = ParseYoutubeClipVideoId();
         Match match2 = reg2.Match(body);
         if (match2.Success)
         {
@@ -440,7 +434,7 @@ public partial class Form1 : Form
 
         if (text.Contains(':'))
         {
-            List<string> timeList = text.Split(':').ToList();
+            List<string> timeList = [.. text.Split(':')];
             timeList.Reverse();
 
             result = 0;
@@ -464,4 +458,16 @@ public partial class Form1 : Form
         return result;
     }
 
+    #region Regex
+    [GeneratedRegex(@"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\S*[^\w\s-])([\w-]{11})(?=[^\w-]|$)(?![?=&+%\w.-]*(?:['""][^<>]*>|<\/a>))[?=&+%\w.-]*")]
+    private static partial Regex getYoutubeId();
+    [GeneratedRegex(@"^.*[?&]t=([^&smh]*).*$")]
+    private static partial Regex ExtractYoutubeStartTime();
+    [GeneratedRegex(@"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/)clip\/[?=&+%\w.-]*")]
+    private static partial Regex IsYoutubeClipLink();
+    [GeneratedRegex(@"clipConfig"":{""postId"":""(?:[\w-]+)"",""startTimeMs"":""(\d+)"",""endTimeMs"":""(\d+)""}")]
+    private static partial Regex ParseYoutubeClipInfo();
+    [GeneratedRegex(@"{""videoId"":""([\w-]+)""")]
+    private static partial Regex ParseYoutubeClipVideoId();
+    #endregion
 }

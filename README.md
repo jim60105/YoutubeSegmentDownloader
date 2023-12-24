@@ -11,7 +11,7 @@ A lifesaver for anyone who is doing video clipping/translating or any need to do
 ![Preview](assets/preview.png)
 
 ![Windows](https://img.shields.io/static/v1?style=for-the-badge&message=WinForm&color=0078D6&logo=Windows&logoColor=FFFFFF&label=)
-![.NET 7.0](https://img.shields.io/static/v1?style=for-the-badge&message=.NET+7.0&color=512BD4&logo=.NET&logoColor=FFFFFF&label=)
+![.NET 8.0](https://img.shields.io/static/v1?style=for-the-badge&message=.NET+8.0&color=512BD4&logo=.NET&logoColor=FFFFFF&label=)
 ![GitHub](https://img.shields.io/github/license/jim60105/YoutubeSegmentDownloader?style=for-the-badge)
 > The software can only be run on Windows x64 platforms.
 
@@ -56,7 +56,7 @@ Please download and install with the *setup.exe*
 
 - Automatically check for upgrades when launching this software
   ![update](assets/update.png)
-- Setup installer will install **.NET 7.0** Runtime for you
+- Setup installer will install **.NET 8.0** Runtime for you
 - Setting shortcuts on the Desktop and Start Up Menu
 
 Or you can just download *YoutubeSegmentDownloader.exe*, if you don't care about the above.
@@ -92,23 +92,31 @@ So, you have to do two steps, plus a simple math calculation. It's not that much
 
 ## LICENSE
 
-This software is distributed under **GPLv3**.\
-Website: <https://github.com/jim60105/YoutubeSegmentDownloader>\
-Author: jim60105
+> [!NOTE]  
+> This software uses **FFmpeg** licensed under the **GPLv3**.  
+> FFmpeg binary distributions will be downloaded from [here](https://github.com/yt-dlp/FFmpeg-Builds/releases/latest).  
+> FFmpeg source code can be found [here](https://github.com/FFmpeg/FFmpeg/commit/390d6853d0).
+>
+> This software uses **yt-dlp** licensed under the **Unlicense License**.  
+> yt-dlp binary distribution will be downloaded from [here](https://github.com/yt-dlp/yt-dlp/releases/latest).
+> 
+> This software uses **Xabe.FFmpeg** licensed under the [License Agreement](https://ffmpeg.xabe.net/license.html) with **Non-commercial use** - Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0).
+> 
+> This software uses **Beautiful Flat Icons** licensed under the **GPLv2**.  
+> Icon source can be found [here](https://www.elegantthemes.com/blog/freebie-of-the-week/beautiful-flat-icons-for-free).
 
-This software uses **FFmpeg** licensed under the **GPLv3**.\
-FFmpeg binary distributions will be downloaded from [here](https://github.com/yt-dlp/FFmpeg-Builds/releases/latest).\
-FFmpeg source code can be found [here](https://github.com/FFmpeg/FFmpeg/commit/390d6853d0).
+<img src="https://github.com/jim60105/YoutubeSegmentDownloader/assets/16995691/05e722a2-c531-452d-b7df-295139431195" alt="gpl" width="300" />
 
-This software uses **yt-dlp** licensed under the **Unlicense License**.\
-yt-dlp binary distribution will be downloaded from [here](https://github.com/yt-dlp/yt-dlp/releases/latest).
+[GNU GENERAL PUBLIC LICENSE Version 3](LICENSE)
 
-This software uses **Xabe.FFmpeg** licensed under the [License Agreement](https://ffmpeg.xabe.net/license.html) with **Non-commercial use** - Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0).
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-This software uses **Beautiful Flat Icons** licensed under the **GPLv2**.\
-Icon source can be found [here](https://www.elegantthemes.com/blog/freebie-of-the-week/beautiful-flat-icons-for-free).
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 ---
 
-> A winform project written in .NET ~~6~~ 7 and CI/CD the ClickOnce installer on the github workflow.\
+> A winform project written in .NET ~~6~~ ~~7~~ 8 and CI/CD the ClickOnce installer on the github workflow.\
+> I think I'll stop it at .NET 8 since it's LTS.\
 > Anyone want to turn it into MAUI? ¯\\\_(ツ)_/¯
