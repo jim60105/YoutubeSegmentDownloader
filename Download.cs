@@ -100,7 +100,7 @@ internal class Download(string id,
         {
             NoCheckCertificates = true,
             ExtractorArgs = "youtube:skip=dash",
-            NoColors = true,
+            Color = "never"
         };
 
         if (!string.IsNullOrEmpty(format))
