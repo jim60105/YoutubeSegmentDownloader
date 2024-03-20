@@ -18,15 +18,29 @@ internal static class Program
     {
         Log.Logger = new LoggerConfiguration()
                         .MinimumLevel.ControlledBy(LevelSwitch)
+                        .WriteTo.File(path: Path.Combine(Path.GetTempPath(), $"{Application.ProductName?.Replace(" ", "")}.log"),
+                                      rollingInterval: RollingInterval.Day,
+                                      outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj} {NewLine}{Exception}")
                         .WriteToSimpleAndRichTextBox(new MessageTemplateTextFormatter("{Message} {Exception}\n"))
                         .CreateLogger();
 
         Task.Run(SetAddRemoveProgramsIcon);
 
-        // To customize application configuration such as set high DPI settings or default font,
-        // see https://aka.ms/applicationconfiguration.
-        ApplicationConfiguration.Initialize();
-        Application.Run(new Form1());
+        try
+        {
+            // To customize application configuration such as set high DPI settings or default font,
+            // see https://aka.ms/applicationconfiguration.
+            ApplicationConfiguration.Initialize();
+            Application.Run(new Form1());
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Program terminated unexpectedly");
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
     }
 
 #pragma warning disable CS8602 // 可能 null 參考的取值 (dereference)。

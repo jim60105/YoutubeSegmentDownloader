@@ -27,6 +27,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.WinForms.Core" Version="1.0.3" />
     <PackageReference Include="SharpCompress" Version="0.36.0" />
     <PackageReference Include="Xabe.FFmpeg" Version="5.2.6" />
