@@ -1,9 +1,9 @@
-﻿using Serilog;
-using Serilog.Events;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Serilog;
+using Serilog.Events;
 using YoutubeSegmentDownloader.Properties;
 using static YoutubeSegmentDownloader.ExternalProgram;
 
@@ -24,29 +24,29 @@ public partial class Form1 : Form
         checkBox_logVerbose.Checked = Settings.Default.LogVerbose;
         comboBox_browser.SelectedIndex = comboBox_browser.FindString(Settings.Default.Browser);
         textBox_format.Text = Settings.Default.Format;
-        checkBox_logVerbose_CheckedChanged(new(), new());
-        _ = PrepareYtdlpAndFFmpegAsync(false).ConfigureAwait(true);  // Use same thread
+        checkBox_logVerbose_CheckedChanged(new object(), EventArgs.Empty);
+        _ = PrepareYtdlpAndFFmpegAsync().ConfigureAwait(true);  // Use same thread
         Application.CurrentInputLanguage = InputLanguage.FromCulture(new CultureInfo("en-us")) ?? InputLanguage.DefaultInputLanguage;
     }
 
     private async Task PrepareYtdlpAndFFmpegAsync(bool forceUpdate = false)
     {
-        (string? ytdlpPath, string? ffmpegPath) = WhereIs();
+        var (ytdlpPath, ffmpegPath) = WhereIs();
         _ = UpdateDependenciesAsync(ytdlpPath, ffmpegPath, forceUpdate).ConfigureAwait(false);
 
         // Update UI
         while (true)
         {
-            if (FFmpeg_Status == DependencyStatus.Exist
-                && Ytdlp_Status == DependencyStatus.Exist)
+            if (FFmpegStatus == DependencyStatus.Exist
+                && YtdlpStatus == DependencyStatus.Exist)
             {
                 Log.Information("Finish downloading all dependencies.");
                 if (forceUpdate) MessageBox.Show("Finish downloading all dependencies.", "Finish");
                 break;
             }
 
-            if (FFmpeg_Status == DependencyStatus.Failed
-                || Ytdlp_Status == DependencyStatus.Failed)
+            if (FFmpegStatus == DependencyStatus.Failed
+                || YtdlpStatus == DependencyStatus.Failed)
             {
                 Log.Fatal("!!!! Failed to download dependencies !!!!");
                 MessageBox.Show("Failed to download dependencies. Please check the log for detailed exceptions.", "Error!");
@@ -57,7 +57,7 @@ public partial class Form1 : Form
 
             await Task.Delay(TimeSpan.FromSeconds(1));
             label_checking_ytdlp.Text =
-                Ytdlp_Status switch
+                YtdlpStatus switch
                 {
                     DependencyStatus.Unknown => "❓",
                     DependencyStatus.NotExist => "❌",
@@ -67,7 +67,7 @@ public partial class Form1 : Form
                     _ => throw new NotImplementedException()
                 };
             label_checking_ffmpeg.Text =
-                FFmpeg_Status switch
+                FFmpegStatus switch
                 {
                     DependencyStatus.Unknown => "❓",
                     DependencyStatus.NotExist => "❌",
@@ -90,22 +90,22 @@ public partial class Form1 : Form
     {
         Settings.Default.Directory = textBox_outputDirectory.Text;
 
-        string id = TryPrepareVideoID(textBox_youtube.Text);
+        var id = TryPrepareVideoId(textBox_youtube.Text);
 
-        if (!TryPrepareStartEndTime(textBox_start.Text, textBox_end.Text, checkBox_segment.Checked, out float start, out float end))
+        if (!TryPrepareStartEndTime(textBox_start.Text, textBox_end.Text, checkBox_segment.Checked, out var start, out var end))
         {
             return;
         }
 
-        if (!TryPrepareDirectory(textBox_outputDirectory.Text, out DirectoryInfo? directory))
+        if (!TryPrepareDirectory(textBox_outputDirectory.Text, out var directory))
         {
             return;
         }
 
-        string format = textBox_format.Text;
+        var format = textBox_format.Text;
         Settings.Default.Format = format;
 
-        string browser = comboBox_browser.Text;
+        var browser = comboBox_browser.Text;
         if (string.IsNullOrEmpty(browser)
             || browser == resources.GetString("comboBox_browser.Items"))
         {
@@ -117,22 +117,21 @@ public partial class Form1 : Form
         _ = DownloadAsync(id, start, end, directory!, format, browser).ConfigureAwait(true);
     }
 
-    private string TryPrepareVideoID(string text)
+    private string TryPrepareVideoId(string text)
     {
-        if (text.Contains('/'))
-        {
-            string? id = ExtractVideoIDFromLink(text);
+        if (!text.Contains('/')) return text;
 
-            if (!string.IsNullOrEmpty(id))
-            {
-                Log.Information("Get VideoID: {VideoId}", id);
-                return id;
-            }
-            else
-            {
-                Log.Error(resources.GetString("hiddenlabel1.Text", new("en")));
-                MessageBox.Show(resources.GetString("hiddenlabel1.Text"), "Warning!");
-            }
+        var id = ExtractVideoIdFromLink(text);
+
+        if (!string.IsNullOrEmpty(id))
+        {
+            Log.Information("Get VideoID: {VideoId}", id);
+            return id;
+        }
+        else
+        {
+            Log.Error(resources.GetString("hiddenlabel1.Text", new CultureInfo("en-us")));
+            MessageBox.Show(resources.GetString("hiddenlabel1.Text"), "Warning!");
         }
 
         return text;
@@ -164,14 +163,14 @@ public partial class Form1 : Form
         }
     }
 
-    private static bool TryPrepareDirectory(string direcrotyPath, out DirectoryInfo? directory)
+    private static bool TryPrepareDirectory(string directoryPath, out DirectoryInfo? directory)
     {
         try
         {
-            string path = direcrotyPath.Contains('%')
-                ? Environment.ExpandEnvironmentVariables(direcrotyPath)
-                : direcrotyPath;
-            directory = new(path);
+            var path = directoryPath.Contains('%')
+                ? Environment.ExpandEnvironmentVariables(directoryPath)
+                : directoryPath;
+            directory = new DirectoryInfo(path);
             directory.Create();
             Log.Information("Output directory:");
             Log.Information(directory.FullName);
@@ -204,19 +203,19 @@ public partial class Form1 : Form
                                     browser: browser);
             _ = download.Start().ConfigureAwait(false);
 
-            while (!download.finished)
+            while (!download.Finished)
             {
                 // Update UI
                 await Task.Delay(TimeSpan.FromSeconds(1));
                 Application.DoEvents();
             }
 
-            if (!download.successed)
+            if (!download.Succeeded)
             {
                 throw new Exception("The download process completed without success.");
             }
 
-            MessageBox.Show($"Video segments are stored in:\n\n{download.outputFilePath}", "Finish");
+            MessageBox.Show($"Video segments are stored in:\n\n{download.OutputFilePath}", "Finish");
 
             // Open save directory
             Process process = new();
@@ -227,7 +226,7 @@ public partial class Form1 : Form
         catch (Exception e)
         {
             Log.Logger.Error(e.Message);
-            MessageBox.Show($"Download not successful!", "Failed!!!");
+            MessageBox.Show("Download not successful!", "Failed!!!");
             Log.Logger.Error("!!!! FAILED !!!!");
             Log.Logger.Error("Please check the \"Log Verbose\" checkbox for more details and try again.");
             Log.Logger.Error("If you're sure you've found a bug, please report it back to me along with the ENTIRE VERBOSE log.");
@@ -246,13 +245,13 @@ public partial class Form1 : Form
     {
         if (e.KeyCode == Keys.Enter)
         {
-            button_start_Click(new(), new());
+            button_start_Click(new object(), EventArgs.Empty);
         }
     }
 
     private void checkBox_logVerbose_CheckedChanged(object sender, EventArgs e)
     {
-        Program.levelSwitch.MinimumLevel = checkBox_logVerbose.Checked
+        Program.LevelSwitch.MinimumLevel = checkBox_logVerbose.Checked
             ? LogEventLevel.Verbose
             : LogEventLevel.Information;
 
@@ -294,11 +293,11 @@ public partial class Form1 : Form
         {
             button_start.Enabled = false;
             {
-                if (ExtractVideoIDFromLink(textBox_youtube.Text) is string id
+                if (ExtractVideoIdFromLink(textBox_youtube.Text) is string id
                     && !string.IsNullOrEmpty(id))
                 {
-                    float start = ExtractYoutubeStartTimeFromLink(textBox_youtube.Text);
-                    SetUI(id, start, 0);
+                    var start = ExtractYoutubeStartTimeFromLink(textBox_youtube.Text);
+                    setUi(id, start, 0);
                     textBox_end.Focus();
                     return;
                 }
@@ -306,23 +305,23 @@ public partial class Form1 : Form
 
             {
                 if (TryFetchYoutubeClipInformation(textBox_youtube.Text,
-                                                   out string? id,
-                                                   out float start,
-                                                   out float end)
+                                                   out var id,
+                                                   out var start,
+                                                   out var end)
                     && !string.IsNullOrEmpty(id))
                 {
-                    SetUI(id, start, end);
+                    setUi(id, start, end);
                     button_start.Focus();
                     return;
                 }
             }
 
-            void SetUI(string id, float start, float end)
+            void setUi(string id, float start, float end)
             {
                 textBox_youtube.Text = id;
                 checkBox_segment.Checked = true;
-                textBox_start.Text = start.ToString();
-                textBox_end.Text = end.ToString();
+                textBox_start.Text = start.ToString(CultureInfo.InvariantCulture);
+                textBox_end.Text = end.ToString(CultureInfo.InvariantCulture);
             }
         }
         catch (Exception ex)
@@ -340,11 +339,11 @@ public partial class Form1 : Form
     /// </summary>
     /// <param name="url"></param>
     /// <returns></returns>
-    private static string? ExtractVideoIDFromLink(string url)
+    private static string? ExtractVideoIdFromLink(string url)
     {
-        // Regex for strip youtube video id from url c# and returl default thumbnail
+        // Regex for strip youtube video id from url c# and return default thumbnail
         // https://gist.github.com/Flatlineato/f4cc3f3937272646d4b0
-        Match idMatch = getYoutubeId().Match(url);
+        var idMatch = GetYoutubeId().Match(url);
 
         return idMatch.Success
                 ? idMatch.Groups[1].Value
@@ -360,10 +359,10 @@ public partial class Form1 : Form
     {
         if (string.IsNullOrEmpty(url)) return 0;
 
-        Match match = ExtractYoutubeStartTime().Match(url);
+        var match = ExtractYoutubeStartTime().Match(url);
 
         return match.Success
-               && float.TryParse(match.Groups[1].Value, out float start)
+               && float.TryParse(match.Groups[1].Value, out var start)
                ? start
                : 0;
     }
@@ -392,15 +391,15 @@ public partial class Form1 : Form
             Log.Error(url);
             return false;
         }
-        string body = response.Content.ReadAsStringAsync().Result;
+        var body = response.Content.ReadAsStringAsync().Result;
 
         // "clipConfig":{"postId":"UgkxVQpxshiN76QUwblPu-ggj6fl594-ORiU","startTimeMs":"1891037","endTimeMs":"1906037"}
-        Regex reg1 = ParseYoutubeClipInfo();
-        Match match1 = reg1.Match(body);
+        var reg1 = ParseYoutubeClipInfo();
+        var match1 = reg1.Match(body);
         if (match1.Success)
         {
-            if (float.TryParse(match1.Groups[1].Value, out float _start)
-                && float.TryParse(match1.Groups[2].Value, out float _end))
+            if (float.TryParse(match1.Groups[1].Value, out var _start)
+                && float.TryParse(match1.Groups[2].Value, out var _end))
             {
                 start = _start / 1000;
                 end = _end / 1000;
@@ -408,8 +407,8 @@ public partial class Form1 : Form
         }
 
         // {"videoId":"Gs7QYATahy4"}
-        Regex reg2 = ParseYoutubeClipVideoId();
-        Match match2 = reg2.Match(body);
+        var reg2 = ParseYoutubeClipVideoId();
+        var match2 = reg2.Match(body);
         if (match2.Success)
         {
             id = match2.Groups[1].Value;
@@ -426,7 +425,7 @@ public partial class Form1 : Form
     private static float ConvertTimeStringToSecond(string text)
     {
         Log.Debug("Convert time string from {OriginalTimeString}", text);
-        if (float.TryParse(text, out float result))
+        if (float.TryParse(text, out var result))
         {
             Log.Debug("Time string is pure float!");
             return result;
@@ -438,9 +437,9 @@ public partial class Form1 : Form
             timeList.Reverse();
 
             result = 0;
-            for (int i = 0; i < timeList.Count && i < 3; i++)
+            for (var i = 0; i < timeList.Count && i < 3; i++)
             {
-                string time = timeList[i].Trim();
+                var time = timeList[i].Trim();
                 if (float.TryParse(time, out var t))
                 {
                     result += (float)(t * Math.Pow(60, i));
@@ -460,7 +459,7 @@ public partial class Form1 : Form
 
     #region Regex
     [GeneratedRegex(@"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\S*[^\w\s-])([\w-]{11})(?=[^\w-]|$)(?![?=&+%\w.-]*(?:['""][^<>]*>|<\/a>))[?=&+%\w.-]*")]
-    private static partial Regex getYoutubeId();
+    private static partial Regex GetYoutubeId();
     [GeneratedRegex(@"^.*[?&]t=([^&smh]*).*$")]
     private static partial Regex ExtractYoutubeStartTime();
     [GeneratedRegex(@"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/)clip\/[?=&+%\w.-]*")]

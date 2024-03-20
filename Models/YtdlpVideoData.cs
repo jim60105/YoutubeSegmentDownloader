@@ -5,9 +5,7 @@ namespace YoutubeSegmentDownloader.Models;
 
 public class YtdlpVideoData
 {
-    public class AutomaticCaptions
-    {
-    }
+    public class AutomaticCaptions;
 
     public class Chapter
     {
@@ -189,7 +187,7 @@ public class YtdlpVideoData
         public List<Thumbnail> Thumbnails { get; set; }
 
         [JsonProperty("thumbnail")]
-        public string Thumbnail { get; set; }
+        public string _Thumbnail { get; set; }
 
         [JsonProperty("description")]
         public string Description { get; set; }
@@ -336,7 +334,7 @@ public class YtdlpVideoData
         public double? Abr { get; set; }
 
         [JsonProperty("format")]
-        public string Format { get; set; }
+        public string _Format { get; set; }
 
         [JsonProperty("resolution")]
         public string Resolution { get; set; }
@@ -381,7 +379,7 @@ public class YtdlpVideoData
     public class Subtitles
     {
         [JsonProperty("live_chat")]
-        public List<LiveChat> LiveChat { get; set; }
+        public List<LiveChat> _LiveChat { get; set; }
     }
 
     public class Thumbnail

@@ -8,7 +8,7 @@ namespace YoutubeSegmentDownloader;
 
 internal static class Program
 {
-    public static LoggingLevelSwitch levelSwitch = new();
+    public static LoggingLevelSwitch LevelSwitch = new();
 
     /// <summary>
     ///  The main entry point for the application.
@@ -17,7 +17,7 @@ internal static class Program
     static void Main()
     {
         Log.Logger = new LoggerConfiguration()
-                        .MinimumLevel.ControlledBy(levelSwitch)
+                        .MinimumLevel.ControlledBy(LevelSwitch)
                         .WriteToSimpleAndRichTextBox(new MessageTemplateTextFormatter("{Message} {Exception}\n"))
                         .CreateLogger();
 
@@ -36,7 +36,7 @@ internal static class Program
         {
             try
             {
-                var iconSourcePath = Path.Combine(System.Windows.Forms.Application.StartupPath, @"YoutubeSegmentDownloader.ico");
+                var iconSourcePath = Path.Combine(Application.StartupPath, @"YoutubeSegmentDownloader.ico");
 
                 if (!File.Exists(iconSourcePath)) return;
 
@@ -44,16 +44,14 @@ internal static class Program
                 if (uninstallKey == null) return;
 
                 var subKeyNames = uninstallKey.GetSubKeyNames();
-                foreach (var subkeyName in subKeyNames)
+                foreach (var subKeyName in subKeyNames)
                 {
-                    var myKey = uninstallKey.OpenSubKey(subkeyName, true);
+                    var myKey = uninstallKey.OpenSubKey(subKeyName, true);
                     var myValue = myKey.GetValue("DisplayName");
-                    if (myValue != null
-                        && myValue.ToString() == "Youtube Segment Downloader")
-                    {
-                        myKey.SetValue("DisplayIcon", iconSourcePath);
-                        break;
-                    }
+                    if (myValue == null || myValue.ToString() != "Youtube Segment Downloader") continue;
+
+                    myKey.SetValue("DisplayIcon", iconSourcePath);
+                    break;
                 }
             }
             catch (Exception e)

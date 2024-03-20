@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using System.Globalization;
+using Serilog;
 using Xabe.FFmpeg;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Options;
@@ -14,34 +15,32 @@ internal class Download(string id,
                         string format,
                         string browser)
 {
-    private string link
-    {
-        get => id.Contains('/')
-                ? id
-                : @$"https://youtu.be/{id}";
-    }
+    private string Link =>
+        id.Contains('/')
+            ? id
+            : @$"https://youtu.be/{id}";
 
-    public bool finished = false;
-    public bool successed = false;
-    public string? outputFilePath = null;
+    public bool Finished;
+    public bool Succeeded;
+    public string? OutputFilePath;
 
     public async Task Start()
     {
         Log.Information("Start the download process...");
-        successed = false;
-        finished = false;
+        Succeeded = false;
+        Finished = false;
 
-        string tempFilePath1 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
-        string tempFilePath2 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+        var tempFilePath1 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+        var tempFilePath2 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
         Log.Debug("Create temporary files:");
         Log.Debug("{TempFilePath}", tempFilePath1);
         Log.Debug("{TempFilePath}", tempFilePath2);
 
         try
         {
-            OptionSet optionSet = CreateOptionSet();
+            var optionSet = CreateOptionSet();
 
-            YoutubeDL? ytdl = new()
+            YoutubeDL ytdl = new()
             {
                 YoutubeDLPath = Path.Combine(ExternalProgram.YtdlpPath ?? "./", "yt-dlp.exe"),
                 FFmpegPath = Path.Combine(ExternalProgram.FFmpegPath ?? "./", "ffmpeg.exe"),
@@ -51,31 +50,31 @@ internal class Download(string id,
                 IgnoreDownloadErrors = true
             };
 
-            YtdlpVideoData? videoData = await FetchVideoInfoAsync(ytdl, optionSet);
+            var videoData = await FetchVideoInfoAsync(ytdl, optionSet);
             if (null == videoData) return;
 
-            outputFilePath = CalculatePath(videoData?.Title,
-                                           DateTime.ParseExact(videoData?.UploadDate ?? "19700101",
+            OutputFilePath = CalculatePath(videoData.Title,
+                                           DateTime.ParseExact(videoData.UploadDate ?? "19700101",
                                                                "yyyyMMdd",
-                                                               System.Globalization.CultureInfo.InvariantCulture),
-                                           videoData?.Id);
+                                                               CultureInfo.InvariantCulture),
+                                           videoData.Id);
 
-            bool downloadSuccess = await DownloadVideoAsync(ytdl, optionSet);
+            var downloadSuccess = await DownloadVideoAsync(ytdl, optionSet);
             if (!downloadSuccess) return;
 
             if (end == 0)
             {
-                Log.Information("Move file to {filePath}", outputFilePath);
-                File.Move(tempFilePath1, outputFilePath, true);
+                Log.Information("Move file to {filePath}", OutputFilePath);
+                File.Move(tempFilePath1, OutputFilePath, true);
             }
             else
             {
-                await CutWithFFmpegAsync(tempFilePath1, tempFilePath2);
-                File.Move(tempFilePath2, outputFilePath, true);
+                _ = await CutWithFFmpegAsync(tempFilePath1, tempFilePath2);
+                File.Move(tempFilePath2, OutputFilePath, true);
             }
             Log.Information("Download completed:");
-            Log.Information(outputFilePath);
-            successed = true;
+            Log.Information(OutputFilePath);
+            Succeeded = true;
         }
         catch (Exception e)
         {
@@ -91,7 +90,7 @@ internal class Download(string id,
             File.Delete(Path.ChangeExtension(tempFilePath2, "tmp"));
             Log.Information("Clean up temporary files.");
             Log.Information("Process ends.");
-            finished = true;
+            Finished = true;
         }
     }
 
@@ -132,16 +131,17 @@ internal class Download(string id,
     /// 取得影片資訊
     /// </summary>
     /// <param name="ytdl"></param>
+    /// <param name="optionSet"></param>
     /// <returns></returns>
     private async Task<YtdlpVideoData?> FetchVideoInfoAsync(YoutubeDL ytdl, OptionSet optionSet)
     {
         Log.Information("Start getting video information...");
-        RunResult<YtdlpVideoData> result_VideoData = await ytdl.RunVideoDataFetch_Alt(link, overrideOptions: optionSet);
+        RunResult<YtdlpVideoData> result = await ytdl.RunVideoDataFetch_Alt(Link, overrideOptions: optionSet);
 
-        if (!result_VideoData.Success)
+        if (!result.Success)
         {
             Log.Error("vvvvvvvvvvvvvvvvvvvvv");
-            Log.Error(string.Join("\n", result_VideoData.ErrorOutput));
+            Log.Error(string.Join("\n", result.ErrorOutput));
             Log.Error("^^^^^^^^^^^^^^^^^^^^^");
 
             Log.Error("Failed to get video information! VideoId: {id}", id);
@@ -150,19 +150,19 @@ internal class Download(string id,
             return null;
         }
 
-        float duration = result_VideoData.Data.Duration ?? 0;
+        float duration = result.Data.Duration ?? 0;
 
-        Log.Information("{title}", result_VideoData.Data.Title);
+        Log.Information("{title}", result.Data.Title);
         Log.Information("{duration}", duration);
 
-        if (result_VideoData.Data.Duration < start)
+        if (result.Data.Duration < start)
         {
             Log.Error("Segment input invalid!");
             Log.Error("Start, End time should be smaller then video duration.");
             return null;
         }
 
-        return result_VideoData.Data;
+        return result.Data;
     }
 
     /// <summary>
@@ -174,17 +174,17 @@ internal class Download(string id,
     private async Task<bool> DownloadVideoAsync(YoutubeDL ytdl, OptionSet optionSet)
     {
         Log.Information("Start downloading video...");
-        var result_string = await ytdl.RunVideoDownload(
-            url: link,
+        var result = await ytdl.RunVideoDownload(
+            url: Link,
             mergeFormat: DownloadMergeFormat.Mp4,
             progress: new Progress<DownloadProgress>(s => Log.Verbose(s.Data)),
-            output: new Progress<string>(s => Log.Verbose(s)),
+            output: new Progress<string>(Log.Verbose),
             overrideOptions: optionSet);
 
-        if (!result_string.Success)
+        if (!result.Success)
         {
             Log.Error("Failed to download video! Please try again later.");
-            foreach (var str in result_string.ErrorOutput)
+            foreach (var str in result.ErrorOutput)
             {
                 Log.Information(str);
             }
@@ -204,13 +204,13 @@ internal class Download(string id,
     {
         Log.Information("Start cutting video with FFmpeg...");
 
-        float duration = end - start;
+        var duration = end - start;
 
         FFmpeg.SetExecutablesPath(ExternalProgram.FFmpegPath);
-        IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(inputPath);
+        var mediaInfo = await FFmpeg.GetMediaInfo(inputPath);
         // How to Encode Videos for YouTube, Facebook, Vimeo, twitch, and other Video Sharing Sites
         // https://trac.ffmpeg.org/wiki/Encode/YouTube
-        IConversion conversion = FFmpeg.Conversions.New()
+        var conversion = FFmpeg.Conversions.New()
                                    .AddParameter($"-sseof -{duration}", ParameterPosition.PreInput)
                                    .AddStream(mediaInfo.Streams)
                                    .AddParameter("-c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k -pix_fmt yuv420p")
@@ -227,6 +227,7 @@ internal class Download(string id,
     /// </summary>
     /// <param name="title">影片標題，用做檔名</param>
     /// <param name="date">影片日期，用做檔名</param>
+    /// <param name="videoId"></param>
     /// <returns></returns>
     private string CalculatePath(string? title, DateTime? date, string? videoId)
     {
@@ -243,7 +244,7 @@ internal class Download(string id,
 
         date ??= DateTime.Now;
 
-        string newPath = Path.Combine(outputDirectory.FullName, $"{date:yyyyMMdd} {title} ({videoId ?? id}) [{start}_{end}].mp4");
+        var newPath = Path.Combine(outputDirectory.FullName, $"{date:yyyyMMdd} {title} ({videoId ?? id}) [{start}_{end}].mp4");
 
         Log.Debug("Calculate output file path as {newPath}", newPath);
         return newPath;

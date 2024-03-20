@@ -17,10 +17,11 @@ internal static partial class YoutubeDLExtension
     /// <param name="url"></param>
     /// <param name="ct"></param>
     /// <param name="flat"></param>
+    /// <param name="fetchComments"></param>
     /// <param name="overrideOptions"></param>
     /// <returns></returns>
 #pragma warning disable CA1068 // CancellationToken 參數必須位於最後
-    public static async Task<RunResult<YtdlpVideoData>> RunVideoDataFetch_Alt(this YoutubeDLSharp.YoutubeDL ytdl,
+    public static async Task<RunResult<YtdlpVideoData>> RunVideoDataFetch_Alt(this YoutubeDL ytdl,
             string url,
             CancellationToken ct = default,
             bool flat = true,
@@ -54,17 +55,21 @@ internal static partial class YoutubeDLExtension
         YoutubeDLProcess youtubeDLProcess = new(ytdl.YoutubeDLPath);
         youtubeDLProcess.OutputReceived += (o, e) =>
         {
+            if (e.Data == null) return;
+
             // Workaround: Fix invalid json directly
             var data = e.Data.Replace("\"[{", "[{")
-                             .Replace("}]\"", "}]")
-                             .Replace("False", "false")
-                             .Replace("True", "true");
+                                   .Replace("}]\"", "}]")
+                                   .Replace("False", "false")
+                                   .Replace("True", "true");
             // Change json string from 'sth' to "sth"
-            data = ChangeJsonStringSingleQuotesToDoubleQuotes().Replace(data, @"""$1""");
+            data = ChangeJsonStringSingleQuotesToDoubleQuotes().Replace(data, """
+                                                                              "$1"
+                                                                              """);
             videoData = Newtonsoft.Json.JsonConvert.DeserializeObject<YtdlpVideoData>(data);
         };
-        FieldInfo fieldInfo = typeof(YoutubeDL).GetField("runner", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.SetField);
-        (int code, string[] errors) = await (fieldInfo.GetValue(ytdl) as ProcessRunner).RunThrottled(youtubeDLProcess, [url], opts, ct);
+        var fieldInfo = typeof(YoutubeDL).GetField("runner", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.SetField);
+        var (code, errors) = await (fieldInfo!.GetValue(ytdl) as ProcessRunner)!.RunThrottled(youtubeDLProcess, [url], opts, ct);
         return new RunResult<YtdlpVideoData>(code == 0, errors, videoData);
     }
 #nullable enable 
