@@ -16,18 +16,18 @@ public static class ExternalProgram
         Failed
     }
 
-    public static DependencyStatus YtdlpStatus { get; private set; } = DependencyStatus.Unknown;
-    public static DependencyStatus FFmpegStatus { get; private set; } = DependencyStatus.Unknown;
+    // https://github.com/yt-dlp/FFmpeg-Builds/releases/latest
+    private const string FFmpegFileName = "ffmpeg-master-latest-win64-gpl-shared.zip";
 
     private static readonly DirectoryInfo WorkingDir = new(Path.GetDirectoryName(Application.ExecutablePath) ?? Path.GetTempPath());
+
+    public static DependencyStatus YtdlpStatus { get; private set; } = DependencyStatus.Unknown;
+    public static DependencyStatus FFmpegStatus { get; private set; } = DependencyStatus.Unknown;
 
     public static string? YtdlpPath { get; private set; }
     public static string? FFmpegPath { get; private set; }
 
-    // https://github.com/yt-dlp/FFmpeg-Builds/releases/latest
-    private const string FFmpegFileName = "ffmpeg-master-latest-win64-gpl-shared.zip";
-
-    internal static async Task DownloadYtdlp()
+    private static async Task DownloadYtdlp()
     {
         Log.Information("Start downloading yt-dlp...");
         YtdlpStatus = DependencyStatus.Downloading;
@@ -35,7 +35,7 @@ public static class ExternalProgram
         YtdlpPath = WorkingDir.FullName;
         HttpClient client = new();
         const string ytdlpUrl = @"https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
-        var response = await client.GetAsync(ytdlpUrl, HttpCompletionOption.ResponseHeadersRead);
+        HttpResponseMessage response = await client.GetAsync(ytdlpUrl, HttpCompletionOption.ResponseHeadersRead);
         Log.Debug("Get response from {YtdlpUrl}", ytdlpUrl);
 
         if (!response.IsSuccessStatusCode)
@@ -45,7 +45,7 @@ public static class ExternalProgram
             return;
         }
 
-        var filePath = Path.Combine(YtdlpPath, "yt-dlp.exe");
+        string filePath = Path.Combine(YtdlpPath, "yt-dlp.exe");
         File.Delete(filePath);
 
         await using FileStream fs = new(filePath, FileMode.Create);
@@ -72,7 +72,7 @@ public static class ExternalProgram
         FFmpegPath = WorkingDir.FullName;
         HttpClient client = new();
         const string ffmpegUrl = @$"https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/{FFmpegFileName}";
-        var response = await client.GetAsync(ffmpegUrl, HttpCompletionOption.ResponseHeadersRead);
+        HttpResponseMessage response = await client.GetAsync(ffmpegUrl, HttpCompletionOption.ResponseHeadersRead);
         Log.Debug("Get response from {FFmpegUrl}", ffmpegUrl);
 
         if (!response.IsSuccessStatusCode)
@@ -82,7 +82,7 @@ public static class ExternalProgram
             return;
         }
 
-        var archivePath = Path.Combine(FFmpegPath, FFmpegFileName);
+        string archivePath = Path.Combine(FFmpegPath, FFmpegFileName);
         File.Delete(archivePath);
 
         await using (FileStream fs = new(archivePath, FileMode.Create))
@@ -90,6 +90,7 @@ public static class ExternalProgram
             //response.EnsureSuccessStatusCode();
             await response.Content.CopyToAsync(fs);
         }
+
         Log.Information("Finish downloading FFmpeg at {filePath}", archivePath);
 
         try
@@ -97,17 +98,18 @@ public static class ExternalProgram
             using var archive = ZipArchive.Open(archivePath);
             Log.Information("Start unpacking {FFmpegFileName}", FFmpegFileName);
 
-            foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory
-                                                                 && (entry.Key.EndsWith("exe")
-                                                                     || entry.Key.EndsWith("dll")
-                                                                     || entry.Key.Contains("LICENSE"))))
+            foreach (ZipArchiveEntry entry in archive.Entries.Where(entry => !entry.IsDirectory
+                                                                             && (entry.Key.EndsWith("exe")
+                                                                                 || entry.Key.EndsWith("dll")
+                                                                                 || entry.Key.Contains("LICENSE"))))
             {
                 Log.Information("{FilePath}", Path.Combine(FFmpegPath, Path.GetFileName(entry.Key)));
-                entry.WriteToDirectory(FFmpegPath, new ExtractionOptions()
-                {
-                    ExtractFullPath = false,
-                    Overwrite = true
-                });
+                entry.WriteToDirectory(FFmpegPath,
+                                       new ExtractionOptions
+                                       {
+                                           ExtractFullPath = false,
+                                           Overwrite = true
+                                       });
             }
 
             if (File.Exists(Path.Combine(FFmpegPath, "ffmpeg.exe")))
@@ -133,31 +135,32 @@ public static class ExternalProgram
     }
 
     /// <summary>
-    /// 尋找程式路徑
+    ///     尋找程式路徑
     /// </summary>
     /// <returns>Full path of yt-dlp and FFmpeg</returns>
     public static (string?, string?) WhereIs()
     {
         // https://stackoverflow.com/a/63021455
-        var paths = Environment.GetEnvironmentVariable("PATH")?.Split(';') ?? [];
-        var extensions = Environment.GetEnvironmentVariable("PATHEXT")?.Split(';') ?? [];
+        string[] paths = Environment.GetEnvironmentVariable("PATH")?.Split(';') ?? [];
+        string[] extensions = Environment.GetEnvironmentVariable("PATHEXT")?.Split(';') ?? [];
 
         // ffmpeg not selected as downloader when not in PATH
         // In short: --ffmpeg-location doesn't work. Force download everything to my tmp folder.
         // https://github.com/yt-dlp/yt-dlp/issues/2191
 
         //string? ytdlpPath = (from p in new[] { Environment.CurrentDirectory, TempDirectory.FullName }.Concat(paths)
-        var ytdlpPath = (from p in new[] { WorkingDir.FullName }
-                         from e in extensions
-                         let path = Path.Combine(p.Trim(), "yt-dlp" + e.ToLower())
-                         where File.Exists(path)
-                         select Path.GetDirectoryName(path)).FirstOrDefault();
+        string? ytdlpPath = (from p in new[] { WorkingDir.FullName }
+                             from e in extensions
+                             let path = Path.Combine(p.Trim(), "yt-dlp" + e.ToLower())
+                             where File.Exists(path)
+                             select Path.GetDirectoryName(path)).FirstOrDefault();
+
         //string? _FFmpegPath = (from p in new[] { Environment.CurrentDirectory, TempDirectory.FullName }.Concat(paths)
-        var ffmpegPath = (from p in new[] { WorkingDir.FullName }
-                          from e in extensions
-                          let path = Path.Combine(p.Trim(), "ffmpeg" + e.ToLower())
-                          where File.Exists(path)
-                          select Path.GetDirectoryName(path)).FirstOrDefault();
+        string? ffmpegPath = (from p in new[] { WorkingDir.FullName }
+                              from e in extensions
+                              let path = Path.Combine(p.Trim(), "ffmpeg" + e.ToLower())
+                              where File.Exists(path)
+                              select Path.GetDirectoryName(path)).FirstOrDefault();
 
         //Ytdlp_Status = string.IsNullOrEmpty(ytdlpPath)
         //                ? DependencyStatus.NotExist
@@ -185,7 +188,7 @@ public static class ExternalProgram
     }
 
     /// <summary>
-    /// 更新依賴
+    ///     更新依賴
     /// </summary>
     /// <param name="ytdlpPath"></param>
     /// <param name="ffmpegPath"></param>

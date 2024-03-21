@@ -16,14 +16,14 @@ internal partial class Download(string id,
                                 string format,
                                 string browser)
 {
+    public bool Finished;
+    public string? OutputFilePath;
+    public bool Succeeded;
+
     private string Link =>
         id.Contains('/')
             ? id
             : @$"https://youtu.be/{id}";
-
-    public bool Finished;
-    public bool Succeeded;
-    public string? OutputFilePath;
 
     public async Task Start(CancellationToken? cancellationToken = default)
     {
@@ -32,15 +32,15 @@ internal partial class Download(string id,
         Succeeded = false;
         Finished = false;
 
-        var tempFilePath1 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
-        var tempFilePath2 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+        string tempFilePath1 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+        string tempFilePath2 = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
         Log.Debug("Create temporary files:");
         Log.Debug("{TempFilePath}", tempFilePath1);
         Log.Debug("{TempFilePath}", tempFilePath2);
 
         try
         {
-            var optionSet = CreateOptionSet();
+            OptionSet optionSet = CreateOptionSet();
 
             YoutubeDL ytdl = new()
             {
@@ -52,7 +52,7 @@ internal partial class Download(string id,
                 IgnoreDownloadErrors = true
             };
 
-            var videoData = await FetchVideoInfoAsync(ytdl, optionSet, cancellationToken);
+            YtdlpVideoData? videoData = await FetchVideoInfoAsync(ytdl, optionSet, cancellationToken);
             if (null == videoData) return;
 
             OutputFilePath = CalculatePath(videoData.Title,
@@ -61,7 +61,7 @@ internal partial class Download(string id,
                                                                CultureInfo.InvariantCulture),
                                            videoData.Id);
 
-            var downloadSuccess = await DownloadVideoAsync(ytdl, optionSet, cancellationToken);
+            bool downloadSuccess = await DownloadVideoAsync(ytdl, optionSet, cancellationToken);
             if (!downloadSuccess) return;
 
             if (end == 0)
@@ -137,7 +137,7 @@ internal partial class Download(string id,
     }
 
     /// <summary>
-    /// 取得影片資訊
+    ///     取得影片資訊
     /// </summary>
     /// <param name="ytdl"></param>
     /// <param name="optionSet"></param>
@@ -147,7 +147,7 @@ internal partial class Download(string id,
     {
         Log.Information("Start getting video information...");
         RunResult<YtdlpVideoData> result =
-        await ytdl.RunVideoDataFetch_Alt(Link, overrideOptions: optionSet, ct: cancellationToken ?? CancellationToken.None);
+            await ytdl.RunVideoDataFetch_Alt(Link, overrideOptions: optionSet, ct: cancellationToken ?? CancellationToken.None);
 
         if (!result.Success)
         {
@@ -177,7 +177,7 @@ internal partial class Download(string id,
     }
 
     /// <summary>
-    /// 下載影片
+    ///     下載影片
     /// </summary>
     /// <param name="ytdl"></param>
     /// <param name="optionSet"></param>
@@ -188,33 +188,34 @@ internal partial class Download(string id,
         Log.Information("Start downloading video...");
         var lastProgress = 0.0f;
 
-        var result = await ytdl.RunVideoDownload(url: Link,
-                                                 mergeFormat: DownloadMergeFormat.Mp4,
-                                                 progress: new Progress<DownloadProgress>(s => Log.Verbose(s.Data)),
-                                                 output: new Progress<string>(rawProgress =>
-                                                 {
-                                                     var m = DownloadPercentage().Match(rawProgress);
-                                                     if (!m.Success)
-                                                     {
-                                                         Log.Verbose(rawProgress);
-                                                         return;
-                                                     }
+        RunResult<string>? result =
+            await ytdl.RunVideoDownload(Link,
+                                        mergeFormat: DownloadMergeFormat.Mp4,
+                                        progress: new Progress<DownloadProgress>(s => Log.Verbose(s.Data)),
+                                        output: new Progress<string>(rawProgress =>
+                                        {
+                                            Match m = DownloadPercentage().Match(rawProgress);
+                                            if (!m.Success)
+                                            {
+                                                Log.Verbose(rawProgress);
+                                                return;
+                                            }
 
-                                                     var currentProgress = float.Parse(m.Groups[1].Value);
+                                            var currentProgress = float.Parse(m.Groups[1].Value);
 
-                                                     if (isProgressEqualOrMinorChange(currentProgress, lastProgress))
-                                                         return;
+                                            if (isProgressEqualOrMinorChange(currentProgress, lastProgress))
+                                                return;
 
-                                                     lastProgress = currentProgress;
-                                                     Log.Verbose(rawProgress);
-                                                 }),
-                                                 overrideOptions: optionSet,
-                                                 ct: cancellationToken ?? CancellationToken.None);
+                                            lastProgress = currentProgress;
+                                            Log.Verbose(rawProgress);
+                                        }),
+                                        overrideOptions: optionSet,
+                                        ct: cancellationToken ?? CancellationToken.None);
 
         if (!result.Success)
         {
             Log.Error("Failed to download video! Please try again later.");
-            foreach (var str in result.ErrorOutput)
+            foreach (string? str in result.ErrorOutput)
             {
                 Log.Information(str);
             }
@@ -231,7 +232,7 @@ internal partial class Download(string id,
     }
 
     /// <summary>
-    /// 剪切影片
+    ///     剪切影片
     /// </summary>
     /// <param name="inputPath"></param>
     /// <param name="outputPath"></param>
@@ -241,29 +242,31 @@ internal partial class Download(string id,
     {
         Log.Information("Start cutting video with FFmpeg...");
 
-        var duration = end - start;
+        float duration = end - start;
 
         FFmpeg.SetExecutablesPath(ExternalProgram.FFmpegPath);
-        var mediaInfo = await FFmpeg.GetMediaInfo(inputPath);
+        IMediaInfo? mediaInfo = await FFmpeg.GetMediaInfo(inputPath);
         // How to Encode Videos for YouTube, Facebook, Vimeo, twitch, and other Video Sharing Sites
         // https://trac.ffmpeg.org/wiki/Encode/YouTube
-        var conversion = FFmpeg.Conversions.New()
-                               .AddParameter($"-sseof -{duration}", ParameterPosition.PreInput)
-                               .AddStream(mediaInfo.Streams)
-                               .AddParameter("-c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k -pix_fmt yuv420p")
-                               .AddParameter("-movflags +faststart")
-                               .SetOutput(outputPath)
-                               .SetOverwriteOutput(true);
+        IConversion? conversion = FFmpeg.Conversions.New()
+                                        .AddParameter($"-sseof -{duration}", ParameterPosition.PreInput)
+                                        .AddStream(mediaInfo.Streams)
+                                        .AddParameter("-c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k -pix_fmt yuv420p")
+                                        .AddParameter("-movflags +faststart")
+                                        .SetOutput(outputPath)
+                                        .SetOverwriteOutput(true);
+
         conversion.OnDataReceived += (_, e) =>
         {
             if (e.Data != null) Log.Verbose(e.Data);
         };
+
         Log.Debug("FFmpeg arguments: {arguments}", conversion.Build());
-        return await conversion.Start(cancellationToken: cancellationToken ?? CancellationToken.None);
+        return await conversion.Start(cancellationToken ?? CancellationToken.None);
     }
 
     /// <summary>
-    /// 路徑做檢查和轉換
+    ///     路徑做檢查和轉換
     /// </summary>
     /// <param name="title">影片標題，用做檔名</param>
     /// <param name="date">影片日期，用做檔名</param>
@@ -275,6 +278,7 @@ internal partial class Download(string id,
         // 取代掉檔名中的非法字元
         title = string.Join(string.Empty, title.Split(Path.GetInvalidFileNameChars()))
                       .Replace(".", string.Empty);
+
         // 截短
         if (title.Length > 80)
         {
@@ -284,8 +288,8 @@ internal partial class Download(string id,
 
         date ??= DateTime.Now;
 
-        var newPath = Path.Combine(outputDirectory.FullName,
-                                   $"{date:yyyyMMdd} {title} ({videoId ?? id}) [{start}_{end}].mp4");
+        string newPath = Path.Combine(outputDirectory.FullName,
+                                      $"{date:yyyyMMdd} {title} ({videoId ?? id}) [{start}_{end}].mp4");
 
         Log.Debug("Calculate output file path as {newPath}", newPath);
         return newPath;

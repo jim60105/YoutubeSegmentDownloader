@@ -8,21 +8,21 @@ namespace YoutubeSegmentDownloader;
 
 internal static class Program
 {
-    public static LoggingLevelSwitch LevelSwitch = new();
+    public static readonly LoggingLevelSwitch LevelSwitch = new();
 
     /// <summary>
-    ///  The main entry point for the application.
+    ///     The main entry point for the application.
     /// </summary>
     [STAThread]
-    static void Main()
+    private static void Main()
     {
         Log.Logger = new LoggerConfiguration()
-                        .MinimumLevel.ControlledBy(LevelSwitch)
-                        .WriteTo.File(path: Path.Combine(Path.GetTempPath(), $"{Application.ProductName?.Replace(" ", "")}.log"),
-                                      rollingInterval: RollingInterval.Day,
-                                      outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj} {NewLine}{Exception}")
-                        .WriteToSimpleAndRichTextBox(new MessageTemplateTextFormatter("{Message} {Exception}\n"))
-                        .CreateLogger();
+                     .MinimumLevel.ControlledBy(LevelSwitch)
+                     .WriteTo.File(path: Path.Combine(Path.GetTempPath(), $"{Application.ProductName?.Replace(" ", "")}.log"),
+                                   rollingInterval: RollingInterval.Day,
+                                   outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj} {NewLine}{Exception}")
+                     .WriteToSimpleAndRichTextBox(new MessageTemplateTextFormatter("{Message} {Exception}\n"))
+                     .CreateLogger();
 
         Task.Run(SetAddRemoveProgramsIcon);
 
@@ -50,18 +50,18 @@ internal static class Program
         {
             try
             {
-                var iconSourcePath = Path.Combine(Application.StartupPath, @"YoutubeSegmentDownloader.ico");
+                string iconSourcePath = Path.Combine(Application.StartupPath, @"YoutubeSegmentDownloader.ico");
 
                 if (!File.Exists(iconSourcePath)) return;
 
-                var uninstallKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall");
+                RegistryKey? uninstallKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall");
                 if (uninstallKey == null) return;
 
-                var subKeyNames = uninstallKey.GetSubKeyNames();
-                foreach (var subKeyName in subKeyNames)
+                string[] subKeyNames = uninstallKey.GetSubKeyNames();
+                foreach (string subKeyName in subKeyNames)
                 {
-                    var myKey = uninstallKey.OpenSubKey(subKeyName, true);
-                    var myValue = myKey.GetValue("DisplayName");
+                    RegistryKey? myKey = uninstallKey.OpenSubKey(subKeyName, true);
+                    object? myValue = myKey.GetValue("DisplayName");
                     if (myValue == null || myValue.ToString() != "Youtube Segment Downloader") continue;
 
                     myKey.SetValue("DisplayIcon", iconSourcePath);
