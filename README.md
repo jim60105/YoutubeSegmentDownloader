@@ -4,8 +4,6 @@
 
 A lifesaver for anyone who is doing video clipping/translating or any need to download segments from Youtube.
 
-[![CodeFactor](https://www.codefactor.io/repository/github/jim60105/youtubesegmentdownloader/badge?style=for-the-badge)](https://www.codefactor.io/repository/github/jim60105/youtubesegmentdownloader)
-
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/jim60105/YoutubeSegmentDownloader?style=for-the-badge)](https://github.com/jim60105/YoutubeSegmentDownloader/releases/latest)
 ![GitHub Release Date](https://img.shields.io/github/release-date/jim60105/YoutubeSegmentDownloader?style=for-the-badge)
 ![GitHub all releases](https://img.shields.io/github/downloads/jim60105/YoutubeSegmentDownloader/total?style=for-the-badge)
@@ -42,7 +40,7 @@ Input [the format](https://github.com/yt-dlp/yt-dlp#format-selection) such as `3
 
 **I18n 多國語系**\
 我做了中文介面\
-I only speak Chinese. Give me PR if you make more languages!
+I only speak Chinese. Feel free to send me PR if you add more languages!
 
 **It can accept any yt-dlp supported site.**\
 I only support Youtube, but this application can theoretically be used on [any site supported by yt-dlp](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md).\
@@ -122,3 +120,6 @@ You should have received a copy of the GNU General Public License along with thi
 > A winform project written in .NET ~~6~~ ~~7~~ 8 and CI/CD the ClickOnce installer on the github workflow.\
 > I think I'll stop it at .NET 8 since it's LTS.\
 > Anyone want to turn it into MAUI? ¯\\\_(ツ)_/¯
+
+[![CodeFactor](https://www.codefactor.io/repository/github/jim60105/youtubesegmentdownloader/badge)](https://www.codefactor.io/repository/github/jim60105/youtubesegmentdownloader) [![DeepSource](https://app.deepsource.com/gh/jim60105/YoutubeSegmentDownloader.svg/?label=active+issues&show_trend=false&token=bnMLAb6VfkvA_YyS2nJaIY_p)](https://app.deepsource.com/gh/jim60105/YoutubeSegmentDownloader/)  
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjim60105%2FYoutubeSegmentDownloader.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjim60105%2FYoutubeSegmentDownloader?ref=badge_large&issueType=license)
