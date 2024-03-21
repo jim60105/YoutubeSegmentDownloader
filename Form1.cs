@@ -12,6 +12,7 @@ namespace YoutubeSegmentDownloader;
 public partial class Form1 : Form
 {
     readonly ComponentResourceManager resources = new(typeof(Form1));
+
     public Form1()
     {
         InitializeComponent();
@@ -25,7 +26,7 @@ public partial class Form1 : Form
         comboBox_browser.SelectedIndex = comboBox_browser.FindString(Settings.Default.Browser);
         textBox_format.Text = Settings.Default.Format;
         checkBox_logVerbose_CheckedChanged(new object(), EventArgs.Empty);
-        _ = PrepareYtdlpAndFFmpegAsync().ConfigureAwait(true);  // Use same thread
+        _ = PrepareYtdlpAndFFmpegAsync().ConfigureAwait(true); // Use same thread
         Application.CurrentInputLanguage = InputLanguage.FromCulture(new CultureInfo("en-us")) ?? InputLanguage.DefaultInputLanguage;
     }
 
@@ -111,6 +112,7 @@ public partial class Form1 : Form
         {
             browser = "";
         }
+
         Settings.Default.Browser = browser;
         Settings.Default.Save();
 
@@ -168,8 +170,8 @@ public partial class Form1 : Form
         try
         {
             var path = directoryPath.Contains('%')
-                ? Environment.ExpandEnvironmentVariables(directoryPath)
-                : directoryPath;
+                           ? Environment.ExpandEnvironmentVariables(directoryPath)
+                           : directoryPath;
             directory = new DirectoryInfo(path);
             directory.Create();
             Log.Information("Output directory:");
@@ -190,9 +192,13 @@ public partial class Form1 : Form
         try
         {
             tableLayoutPanel_main.Enabled
-                = tableLayoutPanel_segment.Enabled
-                = button_start.Enabled
-                = false;
+            = tableLayoutPanel_segment.Enabled
+              = button_start.Enabled
+                = groupBox1.Enabled
+                  = groupBox2.Enabled
+                    = groupBox3.Enabled
+                      = button_redownloadDependencies.Enabled
+                        = false;
             Application.DoEvents();
 
             Download download = new(id: id,
@@ -227,8 +233,13 @@ public partial class Form1 : Form
         finally
         {
             tableLayoutPanel_main.Enabled
-                = button_start.Enabled
-                = true;
+            //= tableLayoutPanel_segment.Enabled
+            = button_start.Enabled
+              = groupBox1.Enabled
+                = groupBox2.Enabled
+                  = groupBox3.Enabled
+                    = button_redownloadDependencies.Enabled
+                      = true;
             tableLayoutPanel_segment.Enabled = checkBox_segment.Checked;
             Application.DoEvents();
         }
@@ -245,8 +256,8 @@ public partial class Form1 : Form
     private void checkBox_logVerbose_CheckedChanged(object sender, EventArgs e)
     {
         Program.LevelSwitch.MinimumLevel = checkBox_logVerbose.Checked
-            ? LogEventLevel.Verbose
-            : LogEventLevel.Information;
+                                               ? LogEventLevel.Verbose
+                                               : LogEventLevel.Information;
 
         Settings.Default.LogVerbose = checkBox_logVerbose.Checked;
         Settings.Default.Save();
@@ -278,7 +289,7 @@ public partial class Form1 : Form
     }
 
     private void button_redownloadDependencies_Click(object sender, EventArgs e)
-        => _ = PrepareYtdlpAndFFmpegAsync(true).ConfigureAwait(true);  // Use same thread
+        => _ = PrepareYtdlpAndFFmpegAsync(true).ConfigureAwait(true); // Use same thread
 
     private void textBox_youtube_TextChanged(object sender, EventArgs e)
     {
@@ -339,8 +350,8 @@ public partial class Form1 : Form
         var idMatch = GetYoutubeId().Match(url);
 
         return idMatch.Success
-                ? idMatch.Groups[1].Value
-                : null;
+                   ? idMatch.Groups[1].Value
+                   : null;
     }
 
     /// <summary>
@@ -356,8 +367,8 @@ public partial class Form1 : Form
 
         return match.Success
                && float.TryParse(match.Groups[1].Value, out var start)
-               ? start
-               : 0;
+                   ? start
+                   : 0;
     }
 
     /// <summary>
@@ -384,6 +395,7 @@ public partial class Form1 : Form
             Log.Error(url);
             return false;
         }
+
         var body = response.Content.ReadAsStringAsync().Result;
 
         // "clipConfig":{"postId":"UgkxVQpxshiN76QUwblPu-ggj6fl594-ORiU","startTimeMs":"1891037","endTimeMs":"1906037"}
@@ -406,6 +418,7 @@ public partial class Form1 : Form
         {
             id = match2.Groups[1].Value;
         }
+
         Log.Information("Get info from clip: {videoId}, {start}, {end}", id, start, end);
         return match1.Success && match2.Success;
     }
@@ -451,15 +464,22 @@ public partial class Form1 : Form
     }
 
     #region Regex
-    [GeneratedRegex(@"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\S*[^\w\s-])([\w-]{11})(?=[^\w-]|$)(?![?=&+%\w.-]*(?:['""][^<>]*>|<\/a>))[?=&+%\w.-]*")]
+
+    [GeneratedRegex(
+        @"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\S*[^\w\s-])([\w-]{11})(?=[^\w-]|$)(?![?=&+%\w.-]*(?:['""][^<>]*>|<\/a>))[?=&+%\w.-]*")]
     private static partial Regex GetYoutubeId();
+
     [GeneratedRegex(@"^.*[?&]t=([^&smh]*).*$")]
     private static partial Regex ExtractYoutubeStartTime();
+
     [GeneratedRegex(@"https?:\/\/(?:[\w-]+\.)?(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/)clip\/[?=&+%\w.-]*")]
     private static partial Regex IsYoutubeClipLink();
+
     [GeneratedRegex(@"clipConfig"":{""postId"":""(?:[\w-]+)"",""startTimeMs"":""(\d+)"",""endTimeMs"":""(\d+)""}")]
     private static partial Regex ParseYoutubeClipInfo();
+
     [GeneratedRegex(@"{""videoId"":""([\w-]+)""")]
     private static partial Regex ParseYoutubeClipVideoId();
+
     #endregion
 }
