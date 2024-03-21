@@ -533,7 +533,7 @@
     <value>panel_main</value>
   </data>
   <data name="&gt;&gt;tableLayoutPanel_main.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>6</value>
   </data>
   <data name="tableLayoutPanel_main.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
     <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="tableLayoutPanel1" Row="0" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="label8" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="label3" Row="1" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="textBox_youtube" Row="1" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="Percent,25.64433,Percent,74.35567" /&gt;&lt;Rows Styles="Percent,50,Percent,50" /&gt;&lt;/TableLayoutSettings&gt;</value>
@@ -889,7 +889,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>panel_main</value>
   </data>
   <data name="&gt;&gt;richTextBoxLogControl1.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>0</value>
   </data>
   <data name="checkBox_logVerbose.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left</value>
@@ -922,13 +922,43 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>panel_main</value>
   </data>
   <data name="&gt;&gt;checkBox_logVerbose.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
+  </data>
+  <data name="hiddenlabel2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="hiddenlabel2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 277</value>
+  </data>
+  <data name="hiddenlabel2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>41, 19</value>
+  </data>
+  <data name="hiddenlabel2.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="hiddenlabel2.Text" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="hiddenlabel2.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;hiddenlabel2.Name" xml:space="preserve">
+    <value>hiddenlabel2</value>
+  </data>
+  <data name="&gt;&gt;hiddenlabel2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;hiddenlabel2.Parent" xml:space="preserve">
+    <value>panel_main</value>
+  </data>
+  <data name="&gt;&gt;hiddenlabel2.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="hiddenlabel1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="hiddenlabel1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 239</value>
+    <value>15, 239</value>
   </data>
   <data name="hiddenlabel1.Size" type="System.Drawing.Size, System.Drawing">
     <value>552, 38</value>
@@ -953,7 +983,7 @@ The program will hand this source directly to yt-dlp, which will most likely fai
     <value>panel_main</value>
   </data>
   <data name="&gt;&gt;hiddenlabel1.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>2</value>
   </data>
   <data name="tableLayoutPanel2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -1319,7 +1349,7 @@ The program will hand this source directly to yt-dlp, which will most likely fai
     <value>panel_main</value>
   </data>
   <data name="&gt;&gt;tableLayoutPanel2.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="tableLayoutPanel2.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
     <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="tableLayoutPanel3" Row="0" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="groupBox1" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="button_start" Row="0" RowSpan="1" Column="2" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="Percent,50,Percent,30,Percent,20" /&gt;&lt;Rows Styles="Percent,100" /&gt;&lt;/TableLayoutSettings&gt;</value>
@@ -1355,7 +1385,7 @@ The program will hand this source directly to yt-dlp, which will most likely fai
     <value>panel_main</value>
   </data>
   <data name="&gt;&gt;button_redownloadDependencies.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="richTextBox1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -1400,7 +1430,7 @@ The program will hand this source directly to yt-dlp, which will most likely fai
     <value>panel_main</value>
   </data>
   <data name="&gt;&gt;richTextBox1.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="panel_main.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>

@@ -54,6 +54,7 @@
             richTextBoxLogControl1 = new Serilog.Sinks.WinForms.Core.RichTextBoxLogControl();
             checkBox_logVerbose = new CheckBox();
             panel_main = new Panel();
+            hiddenlabel2 = new Label();
             hiddenlabel1 = new Label();
             tableLayoutPanel2 = new TableLayoutPanel();
             tableLayoutPanel3 = new TableLayoutPanel();
@@ -255,15 +256,21 @@
             // 
             // panel_main
             // 
+            panel_main.Controls.Add(richTextBoxLogControl1);
+            panel_main.Controls.Add(hiddenlabel2);
             panel_main.Controls.Add(hiddenlabel1);
             panel_main.Controls.Add(tableLayoutPanel2);
             panel_main.Controls.Add(button_redownloadDependencies);
             panel_main.Controls.Add(checkBox_logVerbose);
             panel_main.Controls.Add(tableLayoutPanel_main);
-            panel_main.Controls.Add(richTextBoxLogControl1);
             panel_main.Controls.Add(richTextBox1);
             resources.ApplyResources(panel_main, "panel_main");
             panel_main.Name = "panel_main";
+            // 
+            // hiddenlabel2
+            // 
+            resources.ApplyResources(hiddenlabel2, "hiddenlabel2");
+            hiddenlabel2.Name = "hiddenlabel2";
             // 
             // hiddenlabel1
             // 
@@ -442,5 +449,6 @@
         private TableLayoutPanel tableLayoutPanel5;
         private Label label4;
         private Label hiddenlabel1;
+        private Label hiddenlabel2;
     }
 }

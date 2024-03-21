@@ -11,12 +11,19 @@ namespace YoutubeSegmentDownloader;
 
 public partial class Form1 : Form
 {
-    readonly ComponentResourceManager resources = new(typeof(Form1));
+    private readonly ComponentResourceManager _resources = new(typeof(Form1));
 
     public Form1()
     {
         InitializeComponent();
         Shown += Form1_Shown;
+        Closing += (_, _) =>
+        {
+            _cancellationTokenSource.Cancel();
+
+            // Wait 1 second for the download process to terminate and files clean up
+            Thread.Sleep(1000);
+        };
     }
 
     private void Form1_Shown(object? sender, EventArgs e)
@@ -67,6 +74,7 @@ public partial class Form1 : Form
                     DependencyStatus.Failed => "😕",
                     _ => throw new NotImplementedException()
                 };
+
             label_checking_ffmpeg.Text =
                 FFmpegStatus switch
                 {
@@ -87,28 +95,41 @@ public partial class Form1 : Form
     private void checkBox_segment_CheckedChanged(object sender, EventArgs e)
         => tableLayoutPanel_segment.Enabled = checkBox_segment.Checked;
 
+    private bool _isDownloading;
+    private CancellationTokenSource _cancellationTokenSource = new();
+
     private void button_start_Click(object sender, EventArgs e)
     {
+        if (_isDownloading)
+        {
+            _isDownloading = false;
+
+            if (!_cancellationTokenSource.Token.CanBeCanceled) return;
+
+            Log.Information("Terminate download process.");
+            _cancellationTokenSource.Cancel();
+
+            return;
+        }
+
+        _cancellationTokenSource = new CancellationTokenSource();
+
         Settings.Default.Directory = textBox_outputDirectory.Text;
 
         var id = TryPrepareVideoId(textBox_youtube.Text);
 
         if (!TryPrepareStartEndTime(textBox_start.Text, textBox_end.Text, checkBox_segment.Checked, out var start, out var end))
-        {
             return;
-        }
 
         if (!TryPrepareDirectory(textBox_outputDirectory.Text, out var directory))
-        {
             return;
-        }
 
         var format = textBox_format.Text;
         Settings.Default.Format = format;
 
         var browser = comboBox_browser.Text;
         if (string.IsNullOrEmpty(browser)
-            || browser == resources.GetString("comboBox_browser.Items"))
+            || browser == _resources.GetString("comboBox_browser.Items"))
         {
             browser = "";
         }
@@ -116,7 +137,13 @@ public partial class Form1 : Form
         Settings.Default.Browser = browser;
         Settings.Default.Save();
 
-        _ = DownloadAsync(id, start, end, directory!, format, browser).ConfigureAwait(true);
+        _ = DownloadAsync(id: id,
+                          start: start,
+                          end: end,
+                          directory: directory!,
+                          format: format,
+                          browser: browser,
+                          cancellationToken: _cancellationTokenSource.Token).ConfigureAwait(false);
     }
 
     private string TryPrepareVideoId(string text)
@@ -132,8 +159,8 @@ public partial class Form1 : Form
         }
         else
         {
-            Log.Error(resources.GetString("hiddenlabel1.Text", new CultureInfo("en-us"))!);
-            MessageBox.Show(resources.GetString("hiddenlabel1.Text"), "Warning!");
+            Log.Error(_resources.GetString("hiddenlabel1.Text", new CultureInfo("en-us"))!);
+            MessageBox.Show(_resources.GetString("hiddenlabel1.Text"), "Warning!");
         }
 
         return text;
@@ -172,6 +199,7 @@ public partial class Form1 : Form
             var path = directoryPath.Contains('%')
                            ? Environment.ExpandEnvironmentVariables(directoryPath)
                            : directoryPath;
+
             directory = new DirectoryInfo(path);
             directory.Create();
             Log.Information("Output directory:");
@@ -187,18 +215,29 @@ public partial class Form1 : Form
         }
     }
 
-    private async Task DownloadAsync(string id, float start, float end, DirectoryInfo directory, string format, string browser)
+    private async Task DownloadAsync(string id,
+                                     float start,
+                                     float end,
+                                     DirectoryInfo directory,
+                                     string format,
+                                     string browser,
+                                     CancellationToken? cancellationToken = default)
     {
+        var oldText = button_start.Text;
+        button_start.Text = _resources.GetString("hiddenlabel2.Text");
         try
         {
+            _isDownloading = true;
+
             tableLayoutPanel_main.Enabled
-            = tableLayoutPanel_segment.Enabled
-              = button_start.Enabled
-                = groupBox1.Enabled
-                  = groupBox2.Enabled
-                    = groupBox3.Enabled
-                      = button_redownloadDependencies.Enabled
-                        = false;
+                = tableLayoutPanel_segment.Enabled
+                      //= button_start.Enabled
+                      = groupBox1.Enabled
+                            = groupBox2.Enabled
+                                  = groupBox3.Enabled
+                                        = button_redownloadDependencies.Enabled
+                                              = false;
+
             Application.DoEvents();
 
             Download download = new(id: id,
@@ -207,7 +246,8 @@ public partial class Form1 : Form
                                     outputDirectory: directory,
                                     format: format,
                                     browser: browser);
-            await download.Start();
+
+            await download.Start(cancellationToken);
 
             if (!download.Succeeded)
             {
@@ -224,6 +264,9 @@ public partial class Form1 : Form
         }
         catch (Exception e)
         {
+            if (e is TaskCanceledException or OperationCanceledException)
+                return;
+
             Log.Logger.Error(e.Message);
             MessageBox.Show("Download not successful!", "Failed!!!");
             Log.Logger.Error("!!!! FAILED !!!!");
@@ -233,15 +276,19 @@ public partial class Form1 : Form
         finally
         {
             tableLayoutPanel_main.Enabled
-            //= tableLayoutPanel_segment.Enabled
-            = button_start.Enabled
-              = groupBox1.Enabled
-                = groupBox2.Enabled
-                  = groupBox3.Enabled
-                    = button_redownloadDependencies.Enabled
-                      = true;
+                //= tableLayoutPanel_segment.Enabled
+                //= button_start.Enabled
+                = groupBox1.Enabled
+                      = groupBox2.Enabled
+                            = groupBox3.Enabled
+                                  = button_redownloadDependencies.Enabled
+                                        = true;
+
             tableLayoutPanel_segment.Enabled = checkBox_segment.Checked;
+            button_start.Text = oldText;
             Application.DoEvents();
+
+            _isDownloading = false;
         }
     }
 

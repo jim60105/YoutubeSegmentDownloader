@@ -25,8 +25,9 @@ internal partial class Download(string id,
     public bool Succeeded;
     public string? OutputFilePath;
 
-    public async Task Start()
+    public async Task Start(CancellationToken? cancellationToken = default)
     {
+        cancellationToken ??= CancellationToken.None;
         Log.Information("Start the download process...");
         Succeeded = false;
         Finished = false;
@@ -51,7 +52,7 @@ internal partial class Download(string id,
                 IgnoreDownloadErrors = true
             };
 
-            var videoData = await FetchVideoInfoAsync(ytdl, optionSet);
+            var videoData = await FetchVideoInfoAsync(ytdl, optionSet, cancellationToken);
             if (null == videoData) return;
 
             OutputFilePath = CalculatePath(videoData.Title,
@@ -60,7 +61,7 @@ internal partial class Download(string id,
                                                                CultureInfo.InvariantCulture),
                                            videoData.Id);
 
-            var downloadSuccess = await DownloadVideoAsync(ytdl, optionSet);
+            var downloadSuccess = await DownloadVideoAsync(ytdl, optionSet, cancellationToken);
             if (!downloadSuccess) return;
 
             if (end == 0)
@@ -70,7 +71,7 @@ internal partial class Download(string id,
             }
             else
             {
-                _ = await CutWithFFmpegAsync(tempFilePath1, tempFilePath2);
+                _ = await CutWithFFmpegAsync(tempFilePath1, tempFilePath2, cancellationToken);
                 File.Move(tempFilePath2, OutputFilePath, true);
             }
 
@@ -80,12 +81,18 @@ internal partial class Download(string id,
         }
         catch (Exception e)
         {
+            if (e is TaskCanceledException or OperationCanceledException)
+                throw;
+
             Log.Error("vvvvvvvvvvvvvvvvvvvvv");
             Log.Error(e.Message);
             Log.Error("^^^^^^^^^^^^^^^^^^^^^");
         }
         finally
         {
+            // Wait 500 ms to ensure the file is released
+            await Task.Delay(500);
+
             File.Delete(tempFilePath1);
             File.Delete(tempFilePath2);
             File.Delete(Path.ChangeExtension(tempFilePath1, "tmp"));
@@ -134,11 +141,13 @@ internal partial class Download(string id,
     /// </summary>
     /// <param name="ytdl"></param>
     /// <param name="optionSet"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    private async Task<YtdlpVideoData?> FetchVideoInfoAsync(YoutubeDL ytdl, OptionSet optionSet)
+    private async Task<YtdlpVideoData?> FetchVideoInfoAsync(YoutubeDL ytdl, OptionSet optionSet, CancellationToken? cancellationToken = default)
     {
         Log.Information("Start getting video information...");
-        RunResult<YtdlpVideoData> result = await ytdl.RunVideoDataFetch_Alt(Link, overrideOptions: optionSet);
+        RunResult<YtdlpVideoData> result =
+        await ytdl.RunVideoDataFetch_Alt(Link, overrideOptions: optionSet, ct: cancellationToken ?? CancellationToken.None);
 
         if (!result.Success)
         {
@@ -172,8 +181,9 @@ internal partial class Download(string id,
     /// </summary>
     /// <param name="ytdl"></param>
     /// <param name="optionSet"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    private async Task<bool> DownloadVideoAsync(YoutubeDL ytdl, OptionSet optionSet)
+    private async Task<bool> DownloadVideoAsync(YoutubeDL ytdl, OptionSet optionSet, CancellationToken? cancellationToken = default)
     {
         Log.Information("Start downloading video...");
         var lastProgress = 0.0f;
@@ -198,7 +208,8 @@ internal partial class Download(string id,
                                                      lastProgress = currentProgress;
                                                      Log.Verbose(rawProgress);
                                                  }),
-                                                 overrideOptions: optionSet);
+                                                 overrideOptions: optionSet,
+                                                 ct: cancellationToken ?? CancellationToken.None);
 
         if (!result.Success)
         {
@@ -224,8 +235,9 @@ internal partial class Download(string id,
     /// </summary>
     /// <param name="inputPath"></param>
     /// <param name="outputPath"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    private async Task<IConversionResult> CutWithFFmpegAsync(string inputPath, string outputPath)
+    private async Task<IConversionResult> CutWithFFmpegAsync(string inputPath, string outputPath, CancellationToken? cancellationToken = default)
     {
         Log.Information("Start cutting video with FFmpeg...");
 
@@ -247,7 +259,7 @@ internal partial class Download(string id,
             if (e.Data != null) Log.Verbose(e.Data);
         };
         Log.Debug("FFmpeg arguments: {arguments}", conversion.Build());
-        return await conversion.Start();
+        return await conversion.Start(cancellationToken: cancellationToken ?? CancellationToken.None);
     }
 
     /// <summary>

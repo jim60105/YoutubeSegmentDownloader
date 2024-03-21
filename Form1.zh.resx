@@ -6006,4 +6006,7 @@ https://github.com/yt-dlp/yt-dlp/releases/latest</value>
     <value>你輸入的影片來源並非Youtube連結或是影片ID。
 程式會將此來源直接交給yt-dlp，這很可能會失敗！</value>
   </data>
+  <data name="hiddenlabel2.Text" xml:space="preserve">
+    <value>停止</value>
+  </data>
 </root>
