@@ -180,6 +180,7 @@ internal partial class Download(string id,
 
         var result = await ytdl.RunVideoDownload(url: Link,
                                                  mergeFormat: DownloadMergeFormat.Mp4,
+                                                 progress: new Progress<DownloadProgress>(s => Log.Verbose(s.Data)),
                                                  output: new Progress<string>(rawProgress =>
                                                  {
                                                      var m = DownloadPercentage().Match(rawProgress);
