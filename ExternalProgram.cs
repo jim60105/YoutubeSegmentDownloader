@@ -256,5 +256,4 @@ public static class ExternalProgram
     //    Log.Information(FFmpegVersion);
     //    return FFmpegVersion;
     //}
-
 }

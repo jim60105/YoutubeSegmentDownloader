@@ -431,7 +431,6 @@ public partial class Form1 : Form
         id = null;
         start = end = 0;
 
-
         if (string.IsNullOrEmpty(url) || !IsYoutubeClipLink().IsMatch(url)) return false;
 
         using HttpClient client = new();
