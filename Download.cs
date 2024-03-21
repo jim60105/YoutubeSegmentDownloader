@@ -176,22 +176,28 @@ internal partial class Download(string id,
     private async Task<bool> DownloadVideoAsync(YoutubeDL ytdl, OptionSet optionSet)
     {
         Log.Information("Start downloading video...");
-        var lastPercentage = string.Empty;
+        var lastProgress = 0.0f;
 
-        var result = await ytdl.RunVideoDownload(
-            url: Link,
-            mergeFormat: DownloadMergeFormat.Mp4,
-            output: new Progress<string>(s =>
-            {
-                var m = DownloadPercentage().Match(s);
-                if (m.Success
-                    && lastPercentage == m.Groups[1].Value)
-                    return;
+        var result = await ytdl.RunVideoDownload(url: Link,
+                                                 mergeFormat: DownloadMergeFormat.Mp4,
+                                                 output: new Progress<string>(rawProgress =>
+                                                 {
+                                                     var m = DownloadPercentage().Match(rawProgress);
+                                                     if (!m.Success)
+                                                     {
+                                                         Log.Verbose(rawProgress);
+                                                         return;
+                                                     }
 
-                lastPercentage = m.Groups[1].Value;
-                Log.Verbose(s);
-            }),
-            overrideOptions: optionSet);
+                                                     var currentProgress = float.Parse(m.Groups[1].Value);
+
+                                                     if (isProgressEqualOrMinorChange(currentProgress, lastProgress))
+                                                         return;
+
+                                                     lastProgress = currentProgress;
+                                                     Log.Verbose(rawProgress);
+                                                 }),
+                                                 overrideOptions: optionSet);
 
         if (!result.Success)
         {
@@ -206,6 +212,10 @@ internal partial class Download(string id,
 
         Log.Information("Video downloaded.");
         return true;
+
+        static bool isProgressEqualOrMinorChange(float currentProgress, float lastProgress)
+            => Math.Abs(currentProgress - lastProgress) < float.Epsilon
+               || (currentProgress < lastProgress && lastProgress - currentProgress < 1);
     }
 
     /// <summary>

@@ -130,7 +130,7 @@ public partial class Form1 : Form
         }
         else
         {
-            Log.Error(resources.GetString("hiddenlabel1.Text", new CultureInfo("en-us")));
+            Log.Error(resources.GetString("hiddenlabel1.Text", new CultureInfo("en-us"))!);
             MessageBox.Show(resources.GetString("hiddenlabel1.Text"), "Warning!");
         }
 
@@ -201,14 +201,7 @@ public partial class Form1 : Form
                                     outputDirectory: directory,
                                     format: format,
                                     browser: browser);
-            _ = download.Start().ConfigureAwait(false);
-
-            while (!download.Finished)
-            {
-                // Update UI
-                await Task.Delay(TimeSpan.FromSeconds(1));
-                Application.DoEvents();
-            }
+            await download.Start();
 
             if (!download.Succeeded)
             {
