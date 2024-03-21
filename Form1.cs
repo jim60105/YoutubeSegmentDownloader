@@ -202,6 +202,7 @@ public partial class Form1 : Form
             Log.Information(directory.FullName);
             return true;
         }
+        // skipcq: CS-R1008
         catch (Exception)
         {
             directory = null;
@@ -243,11 +244,11 @@ public partial class Form1 : Form
                                     format: format,
                                     browser: browser);
 
-            await download.Start(cancellationToken);
+            await download.StartAsync(cancellationToken);
 
             if (!download.Succeeded)
             {
-                throw new Exception("The download process completed without success.");
+                throw new InvalidOperationException("The download process completed without success.");
             }
 
             MessageBox.Show($"Video segments are stored in:\n\n{download.OutputFilePath}", "Finish");
@@ -317,6 +318,7 @@ public partial class Form1 : Form
             process.StartInfo.FileName = e.LinkText;
             process.Start();
         }
+        // skipcq: CS-R1008
         catch (Exception)
         {
             MessageBox.Show("Unable to open link that was clicked.", "Error!");
@@ -443,14 +445,12 @@ public partial class Form1 : Form
         // "clipConfig":{"postId":"UgkxVQpxshiN76QUwblPu-ggj6fl594-ORiU","startTimeMs":"1891037","endTimeMs":"1906037"}
         Regex reg1 = ParseYoutubeClipInfo();
         Match match1 = reg1.Match(body);
-        if (match1.Success)
+        if (match1.Success
+            && float.TryParse(match1.Groups[1].Value, out float _start)
+            && float.TryParse(match1.Groups[2].Value, out float _end))
         {
-            if (float.TryParse(match1.Groups[1].Value, out float _start)
-                && float.TryParse(match1.Groups[2].Value, out float _end))
-            {
-                start = _start / 1000;
-                end = _end / 1000;
-            }
+            start = _start / 1000;
+            end = _end / 1000;
         }
 
         // {"videoId":"Gs7QYATahy4"}

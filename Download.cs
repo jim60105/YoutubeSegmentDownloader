@@ -25,7 +25,7 @@ internal partial class Download(string id,
             ? id
             : @$"https://youtu.be/{id}";
 
-    public async Task Start(CancellationToken? cancellationToken = default)
+    public async Task StartAsync(CancellationToken? cancellationToken = default)
     {
         cancellationToken ??= CancellationToken.None;
         Log.Information("Start the download process...");
@@ -286,6 +286,7 @@ internal partial class Download(string id,
             title = title[..80];
         }
 
+        // skipcq: CS-W1091
         date ??= DateTime.Now;
 
         string newPath = Path.Combine(outputDirectory.FullName,

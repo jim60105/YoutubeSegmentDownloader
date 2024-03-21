@@ -27,7 +27,7 @@ public static class ExternalProgram
     public static string? YtdlpPath { get; private set; }
     public static string? FFmpegPath { get; private set; }
 
-    private static async Task DownloadYtdlp()
+    private static async Task DownloadYtdlpAsync()
     {
         Log.Information("Start downloading yt-dlp...");
         YtdlpStatus = DependencyStatus.Downloading;
@@ -64,7 +64,7 @@ public static class ExternalProgram
         }
     }
 
-    internal static async Task DownloadFFmpeg()
+    internal static async Task DownloadFFmpegAsync()
     {
         Log.Information("Start downloading FFmpeg...");
         FFmpegStatus = DependencyStatus.Downloading;
@@ -202,7 +202,7 @@ public static class ExternalProgram
             || force)
         {
             YtdlpStatus = DependencyStatus.NotExist;
-            tasks.Add(DownloadYtdlp());
+            tasks.Add(DownloadYtdlpAsync());
         }
         else
         {
@@ -218,7 +218,7 @@ public static class ExternalProgram
         {
             FFmpegStatus = DependencyStatus.NotExist;
             //Log.Information("No matching version of FFmpeg was detected.");
-            tasks.Add(DownloadFFmpeg());
+            tasks.Add(DownloadFFmpegAsync());
         }
         else
         {
