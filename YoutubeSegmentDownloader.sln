@@ -26,6 +26,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		RESX_ShowErrorsInErrorList = False
+		RESX_TaskErrorCategory = Message
+		RESX_RemoveEmptyEntries = False
+		RESX_Rules = {"EnabledRules":["StringFormat"]}
 		SolutionGuid = {9E8F07DF-C349-4BBA-A8C7-FAE377ABD631}
 	EndGlobalSection
 EndGlobal

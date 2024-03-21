@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text.RegularExpressions;
 using Serilog;
 using Xabe.FFmpeg;
 using YoutubeDLSharp;
@@ -8,12 +9,12 @@ using YtdlpVideoData = YoutubeSegmentDownloader.Models.YtdlpVideoData.ytdlpVideo
 
 namespace YoutubeSegmentDownloader;
 
-internal class Download(string id,
-                        float start,
-                        float end,
-                        DirectoryInfo outputDirectory,
-                        string format,
-                        string browser)
+internal partial class Download(string id,
+                                float start,
+                                float end,
+                                DirectoryInfo outputDirectory,
+                                string format,
+                                string browser)
 {
     private string Link =>
         id.Contains('/')
@@ -72,6 +73,7 @@ internal class Download(string id,
                 _ = await CutWithFFmpegAsync(tempFilePath1, tempFilePath2);
                 File.Move(tempFilePath2, OutputFilePath, true);
             }
+
             Log.Information("Download completed:");
             Log.Information(OutputFilePath);
             Succeeded = true;
@@ -174,11 +176,21 @@ internal class Download(string id,
     private async Task<bool> DownloadVideoAsync(YoutubeDL ytdl, OptionSet optionSet)
     {
         Log.Information("Start downloading video...");
+        var lastPercentage = string.Empty;
+
         var result = await ytdl.RunVideoDownload(
             url: Link,
             mergeFormat: DownloadMergeFormat.Mp4,
-            progress: new Progress<DownloadProgress>(s => Log.Verbose(s.Data)),
-            output: new Progress<string>(Log.Verbose),
+            output: new Progress<string>(s =>
+            {
+                var m = DownloadPercentage().Match(s);
+                if (m.Success
+                    && lastPercentage == m.Groups[1].Value)
+                    return;
+
+                lastPercentage = m.Groups[1].Value;
+                Log.Verbose(s);
+            }),
             overrideOptions: optionSet);
 
         if (!result.Success)
@@ -188,8 +200,10 @@ internal class Download(string id,
             {
                 Log.Information(str);
             }
+
             return false;
         }
+
         Log.Information("Video downloaded.");
         return true;
     }
@@ -211,13 +225,16 @@ internal class Download(string id,
         // How to Encode Videos for YouTube, Facebook, Vimeo, twitch, and other Video Sharing Sites
         // https://trac.ffmpeg.org/wiki/Encode/YouTube
         var conversion = FFmpeg.Conversions.New()
-                                   .AddParameter($"-sseof -{duration}", ParameterPosition.PreInput)
-                                   .AddStream(mediaInfo.Streams)
-                                   .AddParameter("-c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k -pix_fmt yuv420p")
-                                   .AddParameter("-movflags +faststart")
-                                   .SetOutput(outputPath)
-                                   .SetOverwriteOutput(true);
-        conversion.OnDataReceived += (_, e) => Log.Verbose(e.Data);
+                               .AddParameter($"-sseof -{duration}", ParameterPosition.PreInput)
+                               .AddStream(mediaInfo.Streams)
+                               .AddParameter("-c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k -pix_fmt yuv420p")
+                               .AddParameter("-movflags +faststart")
+                               .SetOutput(outputPath)
+                               .SetOverwriteOutput(true);
+        conversion.OnDataReceived += (_, e) =>
+        {
+            if (e.Data != null) Log.Verbose(e.Data);
+        };
         Log.Debug("FFmpeg arguments: {arguments}", conversion.Build());
         return await conversion.Start();
     }
@@ -244,9 +261,13 @@ internal class Download(string id,
 
         date ??= DateTime.Now;
 
-        var newPath = Path.Combine(outputDirectory.FullName, $"{date:yyyyMMdd} {title} ({videoId ?? id}) [{start}_{end}].mp4");
+        var newPath = Path.Combine(outputDirectory.FullName,
+                                   $"{date:yyyyMMdd} {title} ({videoId ?? id}) [{start}_{end}].mp4");
 
         Log.Debug("Calculate output file path as {newPath}", newPath);
         return newPath;
     }
+
+    [GeneratedRegex(@"^\[download\]\s+(\d+\.\d+)%")]
+    private static partial Regex DownloadPercentage();
 }
