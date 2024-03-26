@@ -1,0 +1,19 @@
+{
+    "tasks": [
+        {
+            "name": "Run JB Clean Up Code",
+            "pathMode": "relative",
+            "command": "dotnet",
+            "args": [
+                "jb",
+                "cleanupcode",
+                "--profile=Built-in: Reformat Code",
+                // This will format only the staged files, but will exit with error when there is no file to format
+                //"--include=${staged:;}",
+                "--verbosity=ERROR",
+                "YoutubeSegmentDownloader.sln"
+            ],
+            "group": "pre-commit"
+        }
+    ]
+}

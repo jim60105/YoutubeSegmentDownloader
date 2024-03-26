@@ -22,9 +22,16 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include=".husky\task-runner.json" />
     <Content Include="YoutubeSegmentDownloader.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".husky\commit-msg" />
+    <None Include=".husky\pre-commit" />
+    <None Include=".husky\_\.gitignore" />
+    <None Include=".husky\_\husky.sh" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="3.1.1" />
@@ -63,4 +70,8 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
+  <Target Name="Husky" BeforeTargets="Restore;CollectPackageReferences" Condition="'$(HUSKY)' != 0">
+    <Exec Command="dotnet tool restore" StandardOutputImportance="Low" StandardErrorImportance="High" />
+    <Exec Command="dotnet husky install" StandardOutputImportance="Low" StandardErrorImportance="High" WorkingDirectory="." />
+  </Target>
 </Project>

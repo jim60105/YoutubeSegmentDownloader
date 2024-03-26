@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# 獲取 Git 用戶名和電子郵件
+git_user_name=$(git config --get user.name)
+git_user_email=$(git config --get user.email)
+
+# 檢查提交訊息中是否已經包含 "Signed-off-by" 行
+if ! grep -q "Signed-off-by: $git_user_name <$git_user_email>" "$1"; then
+    # 如果沒有，則添加 "Signed-off-by" 行
+    printf "\nSigned-off-by: %s <%s>" "$git_user_name" "$git_user_email" >>"$1"
+fi
