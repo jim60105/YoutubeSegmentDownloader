@@ -222,6 +222,7 @@ dotnet_naming_style.camel_case_begin_with__.word_separator =
 dotnet_naming_style.camel_case_begin_with__.capitalization = camel_case
 
 # Microsoft .NET properties
+dotnet_diagnostic.ide1006.severity = suggestion
 dotnet_diagnostic.bc40000.severity = warning
 dotnet_diagnostic.bc400005.severity = warning
 dotnet_diagnostic.bc40008.severity = warning
