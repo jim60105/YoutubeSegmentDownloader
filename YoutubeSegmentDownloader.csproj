@@ -28,6 +28,8 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include=".github\workflows\.prettierrc" />
+    <None Include=".github\workflows\dotnet.yml" />
     <None Include=".husky\commit-msg" />
     <None Include=".husky\pre-commit" />
     <None Include=".husky\_\.gitignore" />
