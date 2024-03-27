@@ -2,12 +2,6 @@
   "version": 1,
   "isRoot": true,
   "tools": {
-    "jetbrains.resharper.globaltools": {
-      "version": "2023.3.4",
-      "commands": [
-        "jb"
-      ]
-    },
     "husky": {
       "version": "0.6.4",
       "commands": [

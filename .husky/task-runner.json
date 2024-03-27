@@ -1,19 +1,12 @@
 {
     "tasks": [
         {
-            "name": "Run JB Clean Up Code",
+            "name": "Run dotnet format on staged files",
+            "group": "pre-commit",
             "pathMode": "relative",
             "command": "dotnet",
-            "args": [
-                "jb",
-                "cleanupcode",
-                "--profile=Built-in: Reformat Code",
-                // This will format only the staged files, but will exit with error when there is no file to format
-                //"--include=${staged:;}",
-                "--verbosity=ERROR",
-                "YoutubeSegmentDownloader.sln"
-            ],
-            "group": "pre-commit"
+            "args": ["format", "YoutubeSegmentDownloader.sln", "--include", "${staged}"],
+            "include": ["**/*.cs", "**/*.vb"]
         }
     ]
 }
