@@ -119,7 +119,7 @@ internal partial class Download(string id,
         else
         {
             // Workaround for FFmpeg sometimes uses 251 as bestvideo
-            optionSet.AddCustomOption("-S", "+codec:h264");
+            optionSet.AddCustomOption("-S", "res");
         }
 
         if (!string.IsNullOrEmpty(browser))
