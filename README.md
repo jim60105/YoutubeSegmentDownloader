@@ -1,3 +1,9 @@
+> [!CAUTION]  
+> **This repository was archived since 2024/08.** The author has not been using Windows for years and has transitioned to a Fedora Linux workstation.
+>
+> - As of a test in January 2026, the application still functions on Windows 11, but users **MUST update dependencies, manually install Deno** (<https://deno.com/>) and restarting the application. This is required because yt-dlp now needs a JavaScript runtime for YouTube downloads: <https://github.com/yt-dlp/yt-dlp/issues/15012>
+> - The browser cookie import feature has been broken since 2024. Users can track the issue here: <https://github.com/yt-dlp/yt-dlp/issues/10927>
+
 # Youtube Segment Downloader
 
 ## What's this?
